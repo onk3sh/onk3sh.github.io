@@ -1,0 +1,15 @@
+node_modules/
+.npm/
+package-lock.json
+package.json
+
+exotic-earth/
+
+.DS_Store
+
+# Local tooling and artifacts
+.claude/
+.playwright-cli/
+
+# Local screenshots/debug captures
+*.png

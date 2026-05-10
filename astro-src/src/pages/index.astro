@@ -1,0 +1,611 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { featuredProjects, recentProjects } from '../data/projects';
+import { impactItems } from '../data/impact';
+import { hero } from '../data/hero';
+---
+
+<BaseLayout
+  title="Home"
+  description={hero.metaDescription}
+>
+  <section id="hero-shell" class="hero hero-grid hero-reactive reveal-up">
+    <div>
+      <h1>{hero.name}</h1>
+      <p>
+        {hero.tagline}
+      </p>
+    </div>
+    <aside class="terminal" aria-label="Interactive command terminal">
+      <div class="terminal-bar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="terminal-title">ops-shell</span>
+      </div>
+      <div id="terminal-output" class="terminal-output" aria-live="polite"></div>
+      <form id="terminal-form" class="terminal-input-row">
+        <label for="terminal-input" class="sr-only">Terminal command input</label>
+        <span class="prompt">$</span>
+        <input
+          id="terminal-input"
+          name="terminal-input"
+          type="text"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="type a command…"
+        />
+      </form>
+    </aside>
+  </section>
+
+  <section class="section reveal-up">
+    <div class="panel">
+      <p>{hero.blurb}</p>
+    </div>
+  </section>
+
+  <section class="section reveal-up">
+    <h2>Selected Production Impact</h2>
+    <div class="panel">
+      <ul>
+        {impactItems.map((item) => (
+          <li>{item.text}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section reveal-up">
+    <h2>CI/CD Pipeline</h2>
+    <div class="panel run-replay">
+      <div class="run-controls">
+        <button id="run-play" type="button">Run Pipeline</button>
+        <button id="run-reset" type="button">Reset</button>
+      </div>
+      <ol id="run-steps" class="run-steps">
+        <li data-step>Code pushed — pull request opened against main.</li>
+        <li data-step>Jenkins pipeline triggered, unit and integration tests run.</li>
+        <li data-step>Build artifacts compiled, static analysis and coverage checks pass.</li>
+        <li data-step>Deployment to staging, smoke tests validate critical paths.</li>
+        <li data-step>Promotion to production, health checks confirmed green.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section reveal-up">
+    <h2>Featured Projects</h2>
+    <div class="grid-3">
+      {featuredProjects.map((project) => (
+        <a class="card reveal-up" href={`/post/${project.slug}/`}>
+          <h3>{project.title}</h3>
+          <p>{project.summary}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section reveal-up">
+    <h2>Recent Projects</h2>
+    <ul class="list-clean">
+      {recentProjects.slice(0, 6).map((project) => (
+        <li class="reveal-up">
+          <a href={`/post/${project.slug}/`}><strong>{project.title}</strong></a>
+          <p>{project.summary}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+(function () {
+  const out  = document.getElementById('terminal-output');
+  const form = document.getElementById('terminal-form');
+  const inp  = document.getElementById('terminal-input');
+  if (!out || !form || !inp) return;
+
+  /* ── state ── */
+  let hist = [], histIdx = -1;
+
+  /* ── helpers ── */
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+
+  function line(text, cls) {
+    const p = document.createElement('p');
+    if (cls) p.className = cls;
+    p.textContent = text;
+    out.appendChild(p);
+    out.scrollTop = out.scrollHeight;
+    return p;
+  }
+
+  function rich(html, cls) {
+    const p = document.createElement('p');
+    if (cls) p.className = cls;
+    p.innerHTML = html;
+    out.appendChild(p);
+    out.scrollTop = out.scrollHeight;
+    return p;
+  }
+
+  function type(text, cls, speed) {
+    speed = speed || 15;
+    return new Promise(function(resolve) {
+      const p = document.createElement('p');
+      if (cls) p.className = cls;
+      out.appendChild(p);
+      let i = 0;
+      const tick = setInterval(function() {
+        p.textContent += text[i++];
+        out.scrollTop = out.scrollHeight;
+        if (i >= text.length) { clearInterval(tick); resolve(p); }
+      }, speed);
+    });
+  }
+
+  async function fakeInput(text) {
+    const p = document.createElement('p');
+    p.className = 'term-echo';
+    p.textContent = '$ ';
+    out.appendChild(p);
+    for (let i = 0; i < text.length; i++) {
+      await wait(55 + Math.random() * 35);
+      p.textContent = '$ ' + text.slice(0, i + 1);
+      out.scrollTop = out.scrollHeight;
+    }
+  }
+
+  /* ── commands ── */
+  const VISIBLE = ['help','whoami','about','projects','ls','stack','contact','resume','lab','clear'];
+
+  const CMDS = {
+    help: function() {
+      rich(VISIBLE.map(function(c) {
+        return '<span class="term-tag">' + c + '</span>';
+      }).join(' '), 'term-tags');
+    },
+
+    whoami: function() {
+      [
+        ['name',     'Onkesh Bansal'],
+        ['role',     'Senior Full Stack Developer'],
+        ['focus',    'Full Stack &middot; AI/ML &middot; Automation'],
+        ['location', 'Toronto, Canada'],
+      ].forEach(function(row) {
+        rich('<span class="term-key">' + row[0].padEnd(10) + '</span>' + row[1]);
+      });
+    },
+
+    about: function() {
+      type('Senior Full Stack Developer with 10+ years across enterprise software, QA automation, and AI/ML tooling at Adobe, Quark, and Basis Technologies.', 'term-muted');
+    },
+
+    projects: function() {
+      line('featured work:', 'term-muted');
+      [
+        ['Claude Code Office Harness', 'claude-code-harness'],
+        ['CanvestAI', 'canvestai'],
+      ].forEach(function(p) {
+        rich('  &rarr; <a href="/post/' + p[1] + '/" class="term-link">' + p[0] + '</a>');
+      });
+    },
+
+    ls: function() {
+      [
+        ['claude-code-harness', '/post/claude-code-harness/'],
+        ['canvestai',           '/post/canvestai/'],
+      ].forEach(function(p) {
+        rich('drwxr-xr-x &nbsp;<a href="' + p[1] + '" class="term-link">' + p[0] + '/</a>', 'term-muted');
+      });
+    },
+
+    stack: function() {
+      [
+        ['languages', 'Java &middot; Python &middot; JavaScript &middot; TypeScript'],
+        ['backend',   'Spring Boot &middot; REST APIs &middot; PostgreSQL &middot; Redis'],
+        ['testing',   'Selenium &middot; JUnit &middot; TestNG &middot; Jenkins'],
+        ['infra',     'Kubernetes &middot; Docker &middot; AWS &middot; Git'],
+      ].forEach(function(row) {
+        rich('<span class="term-key">' + row[0].padEnd(10) + '</span>' + row[1]);
+      });
+    },
+
+    contact: function() {
+      [
+        ['linkedin', 'https://linkedin.com/in/onkesh',  'linkedin.com/in/onkesh'],
+        ['github',   'https://github.com/onk3sh',       'github.com/onk3sh'],
+        ['twitter',  'https://twitter.com/onk3sh',      '@onk3sh'],
+      ].forEach(function(row) {
+        rich('<span class="term-key">' + row[0].padEnd(10) + '</span><a href="' + row[1] + '" class="term-link" target="_blank" rel="noopener">' + row[2] + '</a>');
+      });
+    },
+
+    resume: function() {
+      rich('resume &rarr; <a href="https://linkedin.com/in/onkesh" class="term-link" target="_blank" rel="noopener">linkedin.com/in/onkesh</a>');
+    },
+
+    lab: function() {
+      rich('experiments &rarr; <a href="/lab/" class="term-link">/lab/</a>');
+      line('  Packet Runner  &middot;  Data Stream  &middot;  more incoming', 'term-muted');
+    },
+
+    clear: function() { out.innerHTML = ''; },
+
+    /* ── easter eggs ── */
+    sudo: function() { type('nice try.', 'term-err'); },
+
+    vim: function() {
+      line('entering vim…', 'term-muted');
+      setTimeout(function() {
+        line('you are trapped. :q does not exist here.', 'term-muted');
+      }, 700);
+    },
+
+    cd: function() { type('there is no filesystem here.', 'term-muted'); },
+
+    ping: function() {
+      line('PING onk3sh.github.io (185.199.108.153): 56 bytes', 'term-muted');
+      [1, 2, 3].forEach(function(i) {
+        setTimeout(function() {
+          line('64 bytes from 185.199.108.153: icmp_seq=' + i + ' ttl=57 time=' + (1 + Math.random() * 4).toFixed(2) + ' ms', 'term-muted');
+        }, i * 420);
+      });
+      setTimeout(function() {
+        line('--- onk3sh.github.io ping statistics ---', 'term-muted');
+        line('3 packets transmitted, 3 received, 0.0% packet loss', 'term-muted');
+      }, 1600);
+    },
+
+    neofetch: function() {
+      var art  = ['      \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588   ','    \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588   ','  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588   ','  \u2588\u2588  \u2588\u2588\u2588\u2588  \u2588\u2588\u2588\u2588   ','  \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588   ','    \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588   ','      \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588   '];
+      var info = ['onkesh@ops-shell','───────────────','OS:      portfolio v1','Kernel:  Astro 5 / GitHub Pages','Shell:   this terminal','Stack:   Java · Spring Boot · Python · TS','Uptime:  always'];
+      var len = Math.max(art.length, info.length);
+      for (var i = 0; i < len; i++) {
+        (function(idx) {
+          setTimeout(function() {
+            var a = art[idx]  || '                 ';
+            var b = info[idx] || '';
+            rich('<span class="term-art">' + a + '</span><span class="term-muted">' + b + '</span>');
+          }, idx * 55);
+        })(i);
+      }
+    },
+
+    hack: function() {
+      line('initializing breach protocol…', 'term-muted');
+      var chars = '0123456789ABCDEF';
+      var count = 0;
+      var iv = setInterval(function() {
+        var rand = '';
+        for (var j = 0; j < 32; j++) rand += chars[Math.floor(Math.random() * chars.length)];
+        line(rand, 'term-hack');
+        if (++count >= 8) {
+          clearInterval(iv);
+          setTimeout(function() { line('access granted. welcome, friend.', 'term-muted'); }, 300);
+        }
+      }, 80);
+    },
+
+    exit:   function() { type('there is no escape.', 'term-muted'); },
+    logout: function() { CMDS.exit(); },
+  };
+
+  /* ── dispatch ── */
+  function run(raw) {
+    var cmd = raw.trim().toLowerCase();
+    if (!cmd) return;
+    if (cmd !== 'clear') line('$ ' + raw, 'term-echo');
+    var fn = CMDS[cmd];
+    if (fn) {
+      fn();
+    } else {
+      type('command not found: ' + cmd + '  —  try "help"', 'term-err');
+    }
+  }
+
+  /* ── click tags to run them ── */
+  out.addEventListener('click', function(e) {
+    var tag = e.target.closest && e.target.closest('.term-tag');
+    if (tag) { run(tag.textContent.trim()); inp.focus(); }
+  });
+
+  /* ── form submit ── */
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var raw = inp.value.trim();
+    if (!raw) return;
+    hist.unshift(raw);
+    histIdx = -1;
+    run(raw);
+    inp.value = '';
+  });
+
+  /* ── history + tab completion ── */
+  inp.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (histIdx < hist.length - 1) inp.value = hist[++histIdx];
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      inp.value = histIdx > 0 ? hist[--histIdx] : (histIdx = -1, '');
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      var v = inp.value.toLowerCase();
+      if (!v) return;
+      var all = VISIBLE.concat(['sudo','vim','cd','ping','neofetch','hack','exit','logout']);
+      var match = all.find(function(c) { return c.startsWith(v); });
+      if (match) inp.value = match;
+    }
+  });
+
+  /* ── boot sequence ── */
+  async function boot() {
+    await wait(500);
+    await fakeInput('whoami');
+    await wait(120);
+    CMDS.whoami();
+    await wait(950);
+    await fakeInput('help');
+    await wait(120);
+    CMDS.help();
+  }
+  boot();
+
+  /* ── run replay ── */
+  var runSteps = Array.from(document.querySelectorAll('[data-step]'));
+  var playBtn  = document.getElementById('run-play');
+  var resetBtn = document.getElementById('run-reset');
+  var runTimer = null;
+
+  function resetRun() {
+    runSteps.forEach(function(s) { s.classList.remove('active'); });
+    if (runTimer) { clearInterval(runTimer); runTimer = null; }
+  }
+
+  playBtn && playBtn.addEventListener('click', function() {
+    resetRun();
+    var i = 0;
+    runTimer = setInterval(function() {
+      if (i >= runSteps.length) { clearInterval(runTimer); runTimer = null; return; }
+      runSteps[i++].classList.add('active');
+    }, 600);
+  });
+  resetBtn && resetBtn.addEventListener('click', resetRun);
+
+  /* ── reveal-up ── */
+  var revealNodes = Array.from(document.querySelectorAll('.reveal-up'));
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) { e.target.classList.add('is-visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    revealNodes.forEach(function(n) { obs.observe(n); });
+  } else {
+    revealNodes.forEach(function(n) { n.classList.add('is-visible'); });
+  }
+
+  /* ── hero parallax ── */
+  var hero = document.getElementById('hero-shell');
+  if (hero && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    hero.addEventListener('pointermove', function(e) {
+      var r = hero.getBoundingClientRect();
+      var x = ((e.clientX - r.left) / r.width)  * 100;
+      var y = ((e.clientY - r.top)  / r.height) * 100;
+      hero.style.setProperty('--x', x + '%');
+      hero.style.setProperty('--y', y + '%');
+      hero.style.transform = 'perspective(900px) rotateX(' + (50 - y) * 0.03 + 'deg) rotateY(' + (x - 50) * 0.03 + 'deg)';
+    });
+    hero.addEventListener('pointerleave', function() { hero.style.transform = 'none'; });
+  }
+})();
+</script>
+
+<style is:inline>
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .hero-reactive {
+    position: relative;
+    overflow: hidden;
+    transition: transform 160ms ease;
+  }
+
+  .hero-reactive::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      280px circle at var(--x, 82%) var(--y, 18%),
+      rgba(95, 168, 255, 0.2) 0%,
+      rgba(95, 168, 255, 0.08) 28%,
+      rgba(95, 168, 255, 0) 64%
+    );
+    mix-blend-mode: screen;
+  }
+
+  .hero-grid > * { position: relative; z-index: 1; }
+
+  /* ── terminal shell ── */
+  .terminal {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: #0d1219;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid var(--line);
+    background: #111826;
+    flex-shrink: 0;
+  }
+
+  .dot { width: 0.55rem; height: 0.55rem; border-radius: 999px; display: inline-block; }
+  .dot.red    { background: #f87171; }
+  .dot.yellow { background: #fbbf24; }
+  .dot.green  { background: #34d399; }
+
+  .terminal-title { margin-left: 0.4rem; font-size: 0.75rem; color: var(--text-muted); }
+
+  .terminal-output {
+    flex: 1;
+    min-height: 180px;
+    max-height: 230px;
+    overflow-y: auto;
+    padding: 0.7rem;
+    font-size: 0.855rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+    color: #d8e2f0;
+    scrollbar-width: thin;
+    scrollbar-color: #2a3f58 transparent;
+  }
+
+  .terminal-output p { margin: 0 0 0.38rem; line-height: 1.45; }
+
+  .terminal-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem;
+    border-top: 1px solid var(--line);
+    background: #0f1724;
+    flex-shrink: 0;
+  }
+
+  .prompt {
+    color: #60a5fa;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+  }
+
+  .terminal-input-row input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #d8e2f0;
+    font-size: 0.88rem;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace;
+    caret-color: #60a5fa;
+  }
+
+  /* ── terminal output styles ── */
+  .term-echo  { color: #d8e2f0; }
+  .term-muted { color: #7a9abf; }
+  .term-err   { color: #f87171; }
+  .term-art   { color: #3b82f6; }
+  .term-hack  { color: #22c55e; font-size: 0.75rem; letter-spacing: 0.06em; }
+
+  .term-key {
+    color: #60a5fa;
+    display: inline-block;
+    min-width: 7rem;
+    white-space: pre;
+  }
+
+  .term-link { color: #7dd3fc; text-decoration: none; }
+  .term-link:hover { text-decoration: underline; color: #bae6fd; }
+
+  .term-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin: 0.1rem 0;
+  }
+
+  .term-tag {
+    background: #0e1f33;
+    border: 1px solid #1e3a56;
+    color: #7fbfff;
+    border-radius: 5px;
+    padding: 0.05rem 0.42rem;
+    font-size: 0.77rem;
+    cursor: pointer;
+    transition: border-color 120ms ease, color 120ms ease;
+  }
+  .term-tag:hover { border-color: #4b7aab; color: #bde0ff; }
+
+  /* ── run replay ── */
+  .run-replay  { display: grid; gap: 0.8rem; }
+  .run-controls { display: flex; gap: 0.55rem; }
+
+  .run-controls button {
+    border: 1px solid #365172;
+    background: #152235;
+    color: var(--text);
+    padding: 0.45rem 0.7rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: border-color 130ms ease;
+  }
+  .run-controls button:hover { border-color: #4b6a92; }
+
+  .run-steps {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+  .run-steps li {
+    color: var(--text-muted);
+    transition: color 220ms ease, transform 220ms ease;
+  }
+  .run-steps li.active { color: #cce2ff; transform: translateX(3px); }
+
+  /* ── reveal ── */
+  .reveal-up {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 420ms ease, transform 420ms ease;
+  }
+  .reveal-up.is-visible { opacity: 1; transform: translateY(0); }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-up { opacity: 1; transform: none; transition: none; }
+    .hero-reactive { transition: none; transform: none; }
+    .run-steps li { transition: none; }
+  }
+
+  [data-theme="light"] .run-controls button {
+    border-color: #b8cce4;
+    background: #edf3fb;
+    color: var(--text);
+  }
+  [data-theme="light"] .run-controls button:hover { border-color: #7aaad4; }
+  [data-theme="light"] .run-steps li.active { color: #1a3f7a; }
+
+  /* ── Terminal: light mode ── */
+  [data-theme="light"] .terminal { background: #1e2a3a; border-color: #c0cede; }
+  [data-theme="light"] .terminal-bar { background: #253447; border-color: #c0cede; }
+  [data-theme="light"] .terminal-input-row { background: #1e2a3a; border-color: #2e4060; }
+  [data-theme="light"] .term-tag {
+    background: #1a2e46;
+    border-color: #2a4466;
+    color: #90c0f0;
+  }
+  [data-theme="light"] .term-tag:hover { border-color: #5a8ec0; color: #c0e0ff; }
+</style>

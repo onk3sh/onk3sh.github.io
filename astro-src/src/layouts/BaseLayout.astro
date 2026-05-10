@@ -1,0 +1,78 @@
+---
+import '../styles/site.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'Onkesh Bansal Portfolio' } = Astro.props;
+const path = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | Onkesh Bansal</title>
+    <slot name="head" />
+    <script is:inline>
+      (function () {
+        const t = localStorage.getItem('theme');
+        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="top-nav-wrap">
+        <nav class="top-nav">
+          <a class="brand" href="/">Onkesh Bansal</a>
+          <div class="nav-links">
+            <a class={path.startsWith('/about') ? 'active' : ''} href="/about/">About</a>
+            <a class={path.startsWith('/post') ? 'active' : ''} href="/post/">Projects</a>
+            <a class={path.startsWith('/stack') ? 'active' : ''} href="/stack/">Stack</a>
+            <a class={path.startsWith('/lab') ? 'active' : ''} href="/lab/">Lab</a>
+            <a class={path.startsWith('/contact') ? 'active' : ''} href="/contact/">Contact</a>
+            <a href="https://github.com/onk3sh" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </div>
+          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button>
+        </nav>
+      </header>
+
+      <main class="main-content">
+        <slot />
+      </main>
+
+      <footer class="site-footer">
+        <p>© Onkesh Bansal 2026</p>
+      </footer>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '🌙' : '☀';
+        }
+        sync();
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          if (light) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+          }
+          sync();
+        });
+      })();
+    </script>
+  </body>
+</html>

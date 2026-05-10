@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProjectBySlug, projects } from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({
+    params: { slug: project.slug }
+  }));
+}
+
+const { slug } = Astro.params;
+const project = getProjectBySlug(slug ?? '');
+
+if (!project) {
+  return Astro.redirect('/post/');
+}
+---
+
+<BaseLayout title={project.title} description={project.summary}>
+  <article class="project-hero">
+    <section class="hero">
+      <h1>{project.title}</h1>
+      <p>{project.summary}</p>
+      <div class="badge-row">
+        <span class="badge">{new Date(project.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+      </div>
+    </section>
+
+    <img src={project.hero} alt={`Hero image for ${project.title}`} />
+
+    <section class="panel project-content">
+      {project.sections.map((section) => (
+        <>
+          <h2>{section.heading}</h2>
+          {section.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+          {section.bullets && (
+            <ul>
+              {section.bullets.map((bullet) => <li>{bullet}</li>)}
+            </ul>
+          )}
+        </>
+      ))}
+
+      <p>
+        <a href="https://github.com/onk3sh" target="_blank" rel="noopener noreferrer">
+          Code and related repositories
+        </a>
+      </p>
+    </section>
+  </article>
+</BaseLayout>

@@ -1,0 +1,63 @@
+- generic [ref=e2]:
+  - banner [ref=e3]:
+    - navigation [ref=e4]:
+      - link "Arhum Savera" [ref=e5] [cursor=pointer]:
+        - /url: /
+      - generic [ref=e6]:
+        - link "About" [ref=e7] [cursor=pointer]:
+          - /url: /about/
+        - link "Projects" [ref=e8] [cursor=pointer]:
+          - /url: /post/
+        - link "Stack" [ref=e9] [cursor=pointer]:
+          - /url: /stack/
+        - link "Lab" [ref=e10] [cursor=pointer]:
+          - /url: /lab/
+        - link "Contact" [ref=e11] [cursor=pointer]:
+          - /url: /contact/
+        - link "Resume" [ref=e12] [cursor=pointer]:
+          - /url: /resume.pdf
+        - link "GitHub" [ref=e13] [cursor=pointer]:
+          - /url: https://github.com/arhumsavera
+        - link "LinkedIn" [ref=e14] [cursor=pointer]:
+          - /url: https://www.linkedin.com/in/arhumsavera/
+  - main [ref=e15]:
+    - generic [ref=e16]:
+      - heading "Get in Touch" [level=1] [ref=e17]
+      - paragraph [ref=e18]: Open to senior engineering roles, technical collaborations, and conversations about backend architecture and production AI systems.
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - heading "Let’s talk" [level=2] [ref=e22]
+        - paragraph [ref=e23]: Email is the best way to reach me. I read everything and respond to messages that include enough context to have a real conversation.
+        - link "arhum.a.savera@gmail.com" [ref=e24] [cursor=pointer]:
+          - /url: mailto:arhum.a.savera@gmail.com
+        - generic [ref=e25]:
+          - link "LinkedIn" [ref=e26] [cursor=pointer]:
+            - /url: https://www.linkedin.com/in/arhumsavera/
+          - link "GitHub" [ref=e27] [cursor=pointer]:
+            - /url: https://github.com/arhumsavera
+          - link "Resume" [ref=e28] [cursor=pointer]:
+            - /url: /resume.pdf
+      - generic [ref=e29]:
+        - heading "What I’m open to" [level=2] [ref=e30]
+        - list [ref=e31]:
+          - listitem [ref=e32]:
+            - generic [ref=e33]: Senior IC roles
+            - text: Backend, AI/ML platform, or full-stack with a strong systems focus.
+          - listitem [ref=e34]:
+            - generic [ref=e35]: AI platform work
+            - text: LLM orchestration, agent tooling, retrieval systems, production ML.
+          - listitem [ref=e36]:
+            - generic [ref=e37]: Technical collaboration
+            - text: Open-source, side projects, or consulting on backend and AI architecture.
+          - listitem [ref=e38]:
+            - generic [ref=e39]: Talks & writing
+            - text: Happy to discuss agent engineering, voice workflows, or production AI patterns.
+    - generic [ref=e41]:
+      - heading "Good messages to send" [level=2] [ref=e42]
+      - paragraph [ref=e43]: "I respond faster when the message has enough context to skip a round-trip. Anything like:"
+      - list [ref=e44]:
+        - listitem [ref=e45]: What the team or company does and what the role looks like technically.
+        - listitem [ref=e46]: Why you think there’s a fit — specific is better than generic.
+        - listitem [ref=e47]: Preferred timeline and next step (call, async, etc.).
+  - contentinfo [ref=e48]:
+    - paragraph [ref=e49]: © Arhum Savera 2026

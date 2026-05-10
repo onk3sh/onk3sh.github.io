@@ -1,0 +1,757 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { visualizerSteps, etfs } from '../data/lab';
+---
+
+<BaseLayout title="Lab" description="Interactive demos and experiments">
+  <section class="hero">
+    <h1>Lab</h1>
+    <p>Interactive demos of the systems I'm building.</p>
+  </section>
+
+  <!-- ── Claude Code Harness Visualizer ── -->
+  <section class="section">
+    <h2>Claude Code Harness — Workflow Visualizer</h2>
+    <p class="section-sub">
+      An autonomous ticket-to-PR pipeline with persistent memory. Step through each stage or watch it run.
+    </p>
+    <div class="panel viz-panel">
+
+      <!-- Pipeline nodes -->
+      <div class="pipeline" id="pipeline">
+        <div class="pipe-node" data-step="0">
+          <div class="pipe-icon">🧠</div>
+          <div class="pipe-label">Session Memory</div>
+          <div class="pipe-sublabel">Scan last 50 sessions</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node" data-step="1">
+          <div class="pipe-icon">🔍</div>
+          <div class="pipe-label">Codebase Analysis</div>
+          <div class="pipe-sublabel">Map relevant files</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node" data-step="2">
+          <div class="pipe-icon">📋</div>
+          <div class="pipe-label">Plan & Draft</div>
+          <div class="pipe-sublabel">Spec the implementation</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node" data-step="3">
+          <div class="pipe-icon">⚙️</div>
+          <div class="pipe-label">Execute</div>
+          <div class="pipe-sublabel">Write, test, commit</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node" data-step="4">
+          <div class="pipe-icon">🔎</div>
+          <div class="pipe-label">Review</div>
+          <div class="pipe-sublabel">Self-improving loop</div>
+        </div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-node" data-step="5">
+          <div class="pipe-icon">🚀</div>
+          <div class="pipe-label">Open PR</div>
+          <div class="pipe-sublabel">Human validates</div>
+        </div>
+      </div>
+
+      <!-- Detail panel -->
+      <div class="viz-detail" id="viz-detail">
+        <div class="viz-detail-inner" id="viz-detail-inner">
+          <p class="viz-hint">Click a stage or press <strong>Play</strong> to walk through the pipeline.</p>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="viz-controls">
+        <button id="viz-play" type="button">▶ Play</button>
+        <button id="viz-prev" type="button">← Prev</button>
+        <button id="viz-next" type="button">Next →</button>
+        <button id="viz-reset" type="button">Reset</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── Canadian ETF Screener ── -->
+  <section class="section">
+    <h2>CanvestAI — ETF Screener</h2>
+    <p class="section-sub">
+      Filter and rank Canadian-listed ETFs by category, risk level, and management expense ratio. Powered by the same scoring logic as CanvestAI.
+    </p>
+    <div class="panel etf-panel">
+
+      <!-- Filters -->
+      <div class="etf-filters">
+        <div class="filter-group">
+          <label class="filter-label">Category</label>
+          <div class="filter-chips" id="cat-chips">
+            <button class="chip active" data-cat="all">All</button>
+            <button class="chip" data-cat="equity">Equity</button>
+            <button class="chip" data-cat="fixed-income">Fixed Income</button>
+            <button class="chip" data-cat="balanced">Balanced</button>
+            <button class="chip" data-cat="sector">Sector</button>
+            <button class="chip" data-cat="commodity">Commodity</button>
+          </div>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label">Risk</label>
+          <div class="filter-chips" id="risk-chips">
+            <button class="chip active" data-risk="all">All</button>
+            <button class="chip" data-risk="low">Low</button>
+            <button class="chip" data-risk="medium">Medium</button>
+            <button class="chip" data-risk="high">High</button>
+          </div>
+        </div>
+        <div class="filter-group filter-group-mer">
+          <label class="filter-label">Max MER <span id="mer-val">1.00%</span></label>
+          <input type="range" id="mer-slider" min="0.05" max="1.50" step="0.05" value="1.00" />
+        </div>
+      </div>
+
+      <!-- Sort bar -->
+      <div class="etf-sort-bar">
+        <span class="sort-label">Sort by:</span>
+        <button class="sort-btn active" data-sort="score">Score ↕</button>
+        <button class="sort-btn" data-sort="mer">MER ↕</button>
+        <button class="sort-btn" data-sort="aum">AUM ↕</button>
+        <button class="sort-btn" data-sort="ytd">YTD ↕</button>
+        <span class="etf-count" id="etf-count"></span>
+      </div>
+
+      <!-- Table -->
+      <div class="etf-table-wrap">
+        <table class="etf-table" id="etf-table">
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Risk</th>
+              <th>MER</th>
+              <th>AUM</th>
+              <th>YTD</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="etf-tbody"></tbody>
+        </table>
+        <p class="etf-empty" id="etf-empty" style="display:none">No ETFs match your filters.</p>
+      </div>
+
+      <p class="etf-disclaimer">
+        Demo data only — not financial advice. CanvestAI uses live market data from yfinance.
+      </p>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script type="application/json" id="__lab-steps__" set:html={JSON.stringify(visualizerSteps)}></script>
+<script type="application/json" id="__lab-etfs__" set:html={JSON.stringify(etfs)}></script>
+
+<script is:inline>
+(function () {
+  const STEPS = JSON.parse(document.getElementById('__lab-steps__').textContent);
+
+  let current = -1;
+  let autoTimer = null;
+
+  const nodes = document.querySelectorAll('.pipe-node');
+  const detailInner = document.getElementById('viz-detail-inner');
+  const playBtn = document.getElementById('viz-play');
+  const prevBtn = document.getElementById('viz-prev');
+  const nextBtn = document.getElementById('viz-next');
+  const resetBtn = document.getElementById('viz-reset');
+
+  function activate(idx) {
+    if (idx < 0 || idx >= STEPS.length) return;
+    current = idx;
+    const step = STEPS[idx];
+
+    nodes.forEach((n, i) => {
+      n.classList.remove('active', 'done');
+      if (i < idx) n.classList.add('done');
+      if (i === idx) n.classList.add('active');
+    });
+
+    detailInner.style.opacity = '0';
+    setTimeout(() => {
+      detailInner.innerHTML =
+        `<div class="step-badge" style="--sc:${step.color}">${step.icon} ${step.title}</div>` +
+        `<p class="step-what">${step.what}</p>` +
+        `<ul class="step-how">${step.how.map(h => `<li>${h}</li>`).join('')}</ul>` +
+        `<div class="step-why"><span>Why it matters</span>${step.why}</div>`;
+      detailInner.style.opacity = '1';
+    }, 120);
+  }
+
+  function reset() {
+    stopAuto();
+    current = -1;
+    nodes.forEach(n => n.classList.remove('active', 'done'));
+    detailInner.style.opacity = '0';
+    setTimeout(() => {
+      detailInner.innerHTML = '<p class="viz-hint">Click a stage or press <strong>Play</strong> to walk through the pipeline.</p>';
+      detailInner.style.opacity = '1';
+    }, 120);
+    playBtn.textContent = '▶ Play';
+  }
+
+  function stopAuto() {
+    if (autoTimer) { clearInterval(autoTimer); autoTimer = null; }
+    playBtn.textContent = '▶ Play';
+  }
+
+  function startAuto() {
+    stopAuto();
+    if (current >= STEPS.length - 1) current = -1;
+    activate(current + 1);
+    autoTimer = setInterval(() => {
+      if (current >= STEPS.length - 1) { stopAuto(); return; }
+      activate(current + 1);
+    }, 2200);
+    playBtn.textContent = '⏸ Pause';
+  }
+
+  nodes.forEach((n, i) => {
+    n.addEventListener('click', () => { stopAuto(); activate(i); });
+  });
+
+  playBtn.addEventListener('click', () => {
+    if (autoTimer) { stopAuto(); } else { startAuto(); }
+  });
+
+  prevBtn.addEventListener('click', () => { stopAuto(); if (current > 0) activate(current - 1); });
+  nextBtn.addEventListener('click', () => { stopAuto(); if (current < STEPS.length - 1) activate(current + 1); });
+  resetBtn.addEventListener('click', reset);
+})();
+</script>
+
+<script is:inline>
+(function () {
+  const ETFS = JSON.parse(document.getElementById('__lab-etfs__').textContent);
+
+  const RISK_COLOR = { low: '#34d399', medium: '#f59e0b', high: '#f87171' };
+  const RISK_LIGHT  = { low: '#0d6f3f', medium: '#92400e', high: '#991b1b' };
+
+  let activeCat  = 'all';
+  let activeRisk = 'all';
+  let maxMer     = 1.00;
+  let sortKey    = 'score';
+  let sortDir    = -1;
+
+  function isLight() {
+    return document.documentElement.getAttribute('data-theme') === 'light';
+  }
+
+  function fmt(n, digits, suffix) {
+    return n.toFixed(digits) + suffix;
+  }
+
+  function fmtAum(n) {
+    return n >= 1000 ? '$' + (n / 1000).toFixed(1) + 'B' : '$' + n + 'M';
+  }
+
+  function render() {
+    const light = isLight();
+    let rows = ETFS.filter(e =>
+      (activeCat  === 'all' || e.cat  === activeCat) &&
+      (activeRisk === 'all' || e.risk === activeRisk) &&
+      e.mer <= maxMer
+    );
+
+    rows.sort((a, b) => sortDir * (b[sortKey] - a[sortKey]));
+
+    const tbody = document.getElementById('etf-tbody');
+    const empty = document.getElementById('etf-empty');
+    const count = document.getElementById('etf-count');
+    count.textContent = rows.length + ' ETF' + (rows.length !== 1 ? 's' : '');
+
+    if (rows.length === 0) {
+      tbody.innerHTML = '';
+      empty.style.display = '';
+      return;
+    }
+    empty.style.display = 'none';
+
+    tbody.innerHTML = rows.map(e => {
+      const rc = light ? RISK_LIGHT[e.risk] : RISK_COLOR[e.risk];
+      const ytdSign = e.ytd >= 0 ? '+' : '';
+      const ytdColor = e.ytd >= 0 ? (light ? '#0d6f3f' : '#34d399') : (light ? '#991b1b' : '#f87171');
+      const scoreBar = Math.round((e.score / 100) * 60);
+      return `<tr>
+        <td class="etf-ticker">${e.ticker}</td>
+        <td class="etf-name">${e.name}</td>
+        <td><span class="etf-cat">${e.cat.replace('-', '‑')}</span></td>
+        <td><span class="etf-risk" style="color:${rc}">${e.risk}</span></td>
+        <td>${fmt(e.mer, 2, '%')}</td>
+        <td>${fmtAum(e.aum)}</td>
+        <td style="color:${ytdColor};font-weight:600">${ytdSign}${fmt(e.ytd, 1, '%')}</td>
+        <td>
+          <div class="score-cell">
+            <span class="score-num">${e.score}</span>
+            <div class="score-bar-wrap"><div class="score-bar" style="width:${scoreBar}px"></div></div>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  /* ── chip filters ── */
+  document.getElementById('cat-chips').addEventListener('click', e => {
+    const btn = e.target.closest('[data-cat]');
+    if (!btn) return;
+    activeCat = btn.dataset.cat;
+    document.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  });
+
+  document.getElementById('risk-chips').addEventListener('click', e => {
+    const btn = e.target.closest('[data-risk]');
+    if (!btn) return;
+    activeRisk = btn.dataset.risk;
+    document.querySelectorAll('[data-risk]').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  });
+
+  /* ── MER slider ── */
+  const slider = document.getElementById('mer-slider');
+  const merVal = document.getElementById('mer-val');
+  slider.addEventListener('input', () => {
+    maxMer = parseFloat(slider.value);
+    merVal.textContent = maxMer.toFixed(2) + '%';
+    render();
+  });
+
+  /* ── sort buttons ── */
+  document.querySelectorAll('.sort-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.sort;
+      if (sortKey === key) { sortDir *= -1; }
+      else { sortKey = key; sortDir = -1; }
+      document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b === btn));
+      render();
+    });
+  });
+
+  /* ── re-render on theme change so risk colors update ── */
+  const observer = new MutationObserver(render);
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+  render();
+})();
+</script>
+
+<style is:inline>
+  .section-sub {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin: -0.5rem 0 1rem;
+  }
+
+  /* ── Viz panel ── */
+  .viz-panel {
+    display: grid;
+    gap: 1.2rem;
+  }
+
+  /* ── Pipeline row ── */
+  .pipeline {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pipe-arrow {
+    color: #3a5a7a;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin: 0 0.1rem;
+  }
+
+  .pipe-node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    border: 1px solid #263d55;
+    border-radius: 14px;
+    background: #0e1a28;
+    padding: 0.75rem 0.85rem;
+    cursor: pointer;
+    transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    min-width: 110px;
+    text-align: center;
+    user-select: none;
+  }
+
+  .pipe-node:hover {
+    border-color: #4a7aab;
+    transform: translateY(-2px);
+  }
+
+  .pipe-node.active {
+    border-color: #60a5fa;
+    background: linear-gradient(165deg, #162035, #0e1828);
+    box-shadow: 0 0 0 3px rgba(96,165,250,0.18), 0 8px 24px rgba(0,0,0,0.35);
+    transform: translateY(-3px);
+  }
+
+  .pipe-node.done {
+    border-color: #1e4a30;
+    background: #0b1a14;
+  }
+
+  .pipe-node.done .pipe-icon { opacity: 0.6; }
+
+  .pipe-icon {
+    font-size: 1.5rem;
+    line-height: 1;
+    transition: opacity 180ms ease;
+  }
+
+  .pipe-label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #c8daf0;
+    line-height: 1.2;
+  }
+
+  .pipe-sublabel {
+    font-size: 0.68rem;
+    color: #5a7a9a;
+    line-height: 1.2;
+  }
+
+  .pipe-node.done .pipe-label { color: #2e7a4a; }
+
+  /* ── Detail panel ── */
+  .viz-detail {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(165deg, #101c2e, #0c1520);
+    padding: 1.4rem;
+    min-height: 220px;
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .viz-detail-inner {
+    width: 100%;
+    transition: opacity 120ms ease;
+  }
+
+  .viz-hint {
+    margin: 0;
+    color: #4a6a8a;
+    font-size: 0.92rem;
+    text-align: center;
+    padding: 2rem 0;
+  }
+
+  .step-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: color-mix(in srgb, var(--sc) 15%, #0c1828);
+    border: 1px solid color-mix(in srgb, var(--sc) 40%, transparent);
+    color: var(--sc);
+    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 0.9rem;
+    letter-spacing: 0.01em;
+  }
+
+  .step-what {
+    color: #ccdcf0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0 0 0.9rem;
+  }
+
+  .step-how {
+    margin: 0 0 1rem;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .step-how li {
+    color: #8aaac8;
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .step-why {
+    border-top: 1px solid #1e3348;
+    padding-top: 0.8rem;
+    font-size: 0.87rem;
+    color: #7a9ab8;
+    line-height: 1.55;
+  }
+
+  .step-why span {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #4a6a88;
+    margin-bottom: 0.3rem;
+  }
+
+  /* ── Controls ── */
+  .viz-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .viz-controls button {
+    border: 1px solid #365172;
+    background: #152235;
+    color: var(--text);
+    padding: 0.45rem 0.85rem;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-family: inherit;
+    transition: border-color 130ms ease, background 130ms ease;
+  }
+
+  .viz-controls button:hover { border-color: #4b7aab; background: #1c2e45; }
+
+  #viz-play {
+    background: #1a3a5c;
+    border-color: #3a6898;
+    color: #cce2ff;
+    font-weight: 600;
+  }
+  #viz-play:hover { background: #1f4570; border-color: #5a8ec0; }
+
+  @media (max-width: 860px) {
+    .pipeline { gap: 0.25rem; }
+    .pipe-node { min-width: 90px; padding: 0.6rem 0.6rem; }
+    .pipe-arrow { display: none; }
+  }
+
+  /* ── Light mode: workflow visualizer ── */
+  [data-theme="light"] .pipe-arrow { color: #8aa8c8; }
+
+  [data-theme="light"] .pipe-node {
+    background: #ffffff;
+    border-color: #c8d8ec;
+  }
+  [data-theme="light"] .pipe-node:hover { border-color: #7aaad4; }
+  [data-theme="light"] .pipe-node.active {
+    background: linear-gradient(165deg, #e8f2ff, #f0f6ff);
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.15), 0 8px 24px rgba(0,0,0,0.08);
+  }
+  [data-theme="light"] .pipe-node.done {
+    background: #f0faf4;
+    border-color: #86c9a0;
+  }
+  [data-theme="light"] .pipe-label { color: #1e3a5c; }
+  [data-theme="light"] .pipe-sublabel { color: #6b7e96; }
+  [data-theme="light"] .pipe-node.done .pipe-label { color: #1a6640; }
+
+  [data-theme="light"] .viz-detail {
+    background: linear-gradient(165deg, #f5f9ff, #edf3fb);
+  }
+  [data-theme="light"] .viz-hint { color: #7a96b4; }
+  [data-theme="light"] .step-badge {
+    background: color-mix(in srgb, var(--sc) 12%, #f0f6ff);
+    border-color: color-mix(in srgb, var(--sc) 35%, transparent);
+  }
+  [data-theme="light"] .step-what { color: #1e3a5c; }
+  [data-theme="light"] .step-how li { color: #3a5a7a; }
+  [data-theme="light"] .step-why { border-color: #d0dcea; color: #4a6a8a; }
+  [data-theme="light"] .step-why span { color: #8aaac8; }
+
+  [data-theme="light"] .viz-controls button {
+    border-color: #b8cce4;
+    background: #edf3fb;
+    color: #111827;
+  }
+  [data-theme="light"] .viz-controls button:hover { border-color: #7aaad4; background: #deeaf8; }
+  [data-theme="light"] #viz-play {
+    background: #c7ddf5;
+    border-color: #6a9fd4;
+    color: #0f2a50;
+  }
+  [data-theme="light"] #viz-play:hover { background: #b2d0ee; }
+
+  /* ── ETF Screener ── */
+  .etf-panel { display: grid; gap: 1.2rem; }
+
+  .etf-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.8rem;
+    align-items: flex-start;
+  }
+
+  .filter-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .filter-label {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+  .filter-label span { font-weight: 700; color: var(--accent); font-size: 0.82rem; }
+
+  .filter-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+  .chip {
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 999px;
+    padding: 0.22rem 0.65rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 120ms ease, background 120ms ease, color 120ms ease;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--text); }
+  .chip.active { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
+
+  .filter-group-mer { min-width: 180px; }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+
+  /* ── Sort bar ── */
+  .etf-sort-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--line);
+    padding-top: 0.9rem;
+  }
+
+  .sort-label {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 0.2rem;
+  }
+
+  .sort-btn {
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--text-muted);
+    border-radius: 8px;
+    padding: 0.22rem 0.6rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: border-color 120ms ease, color 120ms ease;
+  }
+  .sort-btn:hover { border-color: var(--accent); color: var(--text); }
+  .sort-btn.active { border-color: var(--accent); color: var(--accent); font-weight: 600; }
+
+  .etf-count {
+    margin-left: auto;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Table ── */
+  .etf-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+  }
+
+  .etf-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.86rem;
+  }
+
+  .etf-table th {
+    text-align: left;
+    padding: 0.55rem 0.75rem;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+    background: var(--bg-elev);
+  }
+
+  .etf-table td {
+    padding: 0.6rem 0.75rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--text);
+    vertical-align: middle;
+  }
+  .etf-table tr:last-child td { border-bottom: none; }
+  .etf-table tbody tr:hover { background: var(--accent-soft); }
+
+  .etf-ticker {
+    font-weight: 700;
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: var(--accent) !important;
+    white-space: nowrap;
+  }
+
+  .etf-name {
+    color: var(--text-muted) !important;
+    font-size: 0.82rem;
+    max-width: 240px;
+  }
+
+  .etf-cat {
+    font-size: 0.76rem;
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+    white-space: nowrap;
+    color: var(--text-muted);
+  }
+
+  .etf-risk { font-weight: 600; text-transform: capitalize; font-size: 0.82rem; }
+
+  .score-cell { display: flex; align-items: center; gap: 0.5rem; }
+  .score-num { font-weight: 700; min-width: 1.8rem; color: var(--accent); }
+  .score-bar-wrap { width: 60px; height: 5px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; }
+  .score-bar { height: 100%; background: var(--accent); border-radius: 999px; }
+
+  .etf-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 2rem 0;
+    font-size: 0.9rem;
+  }
+
+  .etf-disclaimer {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    margin: 0;
+    padding-top: 0.3rem;
+    border-top: 1px solid var(--line);
+    opacity: 0.7;
+  }
+
+  @media (max-width: 720px) {
+    .etf-name { max-width: 140px; }
+    .etf-table th:nth-child(6), .etf-table td:nth-child(6) { display: none; }
+  }
+</style>

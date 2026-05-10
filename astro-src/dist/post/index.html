@@ -1,0 +1,79 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Project case studies by Onkesh"><meta name="generator" content="Astro v5.18.1"><title>Projects | Onkesh Bansal</title><script>
+      (function () {
+        const t = localStorage.getItem('theme');
+        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script><link rel="stylesheet" href="/_astro/about.3IspZNI4.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class="active" href="/post/">Projects</a> <a class href="/stack/">Stack</a> <a class href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://github.com/onk3sh" target="_blank" rel="noopener noreferrer">GitHub</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">LinkedIn</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">  <section class="hero"> <h1>Projects</h1> <p>Work I've shipped — production AI infrastructure and the agent tooling I've been building in 2026.</p> </section> <section class="section"> <div class="grid-2"> <a class="card" href="/post/claude-code-harness/"> <h3>Claude Code Office Harness</h3> <p>A production-grade AI engineering workflow built on Claude Code. Autonomous ticket-to-PR with persistent memory across sessions and a self-improving PR review agent. In development.</p> <div class="badge-row"> <span class="badge">Apr 2026</span> </div> </a><a class="card" href="/post/canvestai/"> <h3>CanvestAI</h3> <p>AI-powered investment analysis tool for Canadian ETFs. Conversational portfolio analysis, risk-matched recommendations, and rebalancing suggestions — built on Claude Code skills and live market data. In development.</p> <div class="badge-row"> <span class="badge">Mar 2026</span> </div> </a> </div> </section> <section class="section"> <h2 class="other-heading">Other work</h2> <div class="other-list"> <a class="other-card" href="https://github.com/onk3sh/mortgage_calculator" target="_blank" rel="noopener noreferrer"> <div class="other-card-top"> <span class="other-title">Canadian Mortgage Calculator</span> <span class="other-date">Sep 2025</span> </div> <p class="other-summary">Interactive web dashboard for Canadian mortgage analysis — semi-annual compounding, multi-strategy comparison (fixed, variable, split), rate-cut scenarios, and net-on-sale projections with Chart.js visualizations.</p> <div class="badge-row"> <span class="badge">Python</span><span class="badge">Chart.js</span><span class="badge">Canadian Finance</span> </div> </a> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '🌙' : '☀';
+        }
+        sync();
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          if (light) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+          }
+          sync();
+        });
+      })();
+    </script> </body> </html> <style>
+  .other-heading {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .other-list { display: grid; gap: 0.75rem; }
+
+  .other-card {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(165deg, rgba(23,31,43,0.7), rgba(15,20,28,0.8));
+    padding: 0.9rem 1rem;
+    text-decoration: none;
+    transition: border-color 140ms ease, transform 140ms ease;
+  }
+  .other-card:hover { border-color: #3a475d; transform: translateY(-1px); text-decoration: none; }
+
+  [data-theme="light"] .other-card {
+    background: linear-gradient(165deg, rgba(255,255,255,0.7), rgba(242,246,250,0.85));
+  }
+
+  .other-card-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .other-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .other-date {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .other-summary {
+    margin: 0 0 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+</style>

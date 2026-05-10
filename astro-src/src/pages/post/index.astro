@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { recentProjects } from '../../data/projects';
+
+const OTHER = [
+  {
+    title: 'Canadian Mortgage Calculator',
+    summary: 'Interactive web dashboard for Canadian mortgage analysis — semi-annual compounding, multi-strategy comparison (fixed, variable, split), rate-cut scenarios, and net-on-sale projections with Chart.js visualizations.',
+    tags: ['Python', 'Chart.js', 'Canadian Finance'],
+    href: 'https://github.com/onk3sh/mortgage_calculator',
+    date: 'Sep 2025',
+  },
+];
+---
+
+<BaseLayout title="Projects" description="Project case studies by Onkesh">
+  <section class="hero">
+    <h1>Projects</h1>
+    <p>Work I've shipped — production AI infrastructure and the agent tooling I've been building in 2026.</p>
+  </section>
+
+  <section class="section">
+    <div class="grid-2">
+      {recentProjects.map((project) => (
+        <a class="card" href={`/post/${project.slug}/`}>
+          <h3>{project.title}</h3>
+          <p>{project.summary}</p>
+          <div class="badge-row">
+            <span class="badge">{new Date(project.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="other-heading">Other work</h2>
+    <div class="other-list">
+      {OTHER.map((item) => (
+        <a class="other-card" href={item.href} target="_blank" rel="noopener noreferrer">
+          <div class="other-card-top">
+            <span class="other-title">{item.title}</span>
+            <span class="other-date">{item.date}</span>
+          </div>
+          <p class="other-summary">{item.summary}</p>
+          <div class="badge-row">
+            {item.tags.map(t => <span class="badge">{t}</span>)}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style is:inline>
+  .other-heading {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    margin: 0 0 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  .other-list { display: grid; gap: 0.75rem; }
+
+  .other-card {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(165deg, rgba(23,31,43,0.7), rgba(15,20,28,0.8));
+    padding: 0.9rem 1rem;
+    text-decoration: none;
+    transition: border-color 140ms ease, transform 140ms ease;
+  }
+  .other-card:hover { border-color: #3a475d; transform: translateY(-1px); text-decoration: none; }
+
+  [data-theme="light"] .other-card {
+    background: linear-gradient(165deg, rgba(255,255,255,0.7), rgba(242,246,250,0.85));
+  }
+
+  .other-card-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  .other-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .other-date {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .other-summary {
+    margin: 0 0 0.6rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+</style>

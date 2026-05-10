@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on Arhum Savera</title>
+    <link>https://arhumsavera.github.io/tags/</link>
+    <description>Recent content in Tags on Arhum Savera</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 09 May 2020 10:58:08 -0400</lastBuildDate><atom:link href="https://arhumsavera.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>C&#43;&#43;</title>
+      <link>https://arhumsavera.github.io/tags/c&#43;&#43;/</link>
+      <pubDate>Sat, 09 May 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://arhumsavera.github.io/tags/c&#43;&#43;/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Deep Learning</title>
+      <link>https://arhumsavera.github.io/tags/deep-learning/</link>
+      <pubDate>Sat, 09 May 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://arhumsavera.github.io/tags/deep-learning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>TensorRT</title>
+      <link>https://arhumsavera.github.io/tags/tensorrt/</link>
+      <pubDate>Sat, 09 May 2020 10:58:08 -0400</pubDate>
+      
+      <guid>https://arhumsavera.github.io/tags/tensorrt/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
