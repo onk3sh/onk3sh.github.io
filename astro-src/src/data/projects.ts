@@ -19,7 +19,7 @@ export const projects: Project[] = [
     date: '2026-05-01',
     hero: '/images/projects-bg-img.png',
     summary:
-      'A production-grade AI engineering workflow built on Claude Code. Autonomous ticket-to-PR with persistent memory across sessions and a self-improving PR review agent. In development.',
+      'A personal ticket-to-PR pipeline built on Claude Code — autonomous from Jira to draft PR, with persistent memory across sessions and a self-improving PR review agent. Running in daily use on my engineering workflow at Basis.',
     featured: true,
     sections: [
       {
@@ -53,7 +53,7 @@ export const projects: Project[] = [
     date: '2026-03-17',
     hero: '/images/projects-bg-img.png',
     summary:
-      'AI-powered investment analysis tool for Canadian ETFs. Conversational portfolio analysis, risk-matched recommendations, and rebalancing suggestions — built on Claude Code skills and live market data. In development.',
+      'Conversational ETF research and portfolio analysis for Canadian markets. Composable Claude Code skills over live TSX data — scoring, risk-matched recommendations, and drift-based rebalancing. Phase 1 working; Phase 2 (portfolio tracking) in progress.',
     featured: true,
     sections: [
       {

@@ -1,7 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { roles, education } from '../data/experience';
-import { featuredProjects } from '../data/projects';
 import { about } from '../data/about';
 ---
 
@@ -13,53 +11,6 @@ import { about } from '../data/about';
     </div>
   </section>
 
-  <section class="section">
-    <h2>Selected Work</h2>
-    <div class="grid-2">
-      {featuredProjects.map((project) => (
-        <a class="card" href={`/post/${project.slug}/`}>
-          <h3>{project.title}</h3>
-          <p>{project.summary}</p>
-        </a>
-      ))}
-    </div>
-  </section>
-
-  <section class="section">
-    <h2>Career</h2>
-    <div class="panel timeline">
-      {roles.map((role) => (
-        <div class="tl-item">
-          <div class="tl-meta">
-            <span class="tl-date">{role.period}</span>
-            <span class="tl-company">{role.company}</span>
-          </div>
-          <div class="tl-body">
-            <strong>{role.title}</strong> &middot; {role.location}
-            <p>{role.description}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <section class="section">
-    <h2>Education</h2>
-    <div class="panel timeline">
-      {education.map((deg) => (
-        <div class="tl-item">
-          <div class="tl-meta">
-            <span class="tl-date">{deg.period}</span>
-            <span class="tl-company">{deg.institution}</span>
-          </div>
-          <div class="tl-body">
-            <strong>{deg.degree}</strong> &middot; {deg.location}
-            {deg.detail && <p>{deg.detail}</p>}
-          </div>
-        </div>
-      ))}
-    </div>
-  </section>
 
 </BaseLayout>
 

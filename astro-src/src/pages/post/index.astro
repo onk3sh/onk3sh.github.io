@@ -2,21 +2,12 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { recentProjects } from '../../data/projects';
 
-const OTHER = [
-  {
-    title: 'Canadian Mortgage Calculator',
-    summary: 'Interactive web dashboard for Canadian mortgage analysis — semi-annual compounding, multi-strategy comparison (fixed, variable, split), rate-cut scenarios, and net-on-sale projections with Chart.js visualizations.',
-    tags: ['Python', 'Chart.js', 'Canadian Finance'],
-    href: 'https://github.com/onk3sh/mortgage_calculator',
-    date: 'Sep 2025',
-  },
-];
 ---
 
-<BaseLayout title="Projects" description="Project case studies by Onkesh">
+<BaseLayout title="Writing" description="Writing by Onkesh Bansal — production AI systems, agent engineering, and backend platform work.">
   <section class="hero">
-    <h1>Projects</h1>
-    <p>Work I've shipped — production AI infrastructure and the agent tooling I've been building in 2026.</p>
+    <h1>Writing</h1>
+    <p>Project write-ups, engineering notes, and thinking on production AI systems.</p>
   </section>
 
   <section class="section">
@@ -33,23 +24,6 @@ const OTHER = [
     </div>
   </section>
 
-  <section class="section">
-    <h2 class="other-heading">Other work</h2>
-    <div class="other-list">
-      {OTHER.map((item) => (
-        <a class="other-card" href={item.href} target="_blank" rel="noopener noreferrer">
-          <div class="other-card-top">
-            <span class="other-title">{item.title}</span>
-            <span class="other-date">{item.date}</span>
-          </div>
-          <p class="other-summary">{item.summary}</p>
-          <div class="badge-row">
-            {item.tags.map(t => <span class="badge">{t}</span>)}
-          </div>
-        </a>
-      ))}
-    </div>
-  </section>
 </BaseLayout>
 
 <style is:inline>

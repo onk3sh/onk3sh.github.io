@@ -1,8 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { featuredProjects, recentProjects } from '../data/projects';
-import { impactItems } from '../data/impact';
+import { featuredProjects } from '../data/projects';
 import { hero } from '../data/hero';
+import { about } from '../data/about';
+import { roles, education } from '../data/experience';
 ---
 
 <BaseLayout
@@ -41,40 +42,13 @@ import { hero } from '../data/hero';
 
   <section class="section reveal-up">
     <div class="panel">
-      <p>{hero.blurb}</p>
+      <h2 class="about-headline">{about.headline}</h2>
+      {about.paragraphs.slice(0, 2).map((p) => <p class="blurb">{p}</p>)}
     </div>
   </section>
 
   <section class="section reveal-up">
-    <h2>Selected Production Impact</h2>
-    <div class="panel">
-      <ul>
-        {impactItems.map((item) => (
-          <li>{item.text}</li>
-        ))}
-      </ul>
-    </div>
-  </section>
-
-  <section class="section reveal-up">
-    <h2>CI/CD Pipeline</h2>
-    <div class="panel run-replay">
-      <div class="run-controls">
-        <button id="run-play" type="button">Run Pipeline</button>
-        <button id="run-reset" type="button">Reset</button>
-      </div>
-      <ol id="run-steps" class="run-steps">
-        <li data-step>Code pushed — pull request opened against main.</li>
-        <li data-step>Jenkins pipeline triggered, unit and integration tests run.</li>
-        <li data-step>Build artifacts compiled, static analysis and coverage checks pass.</li>
-        <li data-step>Deployment to staging, smoke tests validate critical paths.</li>
-        <li data-step>Promotion to production, health checks confirmed green.</li>
-      </ol>
-    </div>
-  </section>
-
-  <section class="section reveal-up">
-    <h2>Featured Projects</h2>
+    <h2>Selected Work</h2>
     <div class="grid-3">
       {featuredProjects.map((project) => (
         <a class="card reveal-up" href={`/post/${project.slug}/`}>
@@ -86,16 +60,41 @@ import { hero } from '../data/hero';
   </section>
 
   <section class="section reveal-up">
-    <h2>Recent Projects</h2>
-    <ul class="list-clean">
-      {recentProjects.slice(0, 6).map((project) => (
-        <li class="reveal-up">
-          <a href={`/post/${project.slug}/`}><strong>{project.title}</strong></a>
-          <p>{project.summary}</p>
-        </li>
+    <h2>Career</h2>
+    <div class="panel">
+      {roles.map((role, i) => (
+        <div class={`exp-row${i < roles.length - 1 ? ' exp-divider' : ''}`}>
+          <div class="exp-left">
+            <div class="exp-period">{role.period}</div>
+            <strong class="exp-company">{role.company}</strong>
+          </div>
+          <div class="exp-right">
+            <div class="exp-title">{role.title} · {role.location}</div>
+            <p>{role.description}</p>
+          </div>
+        </div>
       ))}
-    </ul>
+    </div>
   </section>
+
+  <section class="section reveal-up">
+    <h2>Education</h2>
+    <div class="panel">
+      {education.map((deg, i) => (
+        <div class={`exp-row${i < education.length - 1 ? ' exp-divider' : ''}`}>
+          <div class="exp-left">
+            <div class="exp-period">{deg.period}</div>
+            <strong class="exp-company">{deg.institution}</strong>
+          </div>
+          <div class="exp-right">
+            <div class="exp-title">{deg.degree} · {deg.location}</div>
+            {deg.detail && <p>{deg.detail}</p>}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
 </BaseLayout>
 
 <script is:inline>
@@ -157,7 +156,7 @@ import { hero } from '../data/hero';
   }
 
   /* ── commands ── */
-  const VISIBLE = ['help','whoami','about','projects','ls','stack','contact','resume','lab','clear'];
+  const VISIBLE = ['help','whoami','about','now','projects','ls','stack','contact','resume','lab','clear'];
 
   const CMDS = {
     help: function() {
@@ -169,16 +168,16 @@ import { hero } from '../data/hero';
     whoami: function() {
       [
         ['name',     'Onkesh Bansal'],
-        ['role',     'Senior Full Stack Developer'],
-        ['focus',    'Full Stack &middot; AI/ML &middot; Automation'],
-        ['location', 'Toronto, Canada'],
+        ['role',     'Senior Engineer &mdash; AI Systems &amp; Backend Platform'],
+        ['focus',    'AI tooling &middot; Backend platforms &middot; Autonomous workflows'],
+        ['location', 'Toronto, Canada &middot; open to remote US/CA'],
       ].forEach(function(row) {
         rich('<span class="term-key">' + row[0].padEnd(10) + '</span>' + row[1]);
       });
     },
 
     about: function() {
-      type('Senior Full Stack Developer with 10+ years across enterprise software, QA automation, and AI/ML tooling at Adobe, Quark, and Basis Technologies.', 'term-muted');
+      type('Senior engineer with 10+ years shipping production systems. Currently building AI tooling at Basis Technologies — autonomous ticket-to-PR workflows, persistent agent memory, and conversational analytics.', 'term-muted');
     },
 
     projects: function() {
@@ -204,18 +203,27 @@ import { hero } from '../data/hero';
       [
         ['languages', 'Java &middot; Python &middot; JavaScript &middot; TypeScript'],
         ['backend',   'Spring Boot &middot; REST APIs &middot; PostgreSQL &middot; Redis'],
-        ['testing',   'Selenium &middot; JUnit &middot; TestNG &middot; Jenkins'],
+        ['ai',        'Claude API &middot; context &amp; prompt engineering &middot; Claude Code skills &middot; JS/TS &middot; Python'],
         ['infra',     'Kubernetes &middot; Docker &middot; AWS &middot; Git'],
       ].forEach(function(row) {
         rich('<span class="term-key">' + row[0].padEnd(10) + '</span>' + row[1]);
       });
     },
 
+    now: function() {
+      line('currently building:', 'term-muted');
+      [
+        ['Claude Code Office Harness', 'claude-code-harness', 'autonomous ticket-to-PR workflows with persistent agent memory'],
+        ['CanvestAI',                  'canvestai',           'conversational ETF analysis for Canadian investors'],
+      ].forEach(function(p) {
+        rich('  &rarr; <a href="/post/' + p[1] + '/" class="term-link">' + p[0] + '</a> &mdash; ' + p[2]);
+      });
+    },
+
     contact: function() {
       [
-        ['linkedin', 'https://linkedin.com/in/onkesh',  'linkedin.com/in/onkesh'],
-        ['github',   'https://github.com/onk3sh',       'github.com/onk3sh'],
-        ['twitter',  'https://twitter.com/onk3sh',      '@onk3sh'],
+        ['linkedin', 'https://linkedin.com/in/onkesh', 'linkedin.com/in/onkesh'],
+        ['github',   'https://github.com/onk3sh',      'github.com/onk3sh'],
       ].forEach(function(row) {
         rich('<span class="term-key">' + row[0].padEnd(10) + '</span><a href="' + row[1] + '" class="term-link" target="_blank" rel="noopener">' + row[2] + '</a>');
       });
@@ -342,36 +350,15 @@ import { hero } from '../data/hero';
   /* ── boot sequence ── */
   async function boot() {
     await wait(500);
-    await fakeInput('whoami');
+    await fakeInput('about');
     await wait(120);
-    CMDS.whoami();
+    CMDS.about();
     await wait(950);
-    await fakeInput('help');
+    await fakeInput('now');
     await wait(120);
-    CMDS.help();
+    CMDS.now();
   }
   boot();
-
-  /* ── run replay ── */
-  var runSteps = Array.from(document.querySelectorAll('[data-step]'));
-  var playBtn  = document.getElementById('run-play');
-  var resetBtn = document.getElementById('run-reset');
-  var runTimer = null;
-
-  function resetRun() {
-    runSteps.forEach(function(s) { s.classList.remove('active'); });
-    if (runTimer) { clearInterval(runTimer); runTimer = null; }
-  }
-
-  playBtn && playBtn.addEventListener('click', function() {
-    resetRun();
-    var i = 0;
-    runTimer = setInterval(function() {
-      if (i >= runSteps.length) { clearInterval(runTimer); runTimer = null; return; }
-      runSteps[i++].classList.add('active');
-    }, 600);
-  });
-  resetBtn && resetBtn.addEventListener('click', resetRun);
 
   /* ── reveal-up ── */
   var revealNodes = Array.from(document.querySelectorAll('.reveal-up'));
@@ -537,34 +524,33 @@ import { hero } from '../data/hero';
   }
   .term-tag:hover { border-color: #4b7aab; color: #bde0ff; }
 
-  /* ── run replay ── */
-  .run-replay  { display: grid; gap: 0.8rem; }
-  .run-controls { display: flex; gap: 0.55rem; }
+  /* ── blurb ── */
+  .about-headline { margin: 0 0 0.85rem; font-size: clamp(1.1rem, 1.8vw, 1.4rem); letter-spacing: -0.01em; }
+  .blurb { margin: 0 0 0.75rem; color: var(--text-muted); line-height: 1.7; font-size: 1rem; }
+  .blurb:last-child { margin-bottom: 0; }
 
-  .run-controls button {
-    border: 1px solid #365172;
-    background: #152235;
-    color: var(--text);
-    padding: 0.45rem 0.7rem;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.85rem;
-    font-family: inherit;
-    transition: border-color 130ms ease;
-  }
-  .run-controls button:hover { border-color: #4b6a92; }
-
-  .run-steps {
-    margin: 0;
-    padding-left: 1.1rem;
+  /* ── experience ── */
+  .exp-row {
     display: grid;
-    gap: 0.45rem;
+    grid-template-columns: 180px 1fr;
+    gap: 1rem;
+    padding: 1rem 0;
   }
-  .run-steps li {
-    color: var(--text-muted);
-    transition: color 220ms ease, transform 220ms ease;
+  .exp-divider { border-bottom: 1px solid var(--line); }
+  .exp-row:first-child { padding-top: 0; }
+  .exp-row:last-child  { padding-bottom: 0; }
+
+  .exp-left { display: flex; flex-direction: column; gap: 0.2rem; }
+  .exp-period  { font-size: 0.8rem; color: var(--text-muted); }
+  .exp-company { color: var(--accent); font-size: 0.95rem; font-weight: 600; }
+
+  .exp-right { display: flex; flex-direction: column; gap: 0.3rem; }
+  .exp-title { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .exp-right p { margin: 0; font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; }
+
+  @media (max-width: 600px) {
+    .exp-row { grid-template-columns: 1fr; }
   }
-  .run-steps li.active { color: #cce2ff; transform: translateX(3px); }
 
   /* ── reveal ── */
   .reveal-up {
@@ -590,22 +576,21 @@ import { hero } from '../data/hero';
     .run-steps li { transition: none; }
   }
 
-  [data-theme="light"] .run-controls button {
-    border-color: #b8cce4;
-    background: #edf3fb;
-    color: var(--text);
-  }
-  [data-theme="light"] .run-controls button:hover { border-color: #7aaad4; }
-  [data-theme="light"] .run-steps li.active { color: #1a3f7a; }
-
   /* ── Terminal: light mode ── */
-  [data-theme="light"] .terminal { background: #1e2a3a; border-color: #c0cede; }
-  [data-theme="light"] .terminal-bar { background: #253447; border-color: #c0cede; }
-  [data-theme="light"] .terminal-input-row { background: #1e2a3a; border-color: #2e4060; }
+  [data-theme="light"] .terminal { background: #f4f7fb; border-color: #c8d5e8; }
+  [data-theme="light"] .terminal-bar { background: #e8eef8; border-color: #c8d5e8; }
+  [data-theme="light"] .terminal-input-row { background: #f4f7fb; border-color: #c8d5e8; }
+  [data-theme="light"] .terminal-output { color: #1e3a5f; scrollbar-color: #b0c4dc transparent; }
+  [data-theme="light"] .terminal-input-row input { color: #1e3a5f; }
+  [data-theme="light"] .term-echo  { color: #1e3a5f; }
+  [data-theme="light"] .term-muted { color: #4a6a90; }
+  [data-theme="light"] .term-key   { color: #1d4ed8; }
+  [data-theme="light"] .term-link  { color: #1d4ed8; }
+  [data-theme="light"] .term-link:hover { color: #1e40af; }
   [data-theme="light"] .term-tag {
-    background: #1a2e46;
-    border-color: #2a4466;
-    color: #90c0f0;
+    background: #e8f0fc;
+    border-color: #a8c0e0;
+    color: #1e4896;
   }
-  [data-theme="light"] .term-tag:hover { border-color: #5a8ec0; color: #c0e0ff; }
+  [data-theme="light"] .term-tag:hover { border-color: #2563eb; color: #1a3a7a; }
 </style>
