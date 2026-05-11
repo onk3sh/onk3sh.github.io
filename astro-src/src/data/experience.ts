@@ -26,7 +26,7 @@ export const roles: Role[] = [
   {
     company: 'Centric Consulting',
     title: 'Senior Software Engineer',
-    period: '2019 – 2021',
+    period: '2017 – 2021',
     location: 'Gurgaon, IN',
     description:
       'Delivered production software for US enterprise clients across fintech and logistics domains — Ruby on Rails, JavaScript/TypeScript, and Python. Owned end-to-end delivery from requirements through deployment.',
