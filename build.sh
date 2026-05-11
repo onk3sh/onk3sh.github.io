@@ -49,6 +49,20 @@ if [ -d "$DIST/_astro" ]; then
   echo "  synced _astro/"
 fi
 
+# Sync sitemap
+for f in sitemap-index.xml sitemap-0.xml; do
+  if [ -f "$DIST/$f" ]; then
+    cp "$DIST/$f" "$ROOT/$f"
+    echo "  synced $f"
+  fi
+done
+
+# Sync robots.txt
+if [ -f "$DIST/robots.txt" ]; then
+  cp "$DIST/robots.txt" "$ROOT/robots.txt"
+  echo "  synced robots.txt"
+fi
+
 echo "→ Done."
 
 if [ "${1:-}" = "--push" ]; then
