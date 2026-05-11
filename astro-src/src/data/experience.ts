@@ -29,7 +29,7 @@ export const roles: Role[] = [
     period: '2017 – 2021',
     location: 'Gurgaon, IN',
     description:
-      'Delivered production software for US enterprise clients across fintech and logistics domains — Ruby on Rails, JavaScript/TypeScript, and Python. Owned end-to-end delivery from requirements through deployment.',
+      'Delivered production software for US enterprise clients in the BFSI domain — Ruby on Rails, JavaScript/TypeScript, and Python. Owned end-to-end delivery from requirements through deployment.',
   },
   {
     company: 'Adobe Systems',
@@ -37,7 +37,7 @@ export const roles: Role[] = [
     period: '2015 – 2017',
     location: 'Bangalore, IN',
     description:
-      'Owned test infrastructure and quality tooling for Adobe Acrobat — automated regression coverage across PDF rendering and form workflows at scale.',
+      'Worked on the Adobe Acrobat team shipping the Edit PDF feature, then moved to the early beta team for Adobe XD. Contributed across both product cycles — feature development, quality tooling, and cross-team collaboration at scale.',
   },
 ];
 
