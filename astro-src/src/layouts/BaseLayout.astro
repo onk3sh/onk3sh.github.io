@@ -4,7 +4,6 @@ import '../styles/site.css';
 interface Props {
   title: string;
   description?: string;
-  ogImage?: string;
 }
 
 const { title, description = 'Onkesh Bansal — Senior engineer building production AI systems. Autonomous workflows, persistent memory, and LLM tooling. Toronto, open to remote US/Canada.' } = Astro.props;
@@ -50,7 +49,7 @@ const pageTitle = path === '/' ? `Onkesh Bansal | Senior Engineer — AI Systems
           <a class="brand" href="/">Onkesh Bansal</a>
           <div class="nav-links">
             <a class={path.startsWith('/about') ? 'active' : ''} href="/about/">About</a>
-            <a class={path.startsWith('/post') ? 'active' : ''} href="/post/">Writing</a>
+            <a class={path.startsWith('/post') ? 'active' : ''} href="/post/">Work</a>
             <a class={path.startsWith('/stack') ? 'active' : ''} href="/stack/">Stack</a>
             <a class={path.startsWith('/lab') ? 'active' : ''} href="/lab/">Lab</a>
             <a class={path.startsWith('/contact') ? 'active' : ''} href="/contact/">Contact</a>

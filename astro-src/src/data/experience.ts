@@ -21,7 +21,7 @@ export const roles: Role[] = [
     period: '2022 – Present',
     location: 'Toronto, ON',
     description:
-      'Building AI tooling and backend systems at Basis — a top-ranked DSP and omnichannel ad automation platform. Running a personal ticket-to-PR pipeline (Claude Code Harness) in daily use on my own engineering workflow. Full-stack across Ruby on Rails and Java Spring Boot.',
+      'Built and run a ticket-to-PR pipeline (Claude Code Harness) used daily on production Rails and Spring Boot work — autonomous from Jira to draft PR, with persistent agent memory. Full-stack delivery across the Basis ad-automation platform.',
   },
   {
     company: 'Centric Consulting',
@@ -29,7 +29,7 @@ export const roles: Role[] = [
     period: '2017 – 2021',
     location: 'Gurgaon, IN',
     description:
-      'Delivered production software for US enterprise clients in the BFSI domain — Ruby on Rails, JavaScript/TypeScript, and Python. Owned end-to-end delivery from requirements through deployment.',
+      'Senior IC on US enterprise BFSI client teams. Ruby on Rails, JavaScript/TypeScript, and Python.',
   },
   {
     company: 'Adobe Systems',
@@ -37,7 +37,7 @@ export const roles: Role[] = [
     period: '2015 – 2017',
     location: 'Bangalore, IN',
     description:
-      'Worked on the Adobe Acrobat team shipping the Edit PDF feature, then moved to the early beta team for Adobe XD. Contributed across both product cycles — feature development, quality tooling, and cross-team collaboration at scale.',
+      'Shipped the Edit PDF feature on Adobe Acrobat, then moved to the early beta team for Adobe XD.',
   },
 ];
 

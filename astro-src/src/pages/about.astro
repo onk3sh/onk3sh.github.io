@@ -8,6 +8,10 @@ import { about } from '../data/about';
     <div class="panel about-intro">
       <h2>{about.headline}</h2>
       {about.paragraphs.map((p) => <p>{p}</p>)}
+      <div class="about-cta">
+        <a href="/post/">Selected Work</a>
+        <a href="/contact/">Get in touch</a>
+      </div>
     </div>
   </section>
 
@@ -22,56 +26,24 @@ import { about } from '../data/about';
     line-height: 1.3;
   }
 
-  /* ── timeline ── */
-  .timeline {
-    display: grid;
-    gap: 0;
+  .about-intro p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin: 0 0 0.75rem;
   }
 
-  .tl-item {
-    display: grid;
-    grid-template-columns: 180px minmax(0, 1fr);
-    gap: 0.75rem 1.25rem;
-    padding: 1.1rem 0;
-    border-bottom: 1px solid var(--line);
-  }
+  .about-intro p:last-of-type { margin-bottom: 0; }
 
-  .tl-item:last-child { border-bottom: none; }
-
-  .tl-meta {
+  .about-cta {
     display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
-    padding-top: 0.05rem;
+    gap: 1.2rem;
+    margin-top: 1.25rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
   }
 
-  .tl-date {
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    font-variant-numeric: tabular-nums;
-  }
-
-  .tl-company {
+  .about-cta a {
     font-size: 0.9rem;
-    font-weight: 600;
-    color: #7fbfff;
+    color: var(--accent);
   }
-
-  .tl-body strong {
-    font-size: 0.95rem;
-    color: var(--text);
-  }
-
-  .tl-body p {
-    margin: 0.4rem 0 0;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-
-  @media (max-width: 940px) {
-    .tl-item { grid-template-columns: 1fr; gap: 0.25rem; }
-  }
-
-  [data-theme="light"] .tl-company { color: #1a4b8c; }
 </style>

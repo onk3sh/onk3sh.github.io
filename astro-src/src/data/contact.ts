@@ -37,18 +37,13 @@ export const contact: ContactContent = {
       { label: 'Staff / Senior IC',       description: 'Backend, AI platform, or distributed systems.' },
       { label: 'AI platform work',        description: 'LLM orchestration, agent infrastructure, retrieval pipelines, production ML.' },
       { label: 'Consulting & advisory',   description: 'Agent systems, LLM infrastructure, and backend architecture.' },
-      { label: 'Talks & writing',         description: 'Agent engineering, voice AI workflows, and production LLM patterns.' },
+      { label: 'Talks & writing',         description: 'Agent engineering, context engineering, and production LLM patterns.' },
       { label: 'Location',               description: 'Based in Toronto. Open to remote (US/Canada) and select hybrid.' },
     ],
   },
   messagingTips: {
     heading: 'Before you message',
-    intro: 'I reply faster when there is enough context to skip a round-trip:',
-    tips: [
-      'What the team builds and the technical shape of the role.',
-      'Why this is a fit — specifics beat generics.',
-      'Comp range and timeline upfront.',
-      'Preferred next step — call, async, or intro.',
-    ],
+    intro: 'I reply to everything. A note on what the team builds and why you think there\'s a fit goes a long way.',
+    tips: [],
   },
 };
