@@ -21,7 +21,7 @@ export const roles: Role[] = [
     period: '2022 – Present',
     location: 'Toronto, ON',
     description:
-      'Built and run a ticket-to-PR pipeline (Claude Code Harness) used daily on production Rails and Spring Boot work — autonomous from Jira to draft PR, with persistent agent memory. Full-stack delivery across the Basis ad-automation platform.',
+      'Senior IC (2 of 6) on Basis Platform\'s Media Activation team. Own two production Java services — a Spring Boot domain service for the full Google Ads campaign hierarchy and a Quarkus sync service handling bidirectional flows across Google Ads, Meta, LinkedIn, and CM360. Processing ~88K entity saves per 24 hours. Led the performance track: absorbed 4× workload growth with flat p50/p95/p99 latency and lifted database index hit rate from 81% to 93%.',
   },
   {
     company: 'Centric Consulting',

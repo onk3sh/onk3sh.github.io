@@ -6,6 +6,6 @@ export type HeroContent = {
 
 export const hero: HeroContent = {
   name: 'Onkesh Bansal',
-  tagline: 'Senior engineer building production AI systems — autonomous workflows, persistent memory, and tools that make AI useful inside a real codebase.',
-  metaDescription: 'Senior engineer — AI agent systems, autonomous workflows, backend platforms. Toronto, open to remote US/Canada.',
+  tagline: 'Senior engineer on a large-scale ad automation platform. Independent work on agent memory and token economics for coding agents.',
+  metaDescription: 'Senior engineer — backend platform engineering and AI agent tooling. Toronto, open to remote US/Canada.',
 };

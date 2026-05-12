@@ -1,0 +1,180 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="I audited 100+ PR review comments across two production codebases, found 16 recurring failure categories, and encoded each as a non-skippable gate in an AI-assisted development pipeline."><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="canonical" href="https://onk3sh.github.io/post/iron-law-gates/"><title>Iron-Law Gates | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/post/iron-law-gates/"><meta property="og:title" content="Iron-Law Gates | Onkesh Bansal"><meta property="og:description" content="I audited 100+ PR review comments across two production codebases, found 16 recurring failure categories, and encoded each as a non-skippable gate in an AI-assisted development pipeline."><meta property="og:site_name" content="Onkesh Bansal"><!-- Twitter Card --><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Iron-Law Gates | Onkesh Bansal"><meta name="twitter:description" content="I audited 100+ PR review comments across two production codebases, found 16 recurring failure categories, and encoded each as a non-skippable gate in an AI-assisted development pipeline."><script>
+      (function () {
+        const t = localStorage.getItem('theme');
+        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.3IspZNI4.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class="active" href="/post/">Work</a> <a class href="/stack/">Stack</a> <a class href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">  <article class="post-article"> <section class="hero"> <div class="post-meta"> <span class="badge">May 2026</span> <span class="badge">Process Engineering</span> <span class="badge">AI Tooling</span> </div> <h1>Iron-Law Gates: How I Turned My PR Review History Into an AI Pipeline</h1> <p class="post-lede">Most people building AI coding workflows optimize the model. Better prompts, bigger context windows, smarter agents, fresher benchmarks. That's the wrong variable.</p> </section> <div class="post-body panel"> <p>The model is a commodity. The process around it isn't. Your AI pipeline will only stop the failures you have explicitly told it to stop — and the only reliable source of "what fails in your codebase" is your own review history.</p> <p>So I went and got mine.</p> <h2>The audit</h2> <p>Over three months I worked through 100+ PR review comments across two production services I contribute to. I copied every non-trivial reviewer comment into a spreadsheet, tagged the underlying failure, and looked for repetition. I did not care about one-off stylistic preferences. I cared about the things that came back.</p> <p>Sixteen categories survived the cut. They split cleanly by service.</p> <h3>Service A — Java / Spring Boot</h3> <div class="table-wrap"> <table> <thead> <tr><th>Category</th><th>Notes</th><th>Severity</th></tr> </thead> <tbody> <tr><td>Concurrency / transactions</td><td>Missing <code>@Transactional</code>, check-then-act gaps, Hibernate flush timing, batch input dedup</td><td class="sev-high">4 instances</td></tr> <tr><td>Entity copy gaps</td><td>Missing identity/tracking fields in copy constructors</td><td class="sev-blocker">2 BLOCKERs</td></tr> <tr><td>Data shape</td><td>Wrong nested object read, write payload pollution, stored vs. derived</td><td>Recurring</td></tr> <tr><td>Migration safety</td><td>Data assumption not validated before transform; partial index scope too narrow</td><td class="sev-high">High</td></tr> <tr><td>Model design</td><td>Wrong relationship type, wrong unique-constraint scope</td><td class="sev-high">High</td></tr> <tr><td>Dead code</td><td>Stale abstractions left after refactor</td><td>Medium</td></tr> <tr><td>Test quality</td><td>Asserting on infrastructure state instead of behavior</td><td>Medium</td></tr> <tr><td>Defensive overreach</td><td>Null guards on data that cannot be null per domain model</td><td>Low</td></tr> </tbody> </table> </div> <h3>Service B — Rails / React</h3> <div class="table-wrap"> <table> <thead> <tr><th>Category</th><th>Notes</th><th>Severity</th></tr> </thead> <tbody> <tr><td>Logic errors</td><td><code>.some()</code> vs <code>.every()</code>, wrong property path, wrong operator</td><td class="sev-high">9 instances</td></tr> <tr><td>Duplicate logic</td><td>Same utility in 2–3 files instead of a shared module</td><td class="sev-high">4 instances</td></tr> <tr><td>Scope creep</td><td>Unrelated bug fix included; intentionally-removed feature re-added</td><td class="sev-high">High</td></tr> <tr><td>Dead code</td><td>Unused props, unreferenced schema fields</td><td>Medium</td></tr> <tr><td>Controller bloat</td><td>Transforming/filtering in the controller instead of passing through</td><td>Medium</td></tr> <tr><td>UI state misuse</td><td>Business-action guards keyed on display state, not actual data</td><td class="sev-high">High</td></tr> <tr><td>Feature flag gaps</td><td>New UI shipped without feature-flag registration</td><td class="sev-blocker">BLOCKER</td></tr> <tr><td>Code hygiene</td><td>Redundant class names, missing params in mailer links</td><td>Low</td></tr> </tbody> </table> </div> <p>A few things worth calling out. The two services have almost no overlap in failure modes. Service A's worst failures are concurrency and entity-state bugs — the things a strongly-typed, transactional, ORM-heavy stack punishes. Service B's worst failures are logic errors and duplication — the things a dynamic, two-language stack punishes. Same engineer. Different traps.</p> <p>This is the entire point. A generic AI code reviewer cannot know that <code>.some()</code> vs <code>.every()</code> is the modal failure in this codebase, or that copy-constructor identity drift has shipped to production twice. My reviewers know. Their comments are the ground truth.</p> <h2>The insight: four intervention layers</h2> <p>Sixteen categories is too many gates to operate. But they cluster.</p> <ol class="layer-list"> <li><strong>Correctness</strong> — logic errors, concurrency, entity copy gaps, data shape, defensive overreach. Wrong code.</li> <li><strong>Design</strong> — model design, controller bloat, duplicate logic, UI state misuse, dead code. Right answer, wrong shape.</li> <li><strong>Scope</strong> — scope creep, intentionally-removed-feature re-add, dead code from prior refactors. Wrong boundary.</li> <li><strong>Safety</strong> — migrations, feature flags, test quality. Wrong blast radius if it ships.</li> </ol> <p>Each layer fails at a different point in the development arc, which means each layer needs a different gate. Catching scope creep at code review is too late — the work is done. Catching a concurrency bug at planning is too early — there's no code to reason about yet.</p> <div class="table-wrap"> <table> <thead> <tr><th>Layer</th><th>Fails earliest at</th><th>Pipeline phase</th></tr> </thead> <tbody> <tr><td>Scope</td><td>Requirements gathering</td><td>Phase 1 — Scout</td></tr> <tr><td>Design</td><td>Plan, before code</td><td>Phase 2 — Plan</td></tr> <tr><td>Safety</td><td>Plan stress-test</td><td>Phase 2.5 — Grill</td></tr> <tr><td>Correctness</td><td>Implementation + self-review</td><td>Phase 3 + Phase 4</td></tr> <tr><td>All</td><td>Final gate</td><td>Phase 5 — Completion</td></tr> </tbody> </table> </div> <h2>The pipeline: disciplined-development</h2> <p>Five phases, each non-skippable, all built on Claude Code. The discipline is the product. The model is incidental.</p> <h3>Phase 1 — Requirements (<code>dd-scout</code>)</h3> <p>Fetches the ticket, parent epic, sibling tickets, all comments, and any linked specs or ADRs. Produces a structured requirements brief: in-scope, out-of-scope, open questions, acceptance criteria, related decisions.</p> <p><strong>Gate:</strong> blocks on any UNKNOWN. You cannot proceed to Phase 2 with unresolved questions.</p> <p>This kills scope creep before it has a surface to grow on. The "intentionally-removed feature accidentally re-added" failure was the one that taught me Phase 1 needed to exist — the only way to not re-add a removed feature is to know, in writing, that it was removed.</p> <h3>Phase 2 — Plan</h3> <p>Implementation plan with four required sections: <strong>reuse inventory</strong> (what already exists), <strong>data-flow mapping</strong> (where state enters, transforms, lands), <strong>NOT-DO list</strong> (things a reasonable engineer might do that this ticket excludes), and <strong>Intentionally Removed Items</strong> (features deleted in prior tickets that must not return).</p> <p>User-approved before any code is touched. The reuse inventory is the direct response to four "you duplicated this utility" comments. The NOT-DO list is the direct response to scope creep.</p> <h3>Phase 2.5 — Stress-test (<code>grill-me</code> / <code>grill-with-docs</code>)</h3> <p>Sequential design interview. One question at a time. Adversarial probing of the plan. Auto-routes to <code>grill-with-docs</code> — which pulls the relevant ADRs and internal docs into context — when Phase 1 surfaced sensitive paths: auth, migrations, payments.</p> <p>This is where migration-safety and feature-flag failures get caught. The questions write themselves once you know what's been broken before: <em>"What data assumption are you making about column X? How did you validate it? What's the partial-index scope and what happens to rows outside it?"</em></p> <h3>Phase 3 — Implement</h3> <p>TDD enforced. Per-file dedup check: any time two or more files would contain the same logic, the pipeline extracts a shared module before continuing. This runs because four reviewers, four times, said the same thing.</p> <h3>Phase 4 — Self-review</h3> <p>Thirteen ordered checks executed by four parallel sub-agents. Findings classified:</p> <ul> <li><strong>AUTO</strong> — fix immediately, no confirmation needed</li> <li><strong>BATCH</strong> — collect, fix together, single confirmation</li> <li><strong>MANUAL</strong> — surface to me with context, I decide</li> </ul> <p>Results saved to Obsidian before Phase 5 is allowed to begin. The check list is the audit table, one-to-one. Every gate has a reviewer comment behind it.</p> <h3>Phase 5 — Completion</h3> <p>Evidence-required. Not "tests pass" — the actual command output, captured. Not "lint is clean" — the linter's stdout. <code>dd-reviewer</code> runs a full 13-check pass against the diff and returns go/no-go. Only then does the PR open.</p> <pre><code>[dd-reviewer] 13/13 checks complete
+  correctness: pass
+  design:      pass
+  scope:       pass (NOT-DO list honored)
+  safety:      pass (feature flag registered, migration validated)
+  -> GO</code></pre> <h2>The supporting stack</h2> <p>Briefly, because it's not the point — the gates are the point.</p> <ul> <li><strong>ast-grep + LSP</strong> for code search. ~70% token reduction versus grep on the same questions, because structural queries return structural answers.</li> <li><strong>difft</strong> for structural diffs that sub-agents can actually read.</li> <li><strong>shellcheck</strong> as a PostToolUse hard guard on Bash — the agent cannot run a shell command that shellcheck rejects.</li> <li><strong>Claude Code sandbox mode</strong> for execution boundaries. Filesystem and network allowlists.</li> <li><strong>Slack async observability</strong> so long-running phases don't require babysitting a terminal.</li> <li><strong>Custom Bitbucket MCP server</strong>, because no official one existed.</li> <li><strong>Three-tier memory:</strong> LLM Wiki (Karpathy's pattern) for durable facts, Obsidian vault for project state, JSONL session knowledge graph for in-flight context.</li> <li><strong>Three auditors:</strong> <code>lint-memory</code>, <code>lint-skills</code>, <code>system-gc</code> — they run against <code>~/.claude/</code> and flag drift.</li> </ul> <p>All of this lives in <code>~/.claude/</code>. None of it touches company code.</p> <h2>Honest assessment</h2> <p>Roughly 10 of my own tickets have gone through the full pipeline end-to-end. Separately, I've used <code>dd-reviewer</code> against 30+ external open-source PRs as a learning loop — running the 13 checks against code I didn't write, to see whether the gates fire on real failures or just on mine.</p> <p>The gaps, plainly:</p> <ul> <li><strong>N = 10 is a pilot.</strong> It's enough to know the gates fire correctly on the failures they were built for. It is not enough to claim a defect-rate reduction. I'm not going to claim one.</li> <li><strong>Single-user.</strong> Every calibration decision was mine. A second engineer would tune the AUTO/BATCH/MANUAL thresholds differently.</li> <li><strong>Ceremony versus throughput.</strong> Five phases with hard gates is slower than just writing code for a one-line CSS fix. I skip the pipeline for trivial tickets. That's a feature, not a bug — but it means this isn't a universal answer.</li> <li><strong>The audit is a snapshot.</strong> Three months, two services, one engineer. Reviewer composition changes. Codebases evolve. I'll re-run the audit next quarter.</li> </ul> <p>I'm not claiming this makes Claude Code "better." It makes <em>my</em> use of Claude Code reliably catch the failures <em>my</em> reviewers have flagged. That's a smaller, more defensible claim, and it's the one I'm willing to defend.</p> <h2>The methodology</h2> <p>Forget my pipeline. The transferable thing is the method.</p> <ol> <li><strong>Pull your last 90 days of PR review comments.</strong> All of them. Not just the BLOCKERs.</li> <li><strong>Tag the underlying failure</strong>, not the surface comment. "You forgot <code>@Transactional</code>" and "this isn't atomic across the batch" are the same failure.</li> <li><strong>Count.</strong> Anything with three or more instances is a pattern. Anything with one is a preference.</li> <li><strong>Cluster into intervention layers.</strong> Where in the development arc does each pattern first become catchable?</li> <li><strong>Build a gate per layer</strong>, not per pattern. Sixteen gates is unworkable. Four or five is operable.</li> <li><strong>Make the gates non-skippable.</strong> A gate you can skip when you're tired is not a gate.</li> </ol> <p>The output won't look like mine. Your reviewers catch different things. Your stack has different traps. That's the point — a pipeline built on someone else's review history is just another generic tool.</p> <p class="post-cta">Audit your own review history. Build gates against what you actually ship wrong. The model will keep getting better on its own; the process won't.</p> <div class="post-footer-links"> <a href="/post/">← All work</a> <a href="/contact/">Get in touch</a> </div> </div> </article>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '🌙' : '☀';
+        }
+        sync();
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          if (light) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+          }
+          sync();
+        });
+      })();
+    </script> </body> </html> <style>
+  .post-article { max-width: 780px; margin: 0 auto; }
+
+  .post-meta {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+
+  .post-lede {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin: 1rem 0 0;
+    max-width: 680px;
+  }
+
+  .post-body {
+    margin-top: 1.5rem;
+    padding: 2rem 2.5rem;
+  }
+
+  .post-body h2 {
+    font-size: 1.25rem;
+    margin: 2rem 0 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    color: var(--text);
+  }
+
+  .post-body h2:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+
+  .post-body h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 1.5rem 0 0.5rem;
+    color: var(--accent);
+  }
+
+  .post-body p {
+    color: var(--text-muted);
+    line-height: 1.75;
+    margin: 0 0 1rem;
+    font-size: 0.97rem;
+  }
+
+  .post-body ul, .post-body ol {
+    color: var(--text-muted);
+    font-size: 0.97rem;
+    line-height: 1.7;
+    padding-left: 1.4rem;
+    margin: 0 0 1rem;
+  }
+
+  .post-body li { margin-bottom: 0.4rem; }
+
+  .layer-list { counter-reset: none; }
+  .layer-list li { margin-bottom: 0.5rem; }
+
+  .post-body code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.87em;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+    color: #7dd3fc;
+  }
+
+  .post-body pre {
+    background: #0d1219;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    margin: 1rem 0 1.25rem;
+  }
+
+  .post-body pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.85rem;
+    color: #34d399;
+    line-height: 1.6;
+  }
+
+  /* tables */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 1rem 0 1.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+  }
+
+  .post-body table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  .post-body th {
+    background: var(--bg-soft);
+    color: var(--text);
+    font-weight: 600;
+    text-align: left;
+    padding: 0.6rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  .post-body td {
+    padding: 0.55rem 0.85rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--text-muted);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .post-body tr:last-child td { border-bottom: none; }
+
+  .sev-blocker { color: #f87171; font-weight: 600; white-space: nowrap; }
+  .sev-high    { color: #fbbf24; white-space: nowrap; }
+
+  .post-cta {
+    margin-top: 1.5rem;
+    padding: 1.2rem 1.4rem;
+    border-left: 3px solid var(--accent);
+    background: var(--accent-soft);
+    border-radius: 0 10px 10px 0;
+    color: var(--text) !important;
+    font-weight: 500;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .post-footer-links {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 680px) {
+    .post-body { padding: 1.25rem 1rem; }
+  }
+</style>

@@ -42,13 +42,6 @@ import { roles, education } from '../data/experience';
   </section>
 
   <section class="section reveal-up">
-    <div class="panel">
-      <h2 class="about-headline">{about.headline}</h2>
-      {about.paragraphs.slice(0, 2).map((p) => <p class="blurb">{p}</p>)}
-    </div>
-  </section>
-
-  <section class="section reveal-up">
     <h2>Selected Work</h2>
     <div class="grid-3">
       {featuredProjects.map((project) => (
@@ -57,6 +50,13 @@ import { roles, education } from '../data/experience';
           <p>{project.summary}</p>
         </a>
       ))}
+    </div>
+  </section>
+
+  <section class="section reveal-up">
+    <div class="panel">
+      <h2 class="about-headline">{about.headline}</h2>
+      {about.paragraphs.slice(0, 2).map((p) => <p class="blurb">{p}</p>)}
     </div>
   </section>
 

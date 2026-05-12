@@ -2,7 +2,6 @@ export type Project = {
   slug: string;
   title: string;
   date: string;
-  hero: string;
   summary: string;
   featured?: boolean;
   sections: Array<{
@@ -17,41 +16,72 @@ export const projects: Project[] = [
     slug: 'claude-code-harness',
     title: 'Claude Code Office Harness',
     date: '2026-05-01',
-    hero: '/images/projects-bg-img.png',
     summary:
-      'A personal ticket-to-PR pipeline built on Claude Code — autonomous from Jira to draft PR, with persistent memory across sessions and a self-improving PR review agent. Running in daily use on my engineering workflow at Basis.',
+      'A five-phase gate-enforced development pipeline built around Claude Code. Each gate maps to a recurring PR review failure mode. Includes a three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), and autonomous go/no-go reviewer. Used on my own engineering work.',
     featured: true,
     sections: [
       {
         heading: 'Overview',
         paragraphs: [
-          'Most AI coding tools are stateless — they forget everything between sessions and review code without any accumulated context about your codebase, patterns, or preferences. This project builds the infrastructure layer that fixes both problems.',
-          'The harness gives Claude Code persistent memory (short-term across the last 50 sessions, long-term via Obsidian), autonomous ticket-to-PR execution with the human acting only as reviewer, and a self-improving PR review agent that gets better the more feedback it receives.',
+          'Most AI coding workflows optimize the wrong variable. They tune prompts, swap models, chase context windows — and ship the same defects their human-only workflow shipped, just faster. The Claude Code Harness is the opposite bet: hold the model constant, and engineer the process around it the way you would engineer a deploy pipeline.',
+          'The Harness is a five-phase lifecycle — Requirements, Plan, Stress-Test, Implement, Self-Review, Completion — with non-skippable gates between each. Every gate maps to a specific failure mode observed recurring three or more times in my own pull-request review history. The Plan phase exists because reviewers kept catching scope creep. The Stress-Test phase exists because reviewers kept catching design choices that wouldn\'t survive a follow-up question. The Self-Review phase runs thirteen ordered checks across four parallel agents because those are the thirteen categories my reviewers have flagged most often.',
+          'Underneath the lifecycle sits a supporting stack: ast-grep and LSP queries instead of grep (about a 70% token reduction per task), difft for structural diffs that sub-agents can parse, a three-tier memory layer (LLM Wiki, Obsidian, JSONL session graph) audited by three independent linters, a custom Bitbucket MCP server built from scratch, and shellcheck wired as a hard PostToolUse hook. All of it lives in ~/.claude/ — zero company code, zero proprietary infra.',
         ],
       },
       {
         heading: 'Architecture',
         bullets: [
-          'Short-term memory: scans last 50 Claude Code sessions (~/.claude/projects/) to surface relevant context before touching the codebase.',
-          'Long-term memory: Obsidian vault integration for persistent project knowledge, decisions, and learned preferences.',
-          'Ticket-to-PR pipeline: Claude Code skills and hooks that take a ticket from scratch to a reviewable PR with minimal human intervention.',
-          'PR review agent: reviews external repo PRs with a self-improving feedback loop — learns from every review cycle.',
-          'Human-in-the-loop: engineer validates code changes and approves before PR is opened. Not a replacement, a multiplier.',
+          'Five-phase iron-law lifecycle: Requirements → Plan → Stress-Test → Implement → Self-Review → Completion. No phase skippable. Each gate traces to a recurring PR review failure mode.',
+          'Evidence-required completion: no success claim without raw command output. Lint and test logs are the artifact, not a summary.',
+          'Thirteen-check self-review across four parallel agents. Findings classified AUTO / BATCH / MANUAL and persisted to Obsidian before completion is allowed.',
+          'Autonomous reviewer (dd-reviewer): runs the full thirteen-check pass on any PR and returns a go/no-go report. References /project-commands.md at runtime so review logic stays current.',
+          'Token-cost engineering: ast-grep + LSP replace grep across the search layer for ~70% token reduction per task. difft replaces text diffs for sub-agent consumption.',
+          'Three-tier audited memory: LLM Wiki (weekly GC, Karpathy pattern), Obsidian second brain, JSONL session knowledge graph. Independently audited by lint-memory, lint-skills, and system-gc.',
+          'Custom Bitbucket MCP server: built from scratch — no official plugin existed. Powers PR-Pulse live PR state tracking.',
+          'Safety boundary: Claude Code sandbox mode + shellcheck PostToolUse hook + human-in-the-loop locked on all reviews.',
+          'Async observability: Slack integration across all routines for status reporting when away from the machine.',
+          'Scope: ~10 own tickets shipped end-to-end, 30+ external OSS PRs reviewed by dd-reviewer. All infrastructure in ~/.claude/ — zero company code involved.',
         ],
       },
       {
         heading: 'Status',
         paragraphs: [
-          'In active development. Long-term memory, ticket-to-PR pipeline, and PR review agent are working. Short-term session memory layer is in progress.',
+          'In active use. Core pipeline (all five phases), memory layer (all three tiers + three auditors), dd-reviewer, PR-Pulse, and Slack observability are working. V0085 performance optimization (76M row table) deployed May 2026 — results pending.',
         ],
       },
     ],
   },
   {
+    slug: 'agent-memory-three-tiers',
+    title: 'The three-tier memory layer for coding agents',
+    date: '2026-05-25',
+    summary:
+      'Most agent memory designs either forget everything between sessions or accumulate noise until they\'re useless. A Karpathy-pattern LLM wiki, an Obsidian second brain, and a JSONL session knowledge graph — each with its own auditor and GC cycle.',
+    featured: true,
+    sections: [],
+  },
+  {
+    slug: 'rg-vs-ast-grep',
+    title: 'rg beats ast-grep 87% of the time',
+    date: '2026-05-12',
+    summary:
+      'A benchmark across four production codebases. rg wins hit rate everywhere. ast-grep wins on one narrow query class — structural patterns — where rg returns zero with no error. The fix is routing by query class, not switching tools.',
+    featured: true,
+    sections: [],
+  },
+  {
+    slug: 'iron-law-gates',
+    title: 'Iron-Law Gates',
+    date: '2026-05-11',
+    summary:
+      'I audited 100+ PR review comments across two production codebases over 3 months, found 16 recurring failure categories, and encoded each one as a non-skippable gate in an AI-assisted development pipeline. The gates exist because specific reviewers kept catching specific failures.',
+    featured: true,
+    sections: [],
+  },
+  {
     slug: 'canvestai',
     title: 'CanvestAI',
     date: '2026-03-17',
-    hero: '/images/projects-bg-img.png',
     summary:
       'Conversational ETF research and portfolio analysis for Canadian markets. Composable Claude Code skills over live TSX data — scoring, risk-matched recommendations, and drift-based rebalancing. Phase 1 working; Phase 2 (portfolio tracking) in progress.',
     featured: true,
