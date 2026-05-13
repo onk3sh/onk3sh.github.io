@@ -22,6 +22,9 @@ PAGES=(
   post/index.html
   post/claude-code-harness/index.html
   post/canvestai/index.html
+  post/iron-law-gates/index.html
+  post/rg-vs-ast-grep/index.html
+  post/agent-memory-three-tiers/index.html
 )
 
 for page in "${PAGES[@]}"; do

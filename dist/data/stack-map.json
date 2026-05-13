@@ -1,0 +1,71 @@
+{
+  "categories": [
+    {"id": "ai",       "label": "AI Systems",      "color": "#f472b6"},
+    {"id": "backend",  "label": "Backend",          "color": "#7dd3fc"},
+    {"id": "data",     "label": "Data",             "color": "#a78bfa"},
+    {"id": "infra",    "label": "Infra & DevOps",   "color": "#f59e0b"}
+  ],
+  "skills": [
+    {"name": "Claude API",       "category": "ai",      "level": 9,  "since": 2024, "summary": "Building production AI workflows, agent systems, and persistent memory layers on Claude Code and the Anthropic SDK."},
+    {"name": "Python",           "category": "ai",      "level": 8,  "since": 2019, "summary": "Used at Centric Consulting and for AI tooling — primary language for data pipelines and scripting, including the CanvestAI scoring engine."},
+    {"name": "LLM Orchestration","category": "ai",      "level": 8,  "since": 2024, "summary": "Designing multi-step agentic workflows with memory, retry logic, and human-in-the-loop checkpoints."},
+    {"name": "yfinance / MCP",   "category": "ai",      "level": 7,  "since": 2025, "summary": "Live market data integration for CanvestAI ETF analysis and portfolio rebalancing."},
+    {"name": "Ruby on Rails",    "category": "backend", "level": 8,  "since": 2019, "summary": "Full-stack Rails development at Centric Consulting and Basis Technologies across production web applications."},
+    {"name": "Java",             "category": "backend", "level": 9,  "since": 2019, "summary": "Production backend services at Basis Technologies and Adobe."},
+    {"name": "Spring Boot",      "category": "backend", "level": 8,  "since": 2019, "summary": "REST APIs and service layer across full-stack production applications."},
+    {"name": "JavaScript",       "category": "backend", "level": 7,  "since": 2019, "summary": "Frontend and full-stack web development."},
+    {"name": "TypeScript",       "category": "backend", "level": 7,  "since": 2021, "summary": "Type-safe frontend and Node.js work — including this portfolio."},
+    {"name": "Astro",            "category": "backend", "level": 6,  "since": 2025, "summary": "Static site generation — built this portfolio in Astro."},
+    {"name": "PostgreSQL",       "category": "data",    "level": 7,  "since": 2019, "summary": "Relational data modeling for production systems."},
+    {"name": "Redis",            "category": "data",    "level": 7,  "since": 2021, "summary": "Caching and low-latency state for high-throughput services."},
+    {"name": "SQLite",           "category": "data",    "level": 7,  "since": 2025, "summary": "Local persistent store for CanvestAI portfolio tracking and agent memory layers."},
+    {"name": "Docker",           "category": "infra",   "level": 7,  "since": 2019, "summary": "Containerised builds and deployment pipelines."},
+    {"name": "Kubernetes",       "category": "infra",   "level": 6,  "since": 2021, "summary": "Container orchestration for service deployments."},
+    {"name": "AWS",              "category": "infra",   "level": 6,  "since": 2020, "summary": "EC2, S3, and managed services for production deployments."},
+    {"name": "GitHub Actions",   "category": "infra",   "level": 7,  "since": 2022, "summary": "CI/CD pipelines for automated testing and deployment."}
+  ],
+  "graph": {
+    "nodes": [
+      {"id": "harness",    "label": "Claude Code Harness", "type": "project", "group": "ai",      "detail": "Autonomous ticket-to-PR workflow with persistent session memory and a self-improving code review agent built on Claude Code."},
+      {"id": "canvestai",  "label": "CanvestAI",           "type": "project", "group": "ai",      "detail": "Conversational ETF analysis and portfolio rebalancing for Canadian investors — live market data, risk-matched scoring, Claude-powered recommendations."},
+      {"id": "basis",      "label": "Basis Technologies",  "type": "project", "group": "backend", "detail": "Full-stack engineering across the Basis ad-tech platform — Ruby on Rails and Java Spring Boot services, frontend systems, internal tooling."},
+      {"id": "rails",      "label": "Ruby on Rails",       "type": "tech",    "group": "backend", "detail": "First stack at Basis Technologies — full-stack Rails development across the core ad-tech platform."},
+      {"id": "claude",     "label": "Claude API",          "type": "tech",    "group": "ai",      "detail": "Core AI layer for both the harness and CanvestAI — agent orchestration, memory retrieval, and PR review loops."},
+      {"id": "python",     "label": "Python",              "type": "tech",    "group": "ai",      "detail": "Primary language for AI tooling and data pipelines."},
+      {"id": "java",       "label": "Java",                "type": "tech",    "group": "backend", "detail": "Production backend services at Basis and Adobe."},
+      {"id": "springboot", "label": "Spring Boot",         "type": "tech",    "group": "backend", "detail": "REST API and service layer for full-stack applications."},
+      {"id": "sqlite",     "label": "SQLite",              "type": "tech",    "group": "data",    "detail": "Local persistent store for CanvestAI portfolio tracking and agent memory."},
+      {"id": "postgres",   "label": "PostgreSQL",          "type": "tech",    "group": "data",    "detail": "Relational database for production data modeling."},
+      {"id": "redis",      "label": "Redis",               "type": "tech",    "group": "data",    "detail": "Caching and low-latency state for high-throughput services."}
+    ],
+    "links": [
+      {"source": "harness",   "target": "claude"},
+      {"source": "harness",   "target": "python"},
+      {"source": "canvestai", "target": "claude"},
+      {"source": "canvestai", "target": "python"},
+      {"source": "canvestai", "target": "sqlite"},
+      {"source": "basis",     "target": "rails"},
+      {"source": "basis",     "target": "java"},
+      {"source": "basis",     "target": "springboot"},
+      {"source": "basis",     "target": "postgres"},
+      {"source": "springboot","target": "java"},
+      {"source": "redis",     "target": "postgres"}
+    ]
+  },
+  "timeline": {
+    "years": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
+    "tracks": [
+      {"label": "Ruby on Rails",  "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "Java",           "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "Spring Boot",    "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "Python",         "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "TypeScript",     "active": [2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "Claude API",     "active": [2024, 2025, 2026]},
+      {"label": "PostgreSQL",     "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "Redis",          "active": [2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "Docker",         "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "AWS",            "active": [2020, 2021, 2022, 2023, 2024, 2025, 2026]},
+      {"label": "GitHub Actions", "active": [2022, 2023, 2024, 2025, 2026]}
+    ]
+  }
+}

@@ -3,8 +3,8 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="rg beats ast-grep 87% of the time. Here's the 13% where it silently fails."
-  description="A benchmark across four production codebases. rg wins on hit rate everywhere. ast-grep wins on one narrow query class — and when it matters, rg returns zero with no error."
+  title="Code search tool benchmark: rg, ast-grep, MCP, and what the data actually says"
+  description="331 sessions, 4 production codebases, 15 tables. rg wins 10/12 query-class cells. ast-grep wins one. MCP is faster but costs more tokens. Model routing is the biggest cost driver by far."
 >
   <article class="post-article">
     <section class="hero">
@@ -13,144 +13,308 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         <span class="badge">Token Economics</span>
         <span class="badge">AI Tooling</span>
       </div>
-      <h1>rg beats ast-grep 87% of the time. Here's the 13% where it silently fails.</h1>
-      <p class="post-lede">I ran both tools across four production codebases and measured hit rate, precision, and F1. The numbers are not what the ast-grep evangelists suggest.</p>
+      <h1>Code search tool benchmark: rg, ast-grep, MCP, and what the data actually says</h1>
+      <p class="post-lede">I went in expecting to confirm that ast-grep + MCP + rules was the high-accuracy, low-token path. The benchmark refuted that. Here are 15 tables and what they mean.</p>
     </section>
 
     <div class="post-body panel">
 
-      <p>The standard advice in AI coding tooling is to replace grep with ast-grep. Semantic search, syntax-aware, structured results. The pitch is compelling. The benchmarks tell a more complicated story.</p>
+      <p>The hypothesis I started with: ast-grep with pre-written rules and MCP error semantics produces better search accuracy at lower token cost than ripgrep or the built-in Grep tool. It's a reasonable hypothesis. It's also wrong on the token cost claim, and wrong on accuracy except for one specific query class.</p>
 
-      <p>I ran both tools against four production codebases in my Claude Code harness — two Java services and two TypeScript/React codebases — and measured hit rate and F1 across the actual query workload my agents produce. Here's what I found.</p>
+      <p>I ran a controlled benchmark across 331 Claude Code sessions covering four production codebases — two Java services (Spring Boot and Quarkus), a Rails service, and a React/TSX frontend. 97 sessions had active search activity (hit-rate and cost-per-found-block figures). 325 had usage data (token cost and model routing figures). Here is what I found.</p>
 
-      <h2>Hit rate: rg wins everywhere</h2>
+      <p>The most actionable finding has nothing to do with rg vs ast-grep: <strong>Opus costs 19× more per session than Haiku.</strong> Model routing is the dominant cost lever. Every search-tool optimisation in this article operates inside a rounding error by comparison. That number is in Table 12 — read it first if you only have time for one table.</p>
 
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Repo</th><th>rg hit rate</th><th>ast-grep hit rate</th><th>Winner</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Java service A (Spring Boot)</td><td>35.0%</td><td>8.3%</td><td>rg</td></tr>
-            <tr><td>Java service B (Quarkus)</td><td>38.2%</td><td>11.6%</td><td>rg</td></tr>
-            <tr><td>TypeScript service</td><td>41.5%</td><td>28.4%</td><td>rg</td></tr>
-            <tr><td>React / TSX frontend</td><td>40.0%</td><td>31.7%</td><td>rg</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <h2>Setup</h2>
 
-      <p>Hit rate measures whether the tool returns any results at all for a given query. rg wins every repo, by margins ranging from 2.6× on the Java services to 1.26× on the React frontend. For the majority of queries an agent issues — "find usages of X", "find all calls to Y", "where is Z configured" — rg just works and ast-grep does not.</p>
-
-      <h2>F1: ast-grep wins on dynamic-language repos</h2>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Repo</th><th>rg F1</th><th>ast-grep F1</th><th>Winner</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Java service A (Spring Boot)</td><td>0.441</td><td>0.389</td><td>rg</td></tr>
-            <tr><td>Java service B (Quarkus)</td><td>0.418</td><td>0.371</td><td>rg</td></tr>
-            <tr><td>TypeScript service</td><td>0.206</td><td>0.473</td><td>ast-grep</td></tr>
-            <tr><td>React / TSX frontend</td><td>0.216</td><td>0.492</td><td>ast-grep</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <p>F1 measures whether what the tool returns is actually useful — precision and recall combined. ast-grep wins on the TypeScript repos. When it does find something, the result is more precise. rg on dynamic-language code returns more noise: comment matches, string literal matches, partial token matches. The signal-to-noise ratio is worse.</p>
-
-      <p>But F1 only applies to queries that returned results. For the queries where ast-grep returned zero — the majority — F1 is undefined. You cannot measure precision on an empty result set.</p>
-
-      <h2>The 13%: structural pattern queries</h2>
-
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr><th>Query class</th><th>rg hit rate</th><th>ast-grep hit rate</th><th>n</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Token / identifier lookup</td><td>71.2%</td><td>18.4%</td><td>98</td></tr>
-            <tr><td>Call site / usage</td><td>58.3%</td><td>24.1%</td><td>54</td></tr>
-            <tr><td>Config / annotation</td><td>44.6%</td><td>19.7%</td><td>30</td></tr>
-            <tr><td><strong>Structural pattern</strong></td><td><strong>0%</td><td><strong>66.7%</strong></td><td>27</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <p>27 of 209 queries — about 13% — fall into the structural pattern class. These are queries that ask about shape: "find all classes implementing this interface", "find all components with this prop structure", "find all methods matching this call signature." rg returns zero results on every one of them. Not an error. Zero results.</p>
-
-      <p>This is the problem. rg does not fail noisily on structural queries. It returns an empty result set, which is indistinguishable from "there are no matches in this codebase." An agent that receives zero results from rg cannot know whether the codebase genuinely has no matches or whether it asked the wrong tool. It will proceed on a false premise.</p>
-
-      <h2>The concrete case: finding implementors of an interface</h2>
-
-      <p>Here is the query that surfaced this clearly. I needed to find every class implementing a core domain interface in a Java Spring Boot service with ~350 domain classes. rg query:</p>
-
-      <pre><code>rg "implements DomainEntity"</code></pre>
-
-      <p>Result: 3 matches. All three were false positives — comment lines and a test fixture. Zero actual implementing classes found.</p>
-
-      <p>The reason is that Java class declarations rarely say <code>implements DomainEntity</code> on a single token-searchable line. They say <code>implements DomainEntity, Serializable</code>, or the implements clause spans the line break. rg does not cross line boundaries by default, and multiline patterns are awkward enough that agents rarely write them correctly.</p>
-
-      <p>The ast-grep rule:</p>
-
-      <pre><code>language: java
-rule:
-  kind: class_declaration
-  has:
-    kind: super_interfaces
-    stopBy: end
-    has:
-      kind: type_list
-      stopBy: end
-      has:
-        kind: type_identifier
-        stopBy: end
-        regex: "^DomainEntity$"</code></pre>
-
-      <p>Result: 10 classes. All correct direct implementors across the domain model.</p>
-
-      <p>Two things are worth noting. First: the rule required dumping the CST before writing it. <code>dump_syntax_tree(format: cst)</code> on a minimal class declaration reveals the hidden <code>type_list</code> wrapper node — an intermediate node between <code>super_interfaces</code> and <code>type_identifier</code> that is not visible from reading Java syntax. Without knowing it exists, every <code>has</code> check above it fails silently because the target is nested deeper than expected.</p>
-
-      <p>Second: <code>stopBy: end</code> is mandatory on every <code>has</code> level above the target. A <code>has</code> without it only checks direct children. The target type identifier lives two levels deep. Without <code>stopBy: end</code> at both levels above it, the rule returns zero — the same silent failure mode as rg, after you invested the time writing a YAML rule.</p>
-
-      <p>This is not a beginner mistake. It is what happens when you write ast-grep rules without dumping the CST first. The tool does not warn you. It returns zero.</p>
-
-      <h2>A second silent failure: wrong language flag</h2>
-
-      <p>The React frontend in this benchmark is 98% <code>.js</code> and <code>.jsx</code> files, not <code>.tsx</code>. This matters because ast-grep's language flag is exact — specifying <code>language: tsx</code> on a <code>.jsx</code> codebase produces mass-zero results. No parse errors, no warnings. Zero hits.</p>
-
-      <p>The correct flag is <code>language: jsx</code>. Specifying <code>tsx</code> on a JSX-only codebase is documented in the benchmark as one of three silent-failure cases that look identical to "no matches found." Always verify the file extension distribution before writing a rule.</p>
-
-      <p>This also reveals something about the React frontend codebase itself: it has zero class-based components. The "find all components extending a base class" query returns zero results not because of a tool failure, but because the codebase is fully functional React. The structural query that applies here is shared hook usage — <code>call_expression</code> with a specific hook identifier — which ast-grep handles correctly with <code>language: jsx</code>.</p>
-
-      <h2>MCP vs CLI for ast-grep rules</h2>
-
-      <p>One practical note: when running ast-grep from an agent via MCP vs the Bash CLI, the error semantics differ. The Bash CLI returns <code>rc=1</code> for both parse errors and zero matches — an agent cannot distinguish between "rule was malformed" and "rule was correct but found nothing." The MCP interface returns structured errors that distinguish the two cases. For structural pattern queries where you need to know whether zero results means "not found" or "rule failed," the MCP tool is more reliable than shelling out.</p>
-
-      <p>The token cost crossover: the MCP tool list loads once per session at roughly 1.5–2K tokens. For sessions with more than ~10 ast-grep searches the MCP approach is cheaper than loading the Bash CLI overhead per call. For one-off searches, Bash is fine.</p>
-
-      <h2>The right model: route by query class</h2>
-
-      <p>The benchmark does not say "use rg" or "use ast-grep." It says the two tools have non-overlapping failure modes, and a correct search layer uses all three with explicit routing:</p>
+      <p>Four repos, three query classes, two tools (rg and ast-grep with fixed rules), three rounds aggregated. The query classes are:</p>
 
       <ul>
-        <li><strong>Token / identifier / call-site queries</strong> — rg. Fast, high hit rate, low friction. The agent writes a regex and gets results immediately.</li>
-        <li><strong>Structural pattern queries</strong> — ast-grep, but only after dumping the CST and verifying the language flag. Never write a rule from the syntax docs alone.</li>
-        <li><strong>Semantic / inheritance resolution</strong> — LSP <code>goToImplementation</code>. ast-grep only finds direct implementors; LSP follows what the compiler follows. One caveat: LSP with a persistent cache (like jdtls for Java) is viable from agent flow once warm. LSP without persistent cache (common for TypeScript) is cold on every session — too slow to use inline; use ast-grep instead.</li>
+        <li><strong>Symbol definition</strong> — find where a class, method, or identifier is defined</li>
+        <li><strong>Exact string</strong> — find a literal string, log message, or config key</li>
+        <li><strong>Structural pattern</strong> — find all classes implementing an interface, all components with a given prop shape, all methods matching a call signature</li>
       </ul>
 
-      <p>In my harness, this routing is enforced at the skill layer. The search skill classifies the query before dispatching — structural patterns go to ast-grep with a mandatory CST dump step, everything else goes to rg first with ast-grep as a fallback if rg returns zero on a query class where that would be surprising.</p>
+      <p>Hit rate measures whether the tool returns any results at all on first call. Cost-per-found-block (Table 7) accounts for the load tax and reissue cost when zero results force a retry.</p>
 
-      <h2>The honest summary</h2>
+      <h2>Table 1 — Hit rate by repo × query class × tool</h2>
 
-      <p>rg beats ast-grep on hit rate across every codebase I tested. For the large majority of queries an agent issues in practice, rg returns results and ast-grep does not. On the narrow structural pattern query class — about 13% of workload — ast-grep wins decisively, and rg's zero-result failure is silent and dangerous.</p>
+      <p class="table-note">% hit on first call, 3 rounds aggregated. Higher = better recall.</p>
 
-      <p>The instinct to "switch to ast-grep" is wrong. The correct instinct is to route by query class, dump the CST before writing any ast-grep rule, verify the language flag matches the actual file extensions in the repo, and treat a zero result from either tool as a reason to check the tool choice before concluding the codebase has no matches.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Repo</th><th>Query class</th><th>rg</th><th>ast-grep</th><th>Winner</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Java service A (Spring Boot)</td><td>Symbol definition</td><td>55.6%</td><td>44.4%</td><td>rg</td></tr>
+            <tr><td>Java service A (Spring Boot)</td><td>Structural pattern</td><td>10.0%</td><td>0.0%</td><td>rg</td></tr>
+            <tr><td>Java service A (Spring Boot)</td><td>Exact string</td><td>36.6%</td><td>2.4%</td><td>rg</td></tr>
+            <tr><td>Java service B (Quarkus)</td><td>Symbol definition</td><td>83.3%</td><td>66.7%</td><td>rg</td></tr>
+            <tr><td>Java service B (Quarkus)</td><td>Structural pattern</td><td>20.0%</td><td>20.0%</td><td>tie</td></tr>
+            <tr><td>Java service B (Quarkus)</td><td>Exact string</td><td>16.7%</td><td>0.0%</td><td>rg</td></tr>
+            <tr><td>Rails service</td><td>Symbol definition</td><td>87.5%</td><td>50.0%</td><td>rg</td></tr>
+            <tr><td>Rails service</td><td>Structural pattern</td><td>33.3%</td><td>33.3%</td><td>tie</td></tr>
+            <tr><td>Rails service</td><td>Exact string</td><td>27.9%</td><td>4.7%</td><td>rg</td></tr>
+            <tr class="highlight-row"><td>React/TSX frontend</td><td>Symbol definition</td><td>63.6%</td><td>50.0%</td><td>rg</td></tr>
+            <tr class="highlight-row"><td><strong>React/TSX frontend</strong></td><td><strong>Structural pattern</strong></td><td><strong>0.0%</strong></td><td><strong>66.7%</strong></td><td><strong>ast-grep</strong></td></tr>
+            <tr class="highlight-row"><td>React/TSX frontend</td><td>Exact string</td><td>34.5%</td><td>6.9%</td><td>rg</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>rg wins 10/12, ties 2, loses 1.</strong> The single ast-grep win is React/TSX structural patterns — the one query class where rg returns 0% and ast-grep returns 66.7%. Across every other query class and every other repo, rg wins outright. This is a decisive result, not a nuanced one.</p>
+
+      <h2>The one case where ast-grep is mandatory</h2>
+
+      <p>The React/TSX structural pattern cell is not close. rg returns zero on every structural query against a JSX/TSX codebase. Not low hit rate — zero. The reason is that JSX component structure, prop shapes, and hook usage patterns require CST-aware matching. A regex over text cannot find "all components that use this hook" reliably when the hook call may be nested, renamed, or composed.</p>
+
+      <p>Two things make ast-grep work here and fail elsewhere:</p>
+
+      <p><strong>1. CST dump before rule authoring.</strong> The hidden node problem: JSX component trees have intermediate wrapper nodes that are not visible from reading the source. A <code>has</code> check fails silently if the target node is nested deeper than expected. Running <code>dump_syntax_tree(format: cst)</code> on a minimal example before writing the rule reveals the actual tree shape. Without it, rules return zero — which looks identical to "not found."</p>
+
+      <p><strong>2. Language flag must match file extension.</strong> Specifying <code>language: tsx</code> on a codebase that is 98% <code>.jsx</code> produces mass-zero results with no parse errors, no warnings. Always verify the file extension distribution first. <code>tsx</code> and <code>jsx</code> are not interchangeable flags.</p>
+
+      <p>And <code>stopBy: end</code> is mandatory at every <code>has</code> level above the target. Without it, ast-grep only checks direct children and misses deeply-nested nodes silently.</p>
+
+      <h2>Table 2 — Latency (CLI vs MCP, wall-clock median ms)</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Repo</th><th>CLI rg p50</th><th>CLI ast-grep p50</th><th>MCP find_code p50</th><th>MCP advantage</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Java service A</td><td>350ms</td><td>313ms</td><td>72ms</td><td>4.4×</td></tr>
+            <tr><td>Java service B</td><td>268ms</td><td>257ms</td><td>69ms</td><td>3.7×</td></tr>
+            <tr><td>Rails service</td><td>2,544ms</td><td>1,916ms</td><td>900ms</td><td>2.1×</td></tr>
+            <tr><td>React/TSX frontend</td><td>988ms</td><td>1,128ms</td><td>449ms</td><td>2.2×</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>MCP wins on every repo. 2–5× faster wall-clock, all sub-second. <strong>Latency is the real MCP advantage</strong> — not token cost, not error semantics. The Rails service CLI call at 2.5 seconds is high enough to be session-perceptible; MCP brings it under one second. Use MCP if you care about wall-clock speed. Use Grep or Bash if you care about token cost.</p>
+
+      <h2>Token cost: MCP is not cheaper</h2>
+
+      <p>The hypothesis that MCP + ast-grep would be cheaper on tokens is refuted by the data.</p>
+
+      <h3>Table 3 — Per-call invocation prompt size (tokens)</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tool</th><th>N</th><th>Mean</th><th>Median</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Grep</td><td>492</td><td>63.8</td><td>65</td></tr>
+            <tr><td>MCP find_code</td><td>93</td><td>66.8</td><td>66</td></tr>
+            <tr><td>Bash + ast-grep</td><td>280</td><td>85.8</td><td>66</td></tr>
+            <tr><td>MCP find_code_by_rule</td><td>18</td><td>109.7</td><td>97</td></tr>
+            <tr><td>Bash + rg</td><td>25</td><td>126.0</td><td>113</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Table 4 — Per-call response size (tokens)</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tool</th><th>N</th><th>Mean</th><th>p90</th><th>p99</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Bash + rg</td><td>25</td><td>43</td><td>89</td><td>101</td></tr>
+            <tr><td>MCP find_code</td><td>106</td><td>217</td><td>589</td><td>2,010</td></tr>
+            <tr><td>Bash + ast-grep</td><td>299</td><td>232</td><td>543</td><td>4,656</td></tr>
+            <tr><td>Grep</td><td>404</td><td>260</td><td>753</td><td>2,488</td></tr>
+            <tr><td>MCP find_code_by_rule</td><td>27</td><td>580</td><td>2,951</td><td>4,238</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="table-note">Caveat: Bash+rg sample is Opus-only, mostly <code>rg -l</code> file-listing, not match-with-context. Honest comparison: rg and ast-grep are comparable when used the same way.</p>
+
+      <h3>Table 5 — Round-trip cost per call (invocation + response, tokens)</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tool</th><th>Inv</th><th>Resp mean</th><th>Round-trip</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Bash + rg</td><td>126</td><td>43</td><td>169</td></tr>
+            <tr><td>MCP find_code</td><td>67</td><td>217</td><td>284</td></tr>
+            <tr><td>Bash + ast-grep</td><td>86</td><td>232</td><td>317</td></tr>
+            <tr><td>Grep</td><td>64</td><td>260</td><td>324</td></tr>
+            <tr><td>MCP find_code_by_rule</td><td>110</td><td>580</td><td>690</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Table 6 — Session-total cost (1,576 MCP load tax + N × round-trip)</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Session size N</th><th>Grep</th><th>Bash</th><th>MCP</th><th>MCP − Grep</th><th>MCP − Bash</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>5 (median)</td><td>1,621</td><td>1,529</td><td>3,407</td><td>+1,787</td><td>+1,878</td></tr>
+            <tr><td>11 (p75)</td><td>3,566</td><td>3,365</td><td>5,605</td><td>+2,039</td><td>+2,241</td></tr>
+            <tr><td>27 (p90)</td><td>8,753</td><td>8,258</td><td>11,466</td><td>+2,713</td><td>+3,208</td></tr>
+            <tr><td>79 (p99)</td><td>25,610</td><td>24,163</td><td>30,513</td><td>+4,903</td><td>+6,350</td></tr>
+            <tr><td>200 (hypothetical)</td><td>64,836</td><td>61,173</td><td>74,834</td><td>+9,998</td><td>+13,661</td></tr>
+            <tr><td>500 (hypothetical)</td><td>162,091</td><td>152,932</td><td>184,721</td><td>+22,631</td><td>+31,789</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>MCP never crosses over.</strong> At every session size measured — median (5 calls), p75 (11), p90 (27), p99 (79) — MCP costs more tokens than Grep or Bash. The 1,576-token load tax at session start is never amortized. The MCP round-trip is cheaper per call than Grep (284 vs 324), but not cheap enough to offset the fixed cost. If you are optimising for token cost, Grep or Bash+rg is the right tool. If you are optimising for latency or structured error semantics, MCP is the right tool. These are different optimisation targets.</p>
+
+      <h2>Table 7 — Cost-per-found-block</h2>
+
+      <p class="table-note">iter = (100 / hit%) × (1 + zero% × reissue%). Accounts for the full cost of finding one result, including retries on zero. Lower = better.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Repo</th><th>Query class</th><th>rg</th><th>ast-grep</th><th>Winner</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Java service A</td><td>Symbol definition</td><td>377</td><td>885</td><td>rg</td></tr>
+            <tr><td>Java service A</td><td>Structural pattern</td><td>2,095</td><td>∞</td><td>rg</td></tr>
+            <tr><td>Java service A</td><td>Exact string</td><td>572</td><td>16,370</td><td>rg</td></tr>
+            <tr><td>Java service B</td><td>Symbol definition</td><td>251</td><td>589</td><td>rg</td></tr>
+            <tr><td>Java service B</td><td>Structural pattern</td><td>1,047</td><td>1,964</td><td>rg</td></tr>
+            <tr><td>Java service B</td><td>Exact string</td><td>1,254</td><td>∞</td><td>rg</td></tr>
+            <tr><td>Rails service</td><td>Symbol definition</td><td>239</td><td>786</td><td>rg</td></tr>
+            <tr><td>Rails service</td><td>Structural pattern</td><td>629</td><td>1,180</td><td>rg</td></tr>
+            <tr><td>Rails service</td><td>Exact string</td><td>751</td><td>8,359</td><td>rg</td></tr>
+            <tr><td>React/TSX frontend</td><td>Symbol definition</td><td>329</td><td>786</td><td>rg</td></tr>
+            <tr class="highlight-row"><td><strong>React/TSX frontend</strong></td><td><strong>Structural pattern</strong></td><td><strong>∞</strong></td><td><strong>589</strong></td><td><strong>ast-grep</strong></td></tr>
+            <tr><td>React/TSX frontend</td><td>Exact string</td><td>607</td><td>5,694</td><td>rg</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>rg wins 11/12 cells. The ∞ values represent 0% hit rate — the tool cannot find the answer at any cost. ast-grep shows ∞ on two Java cells where it returned zero hits across all rounds. rg shows ∞ on JSX structural — the one confirmed ast-grep use case.</p>
+
+      <h2>Table 8 — Zero-result and rabbit-hole behaviour</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Tool</th><th>N calls</th><th>Zero-result %</th><th>Reissue rate on zero</th><th>Effective reissue %</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Bash + rg/ast-grep</td><td>305</td><td>34.1%</td><td>70.2%</td><td>23.9%</td></tr>
+            <tr><td>Grep</td><td>492</td><td>24.6%</td><td>76.0%</td><td>18.7%</td></tr>
+            <tr><td>MCP find_code</td><td>93</td><td>40.9%</td><td>50.0%</td><td>20.5%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>MCP's structured error semantics do reduce the zero-result reissue rate — when a zero result comes back with a structured error, the model recovers more cleanly than when a zero result is an empty string. But the net effect is 4–6 percentage points (MCP: 20.5% effective reissue vs Grep: 18.7%). Small. The zero-result problem is mostly a query-class routing problem, not a tool interface problem. Do not choose MCP for this reason.</p>
+
+      <h2>Model routing: the number that dwarfs all of this</h2>
+
+      <p>All of the above is search-layer optimisation. Table 12 puts it in context.</p>
+
+      <h3>Table 9 — Search volume by model family</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Model</th><th>Sessions</th><th>Total searches</th><th>Mean/session</th><th>p50</th><th>p75</th><th>p90</th><th>Max</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Sonnet</td><td>61</td><td>394</td><td>6.46</td><td>4</td><td>6</td><td>12</td><td>38</td></tr>
+            <tr><td>Opus</td><td>38</td><td>467</td><td>12.29</td><td>6</td><td>18</td><td>33</td><td>79</td></tr>
+            <tr><td>Haiku</td><td>—</td><td>0</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Opus searches roughly twice per session compared to Sonnet. Haiku does zero searches — it acts exclusively on paths supplied by the orchestrator (Read, Edit, Write, known Bash commands). Haiku is not a search agent; it is a file-operation agent. Routing file ops to Haiku saves money without touching the search layer at all.</p>
+
+      <h3>Table 10 — Scope discipline by model</h3>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Model</th><th>N calls</th><th>Scoped %</th><th>Resp mean</th><th>Files/call mean</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Sonnet</td><td>395</td><td>90.1%</td><td>209</td><td>6.0</td></tr>
+            <tr><td>Opus</td><td>467</td><td>90.6%</td><td>284</td><td>9.0</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Scoping discipline is equal — both models scope ~90% of calls. The difference is result size: Opus pulls ~36% larger responses and ~50% more files per call. Opus isn't less disciplined, it's more thorough on the same call.</p>
+
+      <h3>Table 12 — Real per-session cost by model</h3>
+
+      <p class="table-note">From JSONL usage fields. Cache reads excluded (90% discount).</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Model</th><th>Sessions</th><th>Tokens/session</th><th>Tokens/msg</th><th>$/session (est.)</th><th>Ratio</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Haiku</td><td>7</td><td>492,482</td><td>9,878</td><td>$0.64</td><td>1×</td></tr>
+            <tr><td>Sonnet</td><td>191</td><td>398,488</td><td>5,286</td><td>$1.87</td><td>2.9×</td></tr>
+            <tr><td>Opus</td><td>127</td><td>579,905</td><td>7,684</td><td>$12.41</td><td>19×</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Opus costs 19× more per session than Haiku. Sonnet costs 2.9×. The entire MCP load tax (1,576 tokens) represents 0.27% of an Opus session's token budget. Optimising rg vs ast-grep vs MCP while defaulting to Opus for search-heavy tasks is rearranging deck chairs.</p>
+
+      <p>The practical implication: search-heavy reasoning belongs on Sonnet. Haiku handles all file operations on known paths with zero search overhead. Opus is reserved for architecture, security review, and high-stakes decisions where its reasoning quality justifies the cost.</p>
+
+      <h2>LSP: where it fits</h2>
+
+      <p>Neither rg nor ast-grep handles semantic resolution — inheritance chains, type inference, go-to-definition across file boundaries. That's LSP territory.</p>
+
+      <p>The routing rule: use LSP for <code>goToImplementation</code>, <code>hover</code>, and type resolution. One caveat: LSP with a persistent warm index (like jdtls for Java) is viable in agent flow once the index is warm. LSP without a persistent cache — common for TypeScript — is cold on every session and too slow to use inline. For TypeScript semantic resolution, ast-grep with a structural rule is the practical alternative.</p>
+
+      <h2>Decision matrix</h2>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Need</th><th>Default</th><th>Fallback / condition</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Free-text / exact string / log line</td><td>rg or Grep</td><td>—</td></tr>
+            <tr><td>Symbol definition (Java / Ruby / Rails)</td><td>rg</td><td>ast-grep if rg returns zero on a known-shape query</td></tr>
+            <tr><td>Symbol def / structural (JSX/TSX)</td><td>ast-grep</td><td>— (rg silently misses)</td></tr>
+            <tr><td>Annotation-agnostic Java method lookup</td><td>ast-grep <code>kind: method_declaration</code></td><td>—</td></tr>
+            <tr><td>goToDefinition / hover / type resolution</td><td>LSP</td><td>Warm index required; cold sessions: use ast-grep</td></tr>
+            <tr><td>File path discovery</td><td>Glob</td><td>—</td></tr>
+            <tr><td>Act on known path (read/edit/test)</td><td>Haiku</td><td>Haiku does zero searches — supply paths from orchestrator</td></tr>
+            <tr><td>Search-heavy reasoning</td><td>Sonnet</td><td>Opus only for high-stakes decisions</td></tr>
+            <tr><td>Architecture / security review</td><td>Opus</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>What the benchmark actually says</h2>
+
+      <p>The original hypothesis — ast-grep + MCP + rules is the high-accuracy, low-token path — is wrong on tokens and only partially right on accuracy. rg wins hit rate and cost-per-found-block in 10–11 of 12 cells across four codebases. ast-grep wins one cell decisively: JSX/TSX structural patterns, where rg returns zero.</p>
+
+      <p>MCP is worth using for latency (2–5× faster wall-clock) and for structured error semantics on zero results (4–6pp reduction in rabbit-hole rate). It is not worth using to save tokens — it costs more at every session size measured.</p>
+
+      <p>The largest cost lever in this entire dataset is model selection. Opus costs 19× more per session than Haiku. Routing search-heavy work to Sonnet and file operations to Haiku has more token impact than any search tool choice.</p>
+
+      <p>The practical conclusion is not "use rg" or "use ast-grep." It is: route by query class, verify language flags before writing ast-grep rules, dump the CST before writing any structural rule, and treat zero results from either tool as a routing signal rather than a definitive answer.</p>
 
       <p class="post-cta">
-        The search routing logic and CST dump workflow are part of the
+        The search routing logic, CST dump workflow, and model dispatch rules are part of the
         <a href="/post/claude-code-harness">Claude Code Harness</a>.
-        The full benchmark data and query classification methodology are available on request.
       </p>
 
     </div>
@@ -159,7 +323,7 @@ rule:
 
 <style>
   .post-article {
-    max-width: 720px;
+    max-width: 760px;
     margin: 0 auto;
     padding: 0 1.5rem 4rem;
   }
@@ -173,7 +337,7 @@ rule:
 
   .post-lede {
     font-size: 1.15rem;
-    color: var(--text-secondary, #aaa);
+    color: var(--text-muted);
     margin-top: 1rem;
     line-height: 1.6;
   }
@@ -192,6 +356,8 @@ rule:
   .post-body h3 {
     margin-top: 2rem;
     margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: var(--text-muted);
   }
 
   .post-body p {
@@ -206,35 +372,49 @@ rule:
     margin-bottom: 0.6rem;
   }
 
+  .table-note {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem !important;
+  }
+
   .table-wrap {
     overflow-x: auto;
-    margin: 1.5rem 0;
+    margin: 1rem 0 1.5rem;
   }
 
   .table-wrap table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
   }
 
   .table-wrap th,
   .table-wrap td {
-    padding: 0.6rem 0.9rem;
+    padding: 0.55rem 0.85rem;
     text-align: left;
-    border-bottom: 1px solid var(--border, #333);
+    border-bottom: 1px solid var(--line);
   }
 
   .table-wrap th {
-    color: var(--text-secondary, #aaa);
+    color: var(--text-muted);
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
+  .table-wrap td {
+    color: var(--text);
+  }
+
+  .highlight-row td {
+    background: var(--accent-soft);
+  }
+
   .post-body pre {
-    background: var(--surface, #1a1a1a);
-    border: 1px solid var(--border, #333);
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
     border-radius: 6px;
     padding: 1.25rem 1.5rem;
     overflow-x: auto;
@@ -245,7 +425,7 @@ rule:
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     font-size: 0.85rem;
     line-height: 1.6;
-    color: var(--text-primary, #e8e8e8);
+    color: var(--text);
     background: none;
     padding: 0;
   }
@@ -253,16 +433,24 @@ rule:
   .post-body code {
     font-family: 'JetBrains Mono', 'Fira Code', monospace;
     font-size: 0.875em;
-    background: var(--surface, #1a1a1a);
+    background: var(--bg-soft);
+    color: var(--text);
     padding: 0.15em 0.4em;
     border-radius: 3px;
+    border: 1px solid var(--line);
   }
 
   .post-cta {
     margin-top: 2.5rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--border, #333);
-    color: var(--text-secondary, #aaa);
+    border-top: 1px solid var(--line);
+    color: var(--text-muted);
     font-size: 0.95rem;
+  }
+
+  @media (max-width: 600px) {
+    .post-body {
+      padding: 1.5rem 1.25rem;
+    }
   }
 </style>

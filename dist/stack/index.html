@@ -1,0 +1,437 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Interactive engineering stack and experience map"><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="canonical" href="https://onk3sh.github.io/stack/"><title>Stack Map | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/stack/"><meta property="og:title" content="Stack Map | Onkesh Bansal"><meta property="og:description" content="Interactive engineering stack and experience map"><meta property="og:site_name" content="Onkesh Bansal"><!-- Twitter Card --><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Stack Map | Onkesh Bansal"><meta name="twitter:description" content="Interactive engineering stack and experience map"> <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script> <script>
+      (function () {
+        const t = localStorage.getItem('theme');
+        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.3IspZNI4.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class href="/post/">Work</a> <a class="active" href="/stack/">Stack</a> <a class href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">   <section class="hero stack-hero"> <h1>Engineering Stack Map</h1> <p>
+Technologies and systems across AI engineering, full-stack backend, data, and infrastructure.
+</p> </section> <section class="section"> <h2>Capability Matrix</h2> <div class="panel"> <div class="stack-controls"> <div id="bubble-filters" class="chip-row"></div> <label class="search-wrap" for="skill-search"> <span>Search</span> <input id="skill-search" type="search" placeholder="python, kafka, fastapi..." autocomplete="off"> </label> </div> <div id="bubble-cloud" class="bubble-cloud"></div> </div> </section> <section class="section"> <h2>Knowledge Graph</h2> <div class="panel graph-panel"> <div class="graph-left"> <div id="graph-filters" class="chip-row" style="margin-bottom:0.7rem"></div> <div id="echarts-graph" style="width:100%;height:500px;border-radius:12px;overflow:hidden;"></div> </div> <div class="graph-right"> <div id="graph-legend" class="graph-legend"></div> <div class="graph-detail"> <h3 id="graph-title">Select a Node</h3> <p id="graph-detail-text">Hover or click any node to see what it is, where it is used, and how it ties to production outcomes.</p> </div> </div> </div> </section> <section class="section"> <h2>Timeline</h2> <div class="panel"> <div id="timeline-wrap" class="timeline-wrap"></div> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '🌙' : '☀';
+        }
+        sync();
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          if (light) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+          }
+          sync();
+        });
+      })();
+    </script> </body> </html> <script>
+  const CAT_COLORS = {
+    backend: '#63b6ff',
+    ai:      '#a78bfa',
+    data:    '#2dd4bf',
+    infra:   '#f59e0b',
+    agent:   '#f472b6'
+  };
+
+  async function loadStackMap() {
+    const res = await fetch('/data/stack-map.json', { cache: 'no-store' });
+    if (!res.ok) throw new Error('Failed to load stack-map.json');
+    return res.json();
+  }
+
+  function escapeHtml(v) {
+    return v.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+  }
+
+  /* ── Capability matrix ── */
+  function renderBubbles(data) {
+    const filterRoot = document.getElementById('bubble-filters');
+    const cloud      = document.getElementById('bubble-cloud');
+    const search     = document.getElementById('skill-search');
+    if (!filterRoot || !cloud || !search) return;
+
+    let active = 'all', term = '';
+    const cats = [{ id: 'all', label: 'All' }, ...data.categories];
+
+    function paint() {
+      const results = data.skills
+        .filter(s => (active === 'all' || s.category === active) &&
+                     (!term || `${s.name} ${s.summary}`.toLowerCase().includes(term)))
+        .sort((a, b) => b.level - a.level);
+      cloud.innerHTML = '';
+      if (!results.length) { cloud.innerHTML = '<p class="empty">No results.</p>'; return; }
+      results.forEach(s => {
+        const el = document.createElement('article');
+        el.className = 'stack-bubble';
+        el.style.setProperty('--bc', CAT_COLORS[s.category] || '#60a5fa');
+        el.innerHTML =
+          `<header><strong>${escapeHtml(s.name)}</strong><span>Level ${s.level}/10</span></header>` +
+          `<p>${escapeHtml(s.summary)}</p>` +
+          `<footer>Since ${s.since}</footer>`;
+        cloud.appendChild(el);
+      });
+    }
+
+    cats.forEach(cat => {
+      const cnt = cat.id === 'all' ? data.skills.length : data.skills.filter(s => s.category === cat.id).length;
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'stack-chip' + (cat.id === active ? ' active' : '');
+      btn.textContent = `${cat.label} (${cnt})`;
+      btn.addEventListener('click', () => {
+        active = cat.id;
+        filterRoot.querySelectorAll('.stack-chip').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        paint();
+      });
+      filterRoot.appendChild(btn);
+    });
+
+    search.addEventListener('input', () => { term = search.value.trim().toLowerCase(); paint(); });
+    paint();
+  }
+
+  /* ── ECharts knowledge graph ── */
+  function renderGraph(data) {
+    const container  = document.getElementById('echarts-graph');
+    const titleEl    = document.getElementById('graph-title');
+    const detailEl   = document.getElementById('graph-detail-text');
+    const legendRoot = document.getElementById('graph-legend');
+    const filterRoot = document.getElementById('graph-filters');
+    if (!container || !titleEl || !detailEl) return;
+
+    /* legend chips */
+    data.categories.forEach(cat => {
+      const chip = document.createElement('div');
+      chip.className = 'graph-legend-chip';
+      chip.innerHTML = `<i style="background:${cat.color}"></i><span>${cat.label}</span>`;
+      legendRoot.appendChild(chip);
+    });
+
+    /* build node/link arrays */
+    const allNodes = data.graph.nodes.map(n => ({
+      id:         n.id,
+      name:       n.label,
+      detail:     n.detail,
+      _type:      n.type,
+      symbolSize: n.type === 'project' ? 42 : n.type === 'impact' ? 30 : 20,
+      symbol:     n.type === 'impact' ? 'diamond' : 'circle',
+      itemStyle:  { color: CAT_COLORS[n.group] || '#60a5fa', borderWidth: 0 },
+      label: {
+        show:            n.type !== 'tech',
+        color:           '#dde8ff',
+        fontSize:        n.type === 'project' ? 12 : 10,
+        fontWeight:      n.type === 'project' ? 700 : 400,
+        position:        'bottom',
+        distance:        4,
+        textBorderColor: '#060f1d',
+        textBorderWidth: 3
+      }
+    }));
+
+    const allLinks = data.graph.links.map(l => ({
+      source:    l.source,
+      target:    l.target,
+      lineStyle: { color: '#4a6a90', width: 1.4, opacity: 0.65 }
+    }));
+
+    const chart = echarts.init(container, null, { renderer: 'canvas' });
+
+    function getOption(nodes, links) {
+      return {
+        backgroundColor: 'transparent',
+        tooltip: {
+          show: true,
+          confine: true,
+          formatter: p => p.dataType === 'node'
+            ? `<strong style="color:#dde8ff">${p.data.name}</strong><br><span style="color:#b2c4dc;font-size:12px">${p.data.detail}</span>`
+            : ''
+        },
+        series: [{
+          type:          'graph',
+          layout:        'force',
+          animation:     true,
+          animationDuration: 1200,
+          data:          nodes,
+          links:         links,
+          roam:          true,
+          draggable:     true,
+          labelLayout:   { hideOverlap: true },
+          force: {
+            repulsion:       600,
+            edgeLength:      [80, 160],
+            gravity:         0.06,
+            layoutAnimation: true,
+            friction:        0.55
+          },
+          lineStyle: { color: 'source', opacity: 0.55, width: 1.4, curveness: 0.1 },
+          emphasis: {
+            focus:     'adjacency',
+            label:     { show: true, fontWeight: 'bold', fontSize: 13 },
+            lineStyle: { width: 2.5, opacity: 0.95 }
+          },
+          scaleLimit: { min: 0.4, max: 3 }
+        }]
+      };
+    }
+
+    chart.setOption(getOption(allNodes, allLinks));
+
+    chart.on('click', 'series.graph', p => {
+      if (p.dataType === 'node') {
+        titleEl.textContent = p.data.name;
+        detailEl.textContent = p.data.detail;
+      }
+    });
+    chart.on('mouseover', 'series.graph', p => {
+      if (p.dataType === 'node') {
+        titleEl.textContent = p.data.name;
+        detailEl.textContent = p.data.detail;
+      }
+    });
+
+    window.addEventListener('resize', () => chart.resize());
+
+    /* type filter buttons */
+    const types = { all: 'All', project: 'Projects', tech: 'Tech', impact: 'Impact' };
+    let activeType = 'all';
+    Object.entries(types).forEach(([type, label]) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'stack-chip' + (type === activeType ? ' active' : '');
+      btn.textContent = label;
+      btn.addEventListener('click', () => {
+        activeType = type;
+        filterRoot.querySelectorAll('.stack-chip').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const nodes = activeType === 'all' ? allNodes : allNodes.filter(n => n._type === activeType);
+        const ids   = new Set(nodes.map(n => n.id));
+        const links = allLinks.filter(l => ids.has(l.source) && ids.has(l.target));
+        chart.setOption(getOption(nodes, links));
+      });
+      filterRoot.appendChild(btn);
+    });
+  }
+
+  /* ── Timeline heatmap ── */
+  function renderTimeline(data) {
+    const root = document.getElementById('timeline-wrap');
+    if (!root) return;
+    const years = data.timeline.years;
+
+    // Only show the most impactful rows
+    const tracks = data.timeline.tracks;
+
+    const table = document.createElement('table');
+    table.className = 'stack-timeline-table';
+    table.innerHTML = `<thead><tr><th>Technology</th>${years.map(y => `<th>${y}</th>`).join('')}</tr></thead>`;
+
+    const tbody = document.createElement('tbody');
+    tracks.forEach(track => {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td>${track.label}</td>` +
+        years.map(y => `<td><span class="heat-cell ${track.active.includes(y) ? 'on' : 'off'}" title="${track.label} ${y}"></span></td>`).join('');
+      tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+    root.innerHTML = '';
+    root.appendChild(table);
+  }
+
+  loadStackMap().then(data => {
+    renderBubbles(data);
+    renderGraph(data);
+    renderTimeline(data);
+  }).catch(err => {
+    const el = document.getElementById('echarts-graph');
+    if (el) el.textContent = String(err.message || err);
+  });
+</script> <style>
+  .stack-hero {
+    background:
+      radial-gradient(680px 240px at 10% 10%, rgba(99,182,255,0.16), transparent 58%),
+      linear-gradient(160deg, rgba(22,29,42,0.9), rgba(12,18,28,0.96));
+  }
+
+  .stack-controls {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .search-wrap {
+    display: grid;
+    gap: 0.35rem;
+    max-width: 320px;
+  }
+
+  .search-wrap span {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .search-wrap input {
+    border: 1px solid #324765;
+    background: #0e1828;
+    color: var(--text);
+    border-radius: 12px;
+    padding: 0.55rem 0.7rem;
+    outline: none;
+    font-size: 0.9rem;
+    font-family: inherit;
+  }
+
+  .search-wrap input:focus {
+    border-color: #5c9cff;
+    box-shadow: 0 0 0 3px rgba(92,156,255,0.18);
+  }
+
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .stack-chip {
+    border: 1px solid #355075;
+    background: linear-gradient(165deg, #1b2a40, #111d2f);
+    color: #d7e6ff;
+    border-radius: 999px;
+    padding: 0.38rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: transform 130ms ease, border-color 130ms ease;
+  }
+
+  .stack-chip:hover  { transform: translateY(-1px); border-color: #73acff; }
+  .stack-chip.active { border-color: #73acff; background: linear-gradient(165deg,#28446b,#1b2f4a); box-shadow: 0 4px 14px rgba(77,138,231,0.28); }
+
+  .bubble-cloud {
+    margin-top: 0.9rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 0.8rem;
+  }
+
+  .stack-bubble {
+    border-radius: 16px;
+    border: 1px solid color-mix(in srgb, var(--bc) 55%, #142135 45%);
+    background:
+      radial-gradient(110px 52px at 88% -8%, color-mix(in srgb, var(--bc) 28%, transparent), transparent 70%),
+      linear-gradient(165deg, color-mix(in srgb, var(--bc) 15%, #0f1724 85%), #0b1320);
+    padding: 0.84rem;
+    display: grid;
+    gap: 0.48rem;
+    box-shadow: 0 10px 22px rgba(4,9,18,0.32);
+  }
+
+  .stack-bubble header { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+  .stack-bubble strong { color: #f4f8ff; font-size: 1rem; }
+  .stack-bubble header span { color: #9ec2f0; font-size: 0.76rem; white-space: nowrap; }
+  .stack-bubble p      { margin: 0; color: #c0ccdc; font-size: 0.89rem; line-height: 1.45; }
+  .stack-bubble footer { color: #8fa4bf; font-size: 0.78rem; }
+  .empty { margin: 0; color: var(--text-muted); }
+
+  /* ── Graph panel ── */
+  .graph-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .graph-left { min-width: 0; }
+
+  .graph-right {
+    display: grid;
+    gap: 0.8rem;
+    align-content: start;
+  }
+
+  .graph-legend {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .graph-legend-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.48rem;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #101a2a;
+    color: #d3e0f4;
+    padding: 0.44rem 0.6rem;
+    font-size: 0.82rem;
+  }
+
+  .graph-legend-chip i {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .graph-detail {
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: linear-gradient(165deg, #131f31, #0f1828);
+    padding: 1rem;
+  }
+
+  .graph-detail h3 { margin: 0 0 0.5rem; font-size: 1.05rem; }
+  .graph-detail p  { margin: 0; color: #c3cfde; line-height: 1.6; font-size: 0.92rem; }
+
+  /* ── Timeline ── */
+  .timeline-wrap { overflow-x: auto; }
+
+  .stack-timeline-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+  }
+
+  .stack-timeline-table th,
+  .stack-timeline-table td {
+    border-bottom: 1px solid #25344d;
+    padding: 0.4rem 0.3rem;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+
+  .stack-timeline-table th:first-child,
+  .stack-timeline-table td:first-child {
+    text-align: left;
+    width: 180px;
+    color: #e4edf9;
+    font-weight: 600;
+    padding-left: 0;
+  }
+
+  .heat-cell {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    border-radius: 3px;
+    border: 1px solid #2c405a;
+  }
+
+  .heat-cell.on  { background: linear-gradient(180deg, #6db2ff, #33669f); box-shadow: 0 0 8px rgba(84,156,255,0.22); }
+  .heat-cell.off { background: #0f1929; opacity: 0.5; }
+
+  @media (max-width: 1100px) {
+    .graph-panel { grid-template-columns: 1fr; }
+    .graph-legend { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  }
+
+  @media (max-width: 720px) {
+    .graph-legend  { grid-template-columns: 1fr; }
+    .bubble-cloud  { grid-template-columns: 1fr; }
+    .search-wrap   { max-width: none; }
+  }
+</style>
