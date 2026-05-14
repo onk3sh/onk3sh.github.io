@@ -1121,5 +1121,31 @@ import { visualizerSteps } from '../data/lab';
 
   @media (max-width: 560px) {
     .canvest-grid { grid-template-columns: 1fr; }
+
+    /* ETF table — hide Name and MER on small screens */
+    #canvest-etf-table th:nth-child(2),
+    #canvest-etf-table td:nth-child(2),
+    #canvest-etf-table th:nth-child(6),
+    #canvest-etf-table td:nth-child(6) { display: none; }
+
+    /* Trades table — hide Name and Conf on small screens */
+    #canvest-trades-table th:nth-child(2),
+    #canvest-trades-table td:nth-child(2),
+    #canvest-trades-table th:nth-child(6),
+    #canvest-trades-table td:nth-child(6) { display: none; }
+
+    /* Shrink confidence bar on mobile */
+    .etf-table td div[style*="width:80px"] { width: 48px !important; }
+
+    /* Trades summary wrap tighter */
+    .trades-summary { gap: 1rem; }
+    .trades-stat-val { font-size: 0.9rem; }
+
+    /* MER slider row stack */
+    .mer-filter-row { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+    .mer-slider { max-width: 100%; width: 100%; }
+
+    /* Tabs scroll if needed */
+    .canvest-tabs { flex-wrap: nowrap; overflow-x: auto; }
   }
 </style>
