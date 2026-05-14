@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { productionWork } from '../../../data/projects';
+
+const section = productionWork[0].sections.find(s => s.heading === 'Search Campaign Builder');
+---
+
+<BaseLayout
+  title="Search Campaign Builder — Performance Engineering"
+  description="Diagnosed and resolved 4 root causes under 4× load growth at Basis Technologies — missing indexes, N+1 queries, lock contention, and a concurrency bug. Flat p99 maintained throughout."
+>
+  <article class="post-article">
+    <section class="hero">
+      <div class="post-meta">
+        <span class="badge">Basis Technologies</span>
+        <span class="badge">Performance Engineering</span>
+        <span class="badge">Java · Spring Boot</span>
+      </div>
+      <h1>Search Campaign Builder</h1>
+      <p class="post-lede">Diagnosed and resolved a multi-root-cause performance failure under 4× load growth. Absorbed the growth at flat p50/p95/p99 latency.</p>
+    </section>
+
+    <div class="post-body panel">
+      {section && section.paragraphs && section.paragraphs.map((p) => <p>{p}</p>)}
+    </div>
+  </article>
+</BaseLayout>

@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { productionWork } from '../../../data/projects';
+
+const pw = productionWork[0];
+---
+
+<BaseLayout
+  title="Basis Platform — Production Engineering"
+  description="Performance engineering under 4× load growth and a from-scratch changelog system serving 100+ internal users at Basis Technologies."
+>
+  <article class="post-article">
+    <section class="hero">
+      <div class="post-meta">
+        <span class="badge">Basis Technologies</span>
+        <span class="badge">2022 – Present</span>
+        <span class="badge">Production</span>
+      </div>
+      <h1>Basis Platform</h1>
+      <p class="post-lede">{pw.summary}</p>
+    </section>
+
+    <div class="post-body panel">
+      {pw.sections.map((section) => (
+        <div class="case-study-section">
+          <h2>{section.heading}</h2>
+          {section.paragraphs && section.paragraphs.map((p) => <p set:html={p.replace(/\(https:\/\/github\.com\/centro\/transis\)/g, '(<a href="https://github.com/centro/transis" target="_blank" rel="noopener">github.com/centro/transis</a>)')} />)}
+          {section.bullets && (
+            <ul>
+              {section.bullets.map((b) => <li>{b}</li>)}
+            </ul>
+          )}
+        </div>
+      ))}
+    </div>
+  </article>
+</BaseLayout>
+
+<style is:inline>
+  .case-study-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .case-study-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .case-study-section h2 {
+    margin: 0 0 1.1rem;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    letter-spacing: -0.01em;
+  }
+
+  .case-study-section p {
+    margin: 0 0 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    font-size: 0.97rem;
+  }
+
+  .case-study-section p:last-child { margin-bottom: 0; }
+
+  .case-study-section ul {
+    margin: 0;
+    padding-left: 1.3rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .case-study-section li {
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-size: 0.95rem;
+  }
+</style>

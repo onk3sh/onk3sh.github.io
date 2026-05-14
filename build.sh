@@ -20,6 +20,8 @@ PAGES=(
   stack/index.html
   lab/index.html
   post/index.html
+  post/search-campaign-builder/index.html
+  post/media-activation/index.html
   post/claude-code-harness/index.html
   post/canvestai/index.html
   post/iron-law-gates/index.html

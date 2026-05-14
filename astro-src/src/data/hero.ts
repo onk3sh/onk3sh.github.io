@@ -6,6 +6,6 @@ export type HeroContent = {
 
 export const hero: HeroContent = {
   name: 'Onkesh Bansal',
-  tagline: 'Backend platform engineer — 88K entity saves/day across Google, Meta, LinkedIn, and CM360 ad APIs. 4× workload growth absorbed at flat p99. Independent research on agent memory and code search routing for AI coding agents.',
+  tagline: 'Senior backend engineer building AI systems. Ten years shipping production platforms in Java and Rails; now working at the seam where backend infrastructure meets autonomous agents.',
   metaDescription: 'Senior engineer — backend platform engineering and AI agent tooling. Toronto, open to remote US/Canada.',
 };

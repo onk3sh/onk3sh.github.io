@@ -180,6 +180,7 @@ a:hover {
 .card:hover {
   transform: translateY(-2px);
   border-color: #3a475d;
+  text-decoration: none;
 }
 
 .card h3 {
@@ -192,6 +193,23 @@ a:hover {
   margin: 0;
   color: var(--text-muted);
   font-size: 0.95rem;
+}
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-tag {
+  font-size: 0.8rem;
+  color: #c9d4e3;
+  background: var(--accent-soft);
+  border: 1px solid #315178;
+  padding: 0.25rem 0.56rem;
+  border-radius: 999px;
+  text-transform: capitalize;
 }
 
 .badge-row {
@@ -291,7 +309,8 @@ a:hover {
 
 [data-theme="light"] .card:hover { border-color: #a8bcd8; }
 
-[data-theme="light"] .badge {
+[data-theme="light"] .badge,
+[data-theme="light"] .card-tag {
   color: #1e4896;
   background: rgba(37, 99, 235, 0.1);
   border-color: #a8c0e0;

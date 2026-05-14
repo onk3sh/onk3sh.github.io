@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { productionWork } from '../../../data/projects';
+
+const section = productionWork[0].sections.find(s => s.heading === 'Media Activation — Delivery & Changelog');
+---
+
+<BaseLayout
+  title="Media Activation — Delivery & Changelog"
+  description="Built a from-scratch changelog system for delivery publishing at Basis Technologies. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day, 5M+ rows, 100+ users."
+>
+  <article class="post-article">
+    <section class="hero">
+      <div class="post-meta">
+        <span class="badge">Basis Technologies</span>
+        <span class="badge">Ruby on Rails</span>
+        <span class="badge">System Design</span>
+      </div>
+      <h1>Media Activation — Delivery &amp; Changelog</h1>
+      <p class="post-lede">Built a from-scratch changelog system for delivery publishing. 500 events/day, 5M+ rows in production, eliminated CM360 round-trips for 100+ internal agency users.</p>
+    </section>
+
+    <div class="post-body panel">
+      {section && section.paragraphs && section.paragraphs.map((p) => (
+        <p set:html={p.replace('Transis (https://github.com/centro/transis)', '<a href="https://github.com/centro/transis" target="_blank" rel="noopener">Transis</a>')} />
+      ))}
+    </div>
+  </article>
+</BaseLayout>

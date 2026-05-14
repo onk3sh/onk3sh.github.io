@@ -18,6 +18,9 @@ import { recentProjects } from '../../data/projects';
           <p>{project.summary}</p>
           <div class="badge-row">
             <span class="badge">{new Date(project.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+            {project.tags && project.tags.map((tag) => (
+              <span class={`card-tag tag-${project.projectType}`}>{tag}</span>
+            ))}
           </div>
         </a>
       ))}

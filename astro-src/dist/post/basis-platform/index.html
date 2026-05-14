@@ -1,0 +1,66 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Performance engineering under 4× load growth and a from-scratch changelog system serving 100+ internal users at Basis Technologies."><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="canonical" href="https://onk3sh.github.io/post/basis-platform/"><title>Basis Platform — Production Engineering | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/post/basis-platform/"><meta property="og:title" content="Basis Platform — Production Engineering | Onkesh Bansal"><meta property="og:description" content="Performance engineering under 4× load growth and a from-scratch changelog system serving 100+ internal users at Basis Technologies."><meta property="og:site_name" content="Onkesh Bansal"><!-- Twitter Card --><meta name="twitter:card" content="summary"><meta name="twitter:title" content="Basis Platform — Production Engineering | Onkesh Bansal"><meta name="twitter:description" content="Performance engineering under 4× load growth and a from-scratch changelog system serving 100+ internal users at Basis Technologies."><script>
+      (function () {
+        const t = localStorage.getItem('theme');
+        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.BOQoQR4p.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class="active" href="/post/">Work</a> <a class href="/stack/">Stack</a> <a class href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">  <article class="post-article"> <section class="hero"> <div class="post-meta"> <span class="badge">Basis Technologies</span> <span class="badge">2022 – Present</span> <span class="badge">Production</span> </div> <h1>Basis Platform</h1> <p class="post-lede">Production ad-tech platform serving media agencies — campaign creation, line item management, and delivery publishing across Google Ads, Meta, LinkedIn, and CM360.</p> </section> <div class="post-body panel"> <div class="case-study-section"> <h2>Search Campaign Builder</h2> <p>Search Campaign Builder lets Basis users create and manage Google Ads search campaigns directly from the platform. The backend — a Java/Spring Boot service called WGS — acts as the middle layer between the Rails platform and Google Ads, storing campaign hierarchy data for all entities. As campaign counts grew, WGS started showing performance issues under load. A customer-reported production incident confirmed it.</p><p>Led the investigation and fixes end-to-end, pairing with the tech lead at key decision points and checkpoints. Diagnosis started in Datadog — query breakdown surfaced sequential scans across the hot paths, total query counts, and cumulative execution time. The same scenarios were replicated locally to confirm and isolate. A structured benchmarking exercise — importing Google Ads campaigns with variable entity counts across iterations — mapped the scaling curve precisely. Three root causes emerged independently: missing indexes on hot query paths, N+1 queries in the campaign fetch layer, and transaction lock contention.</p><p>A fourth issue surfaced during benchmarking: the same long-running campaign, when imported at different builds concurrently, caused collisions. This was a correctness problem hiding inside the performance failure.</p><p>Each issue required a separate fix. Indexes were added on the hot paths. N+1 queries were consolidated. Transaction scope was narrowed — accepting a slightly wider consistency window in exchange for shorter lock durations. An idempotency guard was added at the import layer rather than a DB-level constraint, as the coordination needed to happen before the transaction opened, across build boundaries. The benchmark harness was re-run at 4× load to verify the fixes held.</p><p>Delivered across 3 sprints. Result: 4× workload growth absorbed with flat p50/p95/p99 latency. Postgres index hit rate lifted from 81% to 93%, with a corresponding drop in query latency on the hot campaign fetch path.</p>  </div><div class="case-study-section"> <h2>Media Activation — Delivery &amp; Changelog</h2> <p>Media Activation handles publishing Basis line item placements to external systems, starting with CM360. The internal media agency team had no way to track what changed in the delivery view without going to CM360 directly — every discrepancy meant a support request across 100+ users.</p><p>The existing changelog was a simple append log with no query management, no categorisation, and no structured output for UI consumption. Rather than extend it — the existing system had accumulated complexity that made modification risky — a new changelog was built: 80% net-new, sharing only the ActiveRecord integration layer and the data table schema. Reusing the schema avoided a data migration; owning the logic gave full control over query management and event structure. The tradeoff: some duplication with the old system that will need consolidating over time.</p><p>The core is a before/after snapshot approach. Before a save, a filtered hashmap of tracked fields is captured inline. After the save, a field-level change calculator compares old and new values key-by-key, producing a structured diff. Only tracked fields are included — keeping the JSONB payload lean and avoiding unnecessary storage. That diff flows into a categorisation layer, then formatted into a UI-ready output structure server-side, so diff logic lives in one place and event grouping stays consistent. Virtual list pagination handles large changelog histories without degrading rendering performance.</p><p>The delivery tab was built on top of Transis (<a href="https://github.com/centro/transis" target="_blank" rel="noopener">github.com/centro/transis</a>), an open-source client-side state chart system that tightly coupled the UI to the backend. Full refactoring would have introduced significant regression risk across existing delivery flows — changes were made alongside Transis with minimal surface contact instead.</p><p>Result: 500 events/day, 5M+ rows in production since launch. Eliminated CM360 round-trips for 100+ internal agency users.</p>  </div> </div> </article>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '🌙' : '☀';
+        }
+        sync();
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          if (light) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+          }
+          sync();
+        });
+      })();
+    </script> </body> </html> <style>
+  .case-study-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .case-study-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .case-study-section h2 {
+    margin: 0 0 1.1rem;
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    letter-spacing: -0.01em;
+  }
+
+  .case-study-section p {
+    margin: 0 0 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.75;
+    font-size: 0.97rem;
+  }
+
+  .case-study-section p:last-child { margin-bottom: 0; }
+
+  .case-study-section ul {
+    margin: 0;
+    padding-left: 1.3rem;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .case-study-section li {
+    color: var(--text-muted);
+    line-height: 1.65;
+    font-size: 0.95rem;
+  }
+</style>

@@ -86,7 +86,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       const results = data.skills
         .filter(s => (active === 'all' || s.category === active) &&
                      (!term || `${s.name} ${s.summary}`.toLowerCase().includes(term)))
-        .sort((a, b) => b.level - a.level);
+        .sort((a, b) => {
+          const order = { production: 0, working: 1, familiar: 2 };
+          return (order[a.tier] ?? 3) - (order[b.tier] ?? 3);
+        });
       cloud.innerHTML = '';
       if (!results.length) { cloud.innerHTML = '<p class="empty">No results.</p>'; return; }
       results.forEach(s => {
@@ -94,7 +97,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         el.className = 'stack-bubble';
         el.style.setProperty('--bc', CAT_COLORS[s.category] || '#60a5fa');
         el.innerHTML =
-          `<header><strong>${escapeHtml(s.name)}</strong><span>Level ${s.level}/10</span></header>` +
+          `<header><strong>${escapeHtml(s.name)}</strong><span class="tier-badge tier-${s.tier}">${s.tier}</span></header>` +
           `<p>${escapeHtml(s.summary)}</p>` +
           `<footer>Since ${s.since}</footer>`;
         cloud.appendChild(el);
@@ -364,6 +367,35 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .stack-bubble header span { color: #9ec2f0; font-size: 0.76rem; white-space: nowrap; }
   .stack-bubble p      { margin: 0; color: #c0ccdc; font-size: 0.89rem; line-height: 1.45; }
   .stack-bubble footer { color: #8fa4bf; font-size: 0.78rem; }
+
+  .tier-badge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 999px;
+    padding: 0.15rem 0.55rem;
+    white-space: nowrap;
+    border: 1px solid transparent;
+  }
+
+  .tier-production {
+    background: rgba(99, 182, 255, 0.15);
+    border-color: rgba(99, 182, 255, 0.4);
+    color: #7ec8ff;
+  }
+
+  .tier-working {
+    background: rgba(167, 139, 250, 0.15);
+    border-color: rgba(167, 139, 250, 0.4);
+    color: #c4b5fd;
+  }
+
+  .tier-familiar {
+    background: rgba(100, 116, 139, 0.15);
+    border-color: rgba(100, 116, 139, 0.4);
+    color: #94a3b8;
+  }
   .empty { margin: 0; color: var(--text-muted); }
 
   /* ── Graph panel ── */
