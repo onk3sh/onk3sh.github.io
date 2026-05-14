@@ -9,258 +9,1473 @@
   "sectors": [
     {
       "sector": "industrials",
-      "etfs_us": [
-        "XLI",
-        "VIS",
-        "IYJ"
-      ],
-      "etfs_ca": [
-        "ZIN.TO",
-        "XMA.TO"
-      ],
       "bias": "bullish",
       "confidence": 65.2,
       "group_agreement": 2,
-      "recommended": false,
-      "horizon_days": 30
+      "recommended": true,
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "XLI",
+          "currency": "USD",
+          "nav": 173.6,
+          "week52_high": 179.31,
+          "week52_low": 139.63,
+          "ytd_return": 12.88,
+          "mer_pct": 0.08,
+          "aum": 30091372544
+        },
+        {
+          "ticker": "VIS",
+          "currency": "USD",
+          "nav": 338.97,
+          "week52_high": 347.09,
+          "week52_low": 263.6,
+          "ytd_return": 14.25,
+          "mer_pct": 0.09,
+          "aum": 8311346688
+        },
+        {
+          "ticker": "IYJ",
+          "currency": "USD",
+          "nav": 156.36,
+          "week52_high": 163.45,
+          "week52_low": 134.75,
+          "ytd_return": 7.28,
+          "mer_pct": 0.38,
+          "aum": 1991077248
+        },
+        {
+          "ticker": "FIDU",
+          "currency": "USD",
+          "nav": 93.92,
+          "week52_high": 96.19,
+          "week52_low": 73.01,
+          "ytd_return": 14.7,
+          "mer_pct": 0.084,
+          "aum": 2074132224
+        },
+        {
+          "ticker": "RGI",
+          "currency": "USD",
+          "nav": 193.46,
+          "week52_high": 200.17,
+          "week52_low": 154.7858,
+          "ytd_return": 8.93,
+          "mer_pct": 0.4,
+          "aum": 355330496
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "ZIN.TO",
+          "currency": "CAD",
+          "nav": 57.41,
+          "week52_high": 58.7,
+          "week52_low": 41.031033,
+          "ytd_return": 17.03,
+          "mer_pct": null,
+          "aum": 56486172
+        },
+        {
+          "ticker": "XMA.TO",
+          "currency": "CAD",
+          "nav": 48.21,
+          "week52_high": 55.72,
+          "week52_low": 24.58,
+          "ytd_return": 4.7,
+          "mer_pct": null,
+          "aum": 680465600
+        }
+      ]
     },
     {
       "sector": "cleanenergy",
-      "etfs_us": [
-        "ICLN",
-        "QCLN",
-        "CNRG"
-      ],
-      "etfs_ca": [
-        "ZCLN.TO",
-        "RENE.TO"
-      ],
       "bias": "bullish",
       "confidence": 64.9,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "ICLN",
+          "currency": "USD",
+          "nav": 21.87,
+          "week52_high": 22.145,
+          "week52_low": 12.31,
+          "ytd_return": 26.06,
+          "mer_pct": 0.39,
+          "aum": 2502674688
+        },
+        {
+          "ticker": "QCLN",
+          "currency": "USD",
+          "nav": 62.63,
+          "week52_high": 63.3,
+          "week52_low": 29.57,
+          "ytd_return": 31.54,
+          "mer_pct": 0.59,
+          "aum": 738733952
+        },
+        {
+          "ticker": "CNRG",
+          "currency": "USD",
+          "nav": 111.9,
+          "week52_high": 113.185,
+          "week52_low": 53.62,
+          "ytd_return": 15.65,
+          "mer_pct": 0.45,
+          "aum": 221954384
+        },
+        {
+          "ticker": "ACES",
+          "currency": "USD",
+          "nav": 38.31,
+          "week52_high": 38.77,
+          "week52_low": 23.82,
+          "ytd_return": 9.76,
+          "mer_pct": 0.55,
+          "aum": 126544144
+        },
+        {
+          "ticker": "TAN",
+          "currency": "USD",
+          "nav": 63.4,
+          "week52_high": 64.9,
+          "week52_low": 30.57,
+          "ytd_return": 18.02,
+          "mer_pct": 0.7,
+          "aum": 1624940032
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "ZCLN.TO",
+          "currency": "CAD",
+          "nav": 23.05,
+          "week52_high": 23.28,
+          "week52_low": 13.208122,
+          "ytd_return": 24.91,
+          "mer_pct": null,
+          "aum": 80036832
+        },
+        {
+          "ticker": "HCLN.TO",
+          "currency": "CAD",
+          "nav": 11.73,
+          "week52_high": 11.82,
+          "week52_low": 7.32,
+          "ytd_return": 8.82,
+          "mer_pct": null,
+          "aum": 21011282
+        }
+      ]
     },
     {
       "sector": "broadmarket",
-      "etfs_us": [
-        "SPY",
-        "IVV",
-        "VOO"
-      ],
-      "etfs_ca": [
-        "XIU.TO",
-        "XIC.TO",
-        "ZCN.TO",
-        "VCE.TO"
-      ],
       "bias": "bullish",
-      "confidence": 64.5,
+      "confidence": 63.9,
       "group_agreement": 3,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "SPY",
+          "currency": "USD",
+          "nav": 742.28,
+          "week52_high": 749.53,
+          "week52_low": 575.6,
+          "ytd_return": 5.68,
+          "mer_pct": 0.0945,
+          "aum": 735060819968
+        },
+        {
+          "ticker": "IVV",
+          "currency": "USD",
+          "nav": 745.75,
+          "week52_high": 753.0,
+          "week52_low": 578.31,
+          "ytd_return": 5.69,
+          "mer_pct": 0.03,
+          "aum": 797465706496
+        },
+        {
+          "ticker": "VOO",
+          "currency": "USD",
+          "nav": 682.43,
+          "week52_high": 689.0788,
+          "week52_low": 529.11,
+          "ytd_return": 5.69,
+          "mer_pct": 0.03,
+          "aum": 1600156336128
+        },
+        {
+          "ticker": "QQQ",
+          "currency": "USD",
+          "nav": 714.51,
+          "week52_high": 722.03,
+          "week52_low": 505.58,
+          "ytd_return": 8.86,
+          "mer_pct": 0.18,
+          "aum": 440257380352
+        },
+        {
+          "ticker": "IWM",
+          "currency": "USD",
+          "nav": 282.61,
+          "week52_high": 287.58,
+          "week52_low": 199.65,
+          "ytd_return": 13.16,
+          "mer_pct": 0.19,
+          "aum": 76877807616
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XIU.TO",
+          "currency": "CAD",
+          "nav": 49.85,
+          "week52_high": 50.62,
+          "week52_low": 38.8,
+          "ytd_return": 7.39,
+          "mer_pct": null,
+          "aum": 21964158976
+        },
+        {
+          "ticker": "XIC.TO",
+          "currency": "CAD",
+          "nav": 54.39,
+          "week52_high": 55.25,
+          "week52_low": 41.03,
+          "ytd_return": 7.87,
+          "mer_pct": null,
+          "aum": 28822163456
+        },
+        {
+          "ticker": "ZCN.TO",
+          "currency": "CAD",
+          "nav": 45.6,
+          "week52_high": 46.33,
+          "week52_low": 34.424423,
+          "ytd_return": 7.89,
+          "mer_pct": null,
+          "aum": 15940279296
+        },
+        {
+          "ticker": "VCE.TO",
+          "currency": "CAD",
+          "nav": 72.61,
+          "week52_high": 73.6,
+          "week52_low": 57.84114,
+          "ytd_return": 7.49,
+          "mer_pct": null,
+          "aum": 3375462400
+        }
+      ]
     },
     {
       "sector": "consumer",
-      "etfs_us": [
-        "XLY",
-        "VCR",
-        "FDIS"
-      ],
-      "etfs_ca": [
-        "XCD.TO"
-      ],
       "bias": "bullish",
       "confidence": 63.7,
       "group_agreement": 3,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "XLY",
+          "currency": "USD",
+          "nav": 118.73,
+          "week52_high": 125.01,
+          "week52_low": 103.855,
+          "ytd_return": -0.7,
+          "mer_pct": 0.08,
+          "aum": 23127506944
+        },
+        {
+          "ticker": "VCR",
+          "currency": "USD",
+          "nav": 391.9,
+          "week52_high": 414.28,
+          "week52_low": 346.48,
+          "ytd_return": 0.14,
+          "mer_pct": 0.09,
+          "aum": 7110979584
+        },
+        {
+          "ticker": "FDIS",
+          "currency": "USD",
+          "nav": 101.76,
+          "week52_high": 107.45,
+          "week52_low": 89.95,
+          "ytd_return": 0.18,
+          "mer_pct": 0.084,
+          "aum": 1772221440
+        },
+        {
+          "ticker": "RTH",
+          "currency": "USD",
+          "nav": 264.01,
+          "week52_high": 272.0,
+          "week52_low": 230.4,
+          "ytd_return": 8.38,
+          "mer_pct": 0.35,
+          "aum": 265318864
+        },
+        {
+          "ticker": "XRT",
+          "currency": "USD",
+          "nav": 79.81,
+          "week52_high": 91.65,
+          "week52_low": 73.87,
+          "ytd_return": 0.88,
+          "mer_pct": 0.35,
+          "aum": 205956352
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XCD.TO",
+          "currency": "CAD",
+          "nav": 57.77,
+          "week52_high": 66.01,
+          "week52_low": 52.93,
+          "ytd_return": -4.12,
+          "mer_pct": null,
+          "aum": 54462856
+        }
+      ]
     },
     {
       "sector": "energy",
-      "etfs_us": [
-        "XLE",
-        "VDE",
-        "OIH"
-      ],
-      "etfs_ca": [
-        "XEG.TO",
-        "ZEO.TO",
-        "ENS.TO"
-      ],
       "bias": "bullish",
       "confidence": 61.9,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 45,
+      "holding_period": "short",
+      "holding_period_note": "short-mid (45-180d)",
+      "etfs_us": [
+        {
+          "ticker": "XLE",
+          "currency": "USD",
+          "nav": 57.64,
+          "week52_high": 63.46,
+          "week52_low": 40.36,
+          "ytd_return": 34.19,
+          "mer_pct": 0.08,
+          "aum": 41394286592
+        },
+        {
+          "ticker": "VDE",
+          "currency": "USD",
+          "nav": 163.58,
+          "week52_high": 179.34,
+          "week52_low": 112.72,
+          "ytd_return": 35.37,
+          "mer_pct": 0.09,
+          "aum": 12653263872
+        },
+        {
+          "ticker": "OIH",
+          "currency": "USD",
+          "nav": 437.61,
+          "week52_high": 450.85,
+          "week52_low": 210.7,
+          "ytd_return": 57.59,
+          "mer_pct": 0.35,
+          "aum": 2510627328
+        },
+        {
+          "ticker": "XOP",
+          "currency": "USD",
+          "nav": 168.37,
+          "week52_high": 190.36,
+          "week52_low": 118.14,
+          "ytd_return": 41.73,
+          "mer_pct": 0.35,
+          "aum": 3564897792
+        },
+        {
+          "ticker": "FENY",
+          "currency": "USD",
+          "nav": 32.17,
+          "week52_high": 35.26,
+          "week52_low": 22.22,
+          "ytd_return": 35.28,
+          "mer_pct": 0.084,
+          "aum": 2027336576
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XEG.TO",
+          "currency": "CAD",
+          "nav": 27.21,
+          "week52_high": 28.13,
+          "week52_low": 16.2,
+          "ytd_return": 44.04,
+          "mer_pct": null,
+          "aum": 2411801856
+        },
+        {
+          "ticker": "ZEO.TO",
+          "currency": "CAD",
+          "nav": 106.62,
+          "week52_high": 108.16,
+          "week52_low": 72.81377,
+          "ytd_return": 34.1,
+          "mer_pct": null,
+          "aum": 351012032
+        },
+        {
+          "ticker": "ENS.TO",
+          "currency": "CAD",
+          "nav": 18.43,
+          "week52_high": 18.59,
+          "week52_low": 13.71,
+          "ytd_return": null,
+          "mer_pct": null,
+          "aum": null
+        }
+      ]
     },
     {
       "sector": "finance",
-      "etfs_us": [
-        "XLF",
-        "VFH",
-        "KBE"
-      ],
-      "etfs_ca": [
-        "ZEB.TO",
-        "XFN.TO",
-        "ZBK.TO"
-      ],
       "bias": "bullish",
       "confidence": 61.1,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 300,
+      "holding_period": "long",
+      "holding_period_note": "long (300d)",
+      "etfs_us": [
+        {
+          "ticker": "XLF",
+          "currency": "USD",
+          "nav": 51.0,
+          "week52_high": 56.52,
+          "week52_low": 47.67,
+          "ytd_return": -4.33,
+          "mer_pct": 0.08,
+          "aum": 51460583424
+        },
+        {
+          "ticker": "VFH",
+          "currency": "USD",
+          "nav": 125.02,
+          "week52_high": 137.89,
+          "week52_low": 116.67,
+          "ytd_return": -3.67,
+          "mer_pct": 0.09,
+          "aum": 13706525696
+        },
+        {
+          "ticker": "KBE",
+          "currency": "USD",
+          "nav": 61.78,
+          "week52_high": 67.75,
+          "week52_low": 51.72,
+          "ytd_return": 6.39,
+          "mer_pct": 0.35,
+          "aum": 1492843904
+        },
+        {
+          "ticker": "KRE",
+          "currency": "USD",
+          "nav": 67.16,
+          "week52_high": 74.08,
+          "week52_low": 55.37,
+          "ytd_return": 8.41,
+          "mer_pct": 0.35,
+          "aum": 4165366016
+        },
+        {
+          "ticker": "IAI",
+          "currency": "USD",
+          "nav": 178.53,
+          "week52_high": 191.62,
+          "week52_low": 151.28,
+          "ytd_return": -1.19,
+          "mer_pct": 0.38,
+          "aum": 1491516928
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "ZEB.TO",
+          "currency": "CAD",
+          "nav": 65.91,
+          "week52_high": 67.3,
+          "week52_low": 42.918755,
+          "ytd_return": 14.3,
+          "mer_pct": null,
+          "aum": 5224428544
+        },
+        {
+          "ticker": "XFN.TO",
+          "currency": "CAD",
+          "nav": 83.96,
+          "week52_high": 85.23,
+          "week52_low": 61.64,
+          "ytd_return": 8.27,
+          "mer_pct": null,
+          "aum": 2141654784
+        },
+        {
+          "ticker": "ZBK.TO",
+          "currency": "CAD",
+          "nav": 41.93,
+          "week52_high": 46.8,
+          "week52_low": 33.33668,
+          "ytd_return": 3.96,
+          "mer_pct": null,
+          "aum": 622283392
+        }
+      ]
     },
     {
       "sector": "healthcare",
-      "etfs_us": [
-        "XLV",
-        "VHT",
-        "IYH"
-      ],
-      "etfs_ca": [
-        "XHC.TO"
-      ],
       "bias": "bullish",
       "confidence": 61.1,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "XLV",
+          "currency": "USD",
+          "nav": 146.7,
+          "week52_high": 160.59,
+          "week52_low": 127.35,
+          "ytd_return": -5.33,
+          "mer_pct": 0.08,
+          "aum": 37880406016
+        },
+        {
+          "ticker": "VHT",
+          "currency": "USD",
+          "nav": 274.41,
+          "week52_high": 298.61,
+          "week52_low": 234.13,
+          "ytd_return": -4.96,
+          "mer_pct": 0.09,
+          "aum": 18514036736
+        },
+        {
+          "ticker": "IYH",
+          "currency": "USD",
+          "nav": 61.73,
+          "week52_high": 67.63,
+          "week52_low": 53.35,
+          "ytd_return": -5.49,
+          "mer_pct": 0.38,
+          "aum": 2802174208
+        },
+        {
+          "ticker": "FHLC",
+          "currency": "USD",
+          "nav": 70.92,
+          "week52_high": 77.1,
+          "week52_low": 60.35,
+          "ytd_return": -4.92,
+          "mer_pct": 0.084,
+          "aum": 2854445568
+        },
+        {
+          "ticker": "RYH",
+          "currency": "USD",
+          "nav": 289.33,
+          "week52_high": 304.15,
+          "week52_low": 248.94,
+          "ytd_return": 0.4,
+          "mer_pct": 0.4,
+          "aum": 960695168
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XHC.TO",
+          "currency": "CAD",
+          "nav": 66.76,
+          "week52_high": 73.02,
+          "week52_low": 60.12,
+          "ytd_return": -5.3,
+          "mer_pct": null,
+          "aum": 492661824
+        }
+      ]
     },
     {
       "sector": "semiconductors",
-      "etfs_us": [
-        "SOXX",
-        "SMH",
-        "XSD"
-      ],
-      "etfs_ca": [
-        "XIT.TO"
-      ],
       "bias": "bullish",
       "confidence": 60.9,
       "group_agreement": 3,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "SOXX",
+          "currency": "USD",
+          "nav": 528.32,
+          "week52_high": 533.74,
+          "week52_low": 199.93,
+          "ytd_return": 53.41,
+          "mer_pct": 0.34,
+          "aum": 29566459904
+        },
+        {
+          "ticker": "SMH",
+          "currency": "USD",
+          "nav": 572.13,
+          "week52_high": 581.1699,
+          "week52_low": 234.59,
+          "ytd_return": 40.69,
+          "mer_pct": 0.35,
+          "aum": 58790612992
+        },
+        {
+          "ticker": "XSD",
+          "currency": "USD",
+          "nav": 564.03,
+          "week52_high": 575.49,
+          "week52_low": 217.55,
+          "ytd_return": 51.83,
+          "mer_pct": 0.35,
+          "aum": 2475979008
+        },
+        {
+          "ticker": "SOXQ",
+          "currency": "USD",
+          "nav": 94.59,
+          "week52_high": 95.53,
+          "week52_low": 36.635,
+          "ytd_return": 48.46,
+          "mer_pct": 0.19,
+          "aum": 1628057856
+        },
+        {
+          "ticker": "PSI",
+          "currency": "USD",
+          "nav": 152.07,
+          "week52_high": 156.17,
+          "week52_low": 50.18,
+          "ytd_return": 69.44,
+          "mer_pct": 0.56,
+          "aum": 1991072640
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XIT.TO",
+          "currency": "CAD",
+          "nav": 64.28,
+          "week52_high": 89.97,
+          "week52_low": 58.78,
+          "ytd_return": -11.41,
+          "mer_pct": null,
+          "aum": 712428608
+        }
+      ]
     },
     {
       "sector": "materials",
-      "etfs_us": [
-        "XLB",
-        "VAW",
-        "IYM"
-      ],
-      "etfs_ca": [
-        "XMA.TO",
-        "ZMT.TO"
-      ],
       "bias": "bullish",
       "confidence": 60.3,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "XLB",
+          "currency": "USD",
+          "nav": 52.05,
+          "week52_high": 54.14,
+          "week52_low": 42.035,
+          "ytd_return": 14.01,
+          "mer_pct": 0.08,
+          "aum": 7311751168
+        },
+        {
+          "ticker": "VAW",
+          "currency": "USD",
+          "nav": 235.86,
+          "week52_high": 245.26,
+          "week52_low": 187.58,
+          "ytd_return": 12.36,
+          "mer_pct": 0.09,
+          "aum": 4537353216
+        },
+        {
+          "ticker": "IYM",
+          "currency": "USD",
+          "nav": 188.14,
+          "week52_high": 189.81,
+          "week52_low": 131.87,
+          "ytd_return": 18.27,
+          "mer_pct": 0.38,
+          "aum": 1533414784
+        },
+        {
+          "ticker": "FMAT",
+          "currency": "USD",
+          "nav": 60.35,
+          "week52_high": 62.84,
+          "week52_low": 48.08,
+          "ytd_return": 12.31,
+          "mer_pct": 0.084,
+          "aum": 603217280
+        },
+        {
+          "ticker": "RTM",
+          "currency": "USD",
+          "nav": 156.94,
+          "week52_high": 177.5778,
+          "week52_low": 140.2306,
+          "ytd_return": -0.6,
+          "mer_pct": 0.4,
+          "aum": 303400384
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XMA.TO",
+          "currency": "CAD",
+          "nav": 48.21,
+          "week52_high": 55.72,
+          "week52_low": 24.58,
+          "ytd_return": 4.7,
+          "mer_pct": null,
+          "aum": 680465600
+        },
+        {
+          "ticker": "ZMT.TO",
+          "currency": "CAD",
+          "nav": 144.02,
+          "week52_high": 145.0,
+          "week52_low": 66.72,
+          "ytd_return": 22.42,
+          "mer_pct": null,
+          "aum": 72786984
+        }
+      ]
     },
     {
       "sector": "biotech",
-      "etfs_us": [
-        "XBI",
-        "IBB",
-        "ARKG"
-      ],
-      "etfs_ca": [
-        "XHC.TO"
-      ],
       "bias": "bullish",
       "confidence": 59.7,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "XBI",
+          "currency": "USD",
+          "nav": 135.87,
+          "week52_high": 139.19,
+          "week52_low": 75.71,
+          "ytd_return": 7.66,
+          "mer_pct": 0.35,
+          "aum": 8295757312
+        },
+        {
+          "ticker": "IBB",
+          "currency": "USD",
+          "nav": 172.65,
+          "week52_high": 179.64,
+          "week52_low": 116.49,
+          "ytd_return": 0.03,
+          "mer_pct": 0.44,
+          "aum": 7946963968
+        },
+        {
+          "ticker": "ARKG",
+          "currency": "USD",
+          "nav": 29.62,
+          "week52_high": 34.39,
+          "week52_low": 20.264,
+          "ytd_return": 3.28,
+          "mer_pct": 0.75,
+          "aum": 1235872256
+        },
+        {
+          "ticker": "BBH",
+          "currency": "USD",
+          "nav": 187.4,
+          "week52_high": 202.91,
+          "week52_low": 140.17,
+          "ytd_return": -1.98,
+          "mer_pct": 0.35,
+          "aum": 364661248
+        },
+        {
+          "ticker": "SBIO",
+          "currency": "USD",
+          "nav": 55.63,
+          "week52_high": 57.77,
+          "week52_low": 27.1,
+          "ytd_return": 4.87,
+          "mer_pct": 0.5,
+          "aum": 155487744
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XHC.TO",
+          "currency": "CAD",
+          "nav": 66.76,
+          "week52_high": 73.02,
+          "week52_low": 60.12,
+          "ytd_return": -5.3,
+          "mer_pct": null,
+          "aum": 492661824
+        }
+      ]
+    },
+    {
+      "sector": "utilities",
+      "bias": "bullish",
+      "confidence": 59.5,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "XLU",
+          "currency": "USD",
+          "nav": 44.65,
+          "week52_high": 47.8,
+          "week52_low": 39.585,
+          "ytd_return": 10.49,
+          "mer_pct": 0.08,
+          "aum": 24051787776
+        },
+        {
+          "ticker": "VPU",
+          "currency": "USD",
+          "nav": 193.5,
+          "week52_high": 206.1,
+          "week52_low": 171.17,
+          "ytd_return": 10.18,
+          "mer_pct": 0.09,
+          "aum": 11088839680
+        },
+        {
+          "ticker": "IDU",
+          "currency": "USD",
+          "nav": 112.73,
+          "week52_high": 120.82,
+          "week52_low": 101.86,
+          "ytd_return": 9.78,
+          "mer_pct": 0.38,
+          "aum": 1620289536
+        },
+        {
+          "ticker": "FUTY",
+          "currency": "USD",
+          "nav": 57.73,
+          "week52_high": 61.51,
+          "week52_low": 51.05,
+          "ytd_return": 10.2,
+          "mer_pct": 0.084,
+          "aum": 2455846912
+        },
+        {
+          "ticker": "RYU",
+          "currency": "USD",
+          "nav": 111.55,
+          "week52_high": 127.5893,
+          "week52_low": 99.69,
+          "ytd_return": -3.65,
+          "mer_pct": 0.4,
+          "aum": 381053632
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XUT.TO",
+          "currency": "CAD",
+          "nav": 35.56,
+          "week52_high": 36.36,
+          "week52_low": 30.321243,
+          "ytd_return": 11.05,
+          "mer_pct": null,
+          "aum": 662731712
+        },
+        {
+          "ticker": "ZUT.TO",
+          "currency": "CAD",
+          "nav": 29.01,
+          "week52_high": 29.93,
+          "week52_low": 23.547401,
+          "ytd_return": 14.95,
+          "mer_pct": null,
+          "aum": 871584448
+        }
+      ]
     },
     {
       "sector": "technology",
-      "etfs_us": [
-        "XLK",
-        "VGT",
-        "QQQ"
-      ],
-      "etfs_ca": [
-        "XIT.TO",
-        "TXF.TO"
-      ],
       "bias": "bullish",
       "confidence": 59.0,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 2555,
+      "holding_period": "long",
+      "holding_period_note": "long (2555d)",
+      "etfs_us": [
+        {
+          "ticker": "XLK",
+          "currency": "USD",
+          "nav": 176.89,
+          "week52_high": 180.21,
+          "week52_low": 112.55,
+          "ytd_return": 10.9,
+          "mer_pct": 0.08,
+          "aum": 103332429824
+        },
+        {
+          "ticker": "VGT",
+          "currency": "USD",
+          "nav": 113.47,
+          "week52_high": 115.61,
+          "week52_low": 73.76,
+          "ytd_return": 9.65,
+          "mer_pct": 0.09,
+          "aum": 146529714176
+        },
+        {
+          "ticker": "QQQ",
+          "currency": "USD",
+          "nav": 714.51,
+          "week52_high": 722.03,
+          "week52_low": 505.58,
+          "ytd_return": 8.86,
+          "mer_pct": 0.18,
+          "aum": 440257380352
+        },
+        {
+          "ticker": "FTEC",
+          "currency": "USD",
+          "nav": 270.81,
+          "week52_high": 275.77,
+          "week52_low": 175.39,
+          "ytd_return": 9.72,
+          "mer_pct": 0.084,
+          "aum": 17889990656
+        },
+        {
+          "ticker": "IYW",
+          "currency": "USD",
+          "nav": 240.63,
+          "week52_high": 243.69,
+          "week52_low": 154.02,
+          "ytd_return": 9.29,
+          "mer_pct": 0.38,
+          "aum": 21450866688
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XIT.TO",
+          "currency": "CAD",
+          "nav": 64.28,
+          "week52_high": 89.97,
+          "week52_low": 58.78,
+          "ytd_return": -11.41,
+          "mer_pct": null,
+          "aum": 712428608
+        },
+        {
+          "ticker": "TXF.TO",
+          "currency": "CAD",
+          "nav": 26.89,
+          "week52_high": 27.3,
+          "week52_low": 19.22,
+          "ytd_return": 10.66,
+          "mer_pct": null,
+          "aum": null
+        }
+      ]
     },
     {
       "sector": "defense",
-      "etfs_us": [
-        "ITA",
-        "XAR",
-        "DFEN"
-      ],
-      "etfs_ca": [
-        "XAR.TO"
-      ],
       "bias": "bullish",
       "confidence": 58.3,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
-    },
-    {
-      "sector": "utilities",
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
       "etfs_us": [
-        "XLU",
-        "VPU",
-        "IDU"
+        {
+          "ticker": "ITA",
+          "currency": "USD",
+          "nav": 225.76,
+          "week52_high": 250.65,
+          "week52_low": 167.78,
+          "ytd_return": 2.02,
+          "mer_pct": 0.38,
+          "aum": 13564854272
+        },
+        {
+          "ticker": "XAR",
+          "currency": "USD",
+          "nav": 269.99,
+          "week52_high": 295.39,
+          "week52_low": 183.0,
+          "ytd_return": 7.57,
+          "mer_pct": 0.35,
+          "aum": 5887883264
+        },
+        {
+          "ticker": "DFEN",
+          "currency": "USD",
+          "nav": 67.01,
+          "week52_high": 97.75,
+          "week52_low": 37.23,
+          "ytd_return": -3.7,
+          "mer_pct": 0.96,
+          "aum": 365965088
+        },
+        {
+          "ticker": "PPA",
+          "currency": "USD",
+          "nav": 169.46,
+          "week52_high": 186.3,
+          "week52_low": 128.11,
+          "ytd_return": 7.01,
+          "mer_pct": 0.58,
+          "aum": 8036136960
+        },
+        {
+          "ticker": "SHLD",
+          "currency": "USD",
+          "nav": 63.8,
+          "week52_high": 78.493,
+          "week52_low": 53.01,
+          "ytd_return": 4.55,
+          "mer_pct": 0.5,
+          "aum": 8065314304
+        }
       ],
-      "etfs_ca": [
-        "XUT.TO",
-        "ZUT.TO"
-      ],
-      "bias": "bullish",
-      "confidence": 57.1,
-      "group_agreement": 2,
-      "recommended": false,
-      "horizon_days": 30
+      "etfs_ca": []
     },
     {
       "sector": "realestate",
-      "etfs_us": [
-        "VNQ",
-        "IYR",
-        "SCHH"
-      ],
-      "etfs_ca": [
-        "XRE.TO",
-        "ZRE.TO"
-      ],
       "bias": "neutral",
       "confidence": 53.1,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 30,
+      "holding_period": "short",
+      "holding_period_note": "short (30d)",
+      "etfs_us": [
+        {
+          "ticker": "VNQ",
+          "currency": "USD",
+          "nav": 95.85,
+          "week52_high": 97.37,
+          "week52_low": 86.36,
+          "ytd_return": 10.0,
+          "mer_pct": 0.13,
+          "aum": 69945008128
+        },
+        {
+          "ticker": "IYR",
+          "currency": "USD",
+          "nav": 101.97,
+          "week52_high": 103.59,
+          "week52_low": 91.4,
+          "ytd_return": 9.55,
+          "mer_pct": 0.38,
+          "aum": 4087330816
+        },
+        {
+          "ticker": "SCHH",
+          "currency": "USD",
+          "nav": 23.41,
+          "week52_high": 23.71,
+          "week52_low": 20.56,
+          "ytd_return": 12.82,
+          "mer_pct": 0.07,
+          "aum": 9932141568
+        },
+        {
+          "ticker": "REET",
+          "currency": "USD",
+          "nav": 27.28,
+          "week52_high": 27.655,
+          "week52_low": 23.98,
+          "ytd_return": 10.09,
+          "mer_pct": 0.14,
+          "aum": 4791054848
+        },
+        {
+          "ticker": "FREL",
+          "currency": "USD",
+          "nav": 29.09,
+          "week52_high": 29.555,
+          "week52_low": 26.19,
+          "ytd_return": 9.68,
+          "mer_pct": 0.084,
+          "aum": 1443321472
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XRE.TO",
+          "currency": "CAD",
+          "nav": 16.27,
+          "week52_high": 17.05,
+          "week52_low": 14.69,
+          "ytd_return": 9.09,
+          "mer_pct": null,
+          "aum": 1169559808
+        },
+        {
+          "ticker": "ZRE.TO",
+          "currency": "CAD",
+          "nav": 23.28,
+          "week52_high": 24.2,
+          "week52_low": 21.073961,
+          "ytd_return": 8.81,
+          "mer_pct": null,
+          "aum": 621804608
+        }
+      ]
     },
     {
       "sector": "gold",
-      "etfs_us": [
-        "GDX",
-        "GDXJ",
-        "GLD"
-      ],
-      "etfs_ca": [
-        "XGD.TO",
-        "ZGD.TO",
-        "CGL.TO"
-      ],
       "bias": "neutral",
       "confidence": 51.6,
       "group_agreement": 2,
       "recommended": false,
-      "horizon_days": 30
+      "horizon_days": 45,
+      "holding_period": "short",
+      "holding_period_note": "short (45d)",
+      "etfs_us": [
+        {
+          "ticker": "GDX",
+          "currency": "USD",
+          "nav": 96.37,
+          "week52_high": 117.18,
+          "week52_low": 45.25,
+          "ytd_return": 2.74,
+          "mer_pct": 0.51,
+          "aum": 27257202688
+        },
+        {
+          "ticker": "GDXJ",
+          "currency": "USD",
+          "nav": 129.18,
+          "week52_high": 157.49,
+          "week52_low": 57.46,
+          "ytd_return": 2.0,
+          "mer_pct": 0.52,
+          "aum": 8720046080
+        },
+        {
+          "ticker": "GLD",
+          "currency": "USD",
+          "nav": 429.33,
+          "week52_high": 509.7,
+          "week52_low": 291.78,
+          "ytd_return": 6.91,
+          "mer_pct": 0.4,
+          "aum": 153509937152
+        },
+        {
+          "ticker": "IAU",
+          "currency": "USD",
+          "nav": 87.97,
+          "week52_high": 104.4,
+          "week52_low": 59.71,
+          "ytd_return": 6.96,
+          "mer_pct": 0.25,
+          "aum": 71461920768
+        },
+        {
+          "ticker": "RING",
+          "currency": "USD",
+          "nav": 83.87,
+          "week52_high": 100.41,
+          "week52_low": 37.88,
+          "ytd_return": 3.92,
+          "mer_pct": 0.39,
+          "aum": 2892447488
+        }
+      ],
+      "etfs_ca": [
+        {
+          "ticker": "XGD.TO",
+          "currency": "CAD",
+          "nav": 58.63,
+          "week52_high": 69.9,
+          "week52_low": 27.56,
+          "ytd_return": 4.47,
+          "mer_pct": null,
+          "aum": 3562028800
+        },
+        {
+          "ticker": "ZGD.TO",
+          "currency": "CAD",
+          "nav": 328.27,
+          "week52_high": 385.0,
+          "week52_low": 142.255,
+          "ytd_return": 6.82,
+          "mer_pct": null,
+          "aum": 340518048
+        },
+        {
+          "ticker": "CGL.TO",
+          "currency": "CAD",
+          "nav": 35.75,
+          "week52_high": 42.58,
+          "week52_low": 24.75,
+          "ytd_return": 6.36,
+          "mer_pct": null,
+          "aum": 3388841472
+        }
+      ]
     }
-  ]
+  ],
+  "paper_trading": {
+    "as_of": "2026-05-14",
+    "summary": {
+      "total_trades": 12,
+      "open_trades": 4,
+      "closed_trades": 8,
+      "win_rate_pct": 75.0,
+      "open_pnl_usd": 21.23,
+      "closed_pnl_usd": 90.09,
+      "total_pnl_usd": 111.32,
+      "avg_excess_vs_spy": -1.83
+    },
+    "open_positions": [
+      {
+        "run_date": "2026-05-12",
+        "sector": "broadmarket",
+        "bias": "bullish",
+        "confidence": 69.0,
+        "etf": "SPY",
+        "entry_date": "2026-05-12",
+        "entry_price": 738.18,
+        "exit_date": "2026-05-14",
+        "exit_price": 747.975,
+        "status": "open",
+        "position_usd": 1000.0,
+        "pnl_usd": 13.27,
+        "pnl_pct": 1.33,
+        "spy_return_pct": 1.33,
+        "excess_return": 0.0
+      },
+      {
+        "run_date": "2026-05-12",
+        "sector": "consumer",
+        "bias": "bullish",
+        "confidence": 68.77,
+        "etf": "XLY",
+        "entry_date": "2026-05-12",
+        "entry_price": 118.29,
+        "exit_date": "2026-05-14",
+        "exit_price": 118.99,
+        "status": "open",
+        "position_usd": 1000.0,
+        "pnl_usd": 5.92,
+        "pnl_pct": 0.59,
+        "spy_return_pct": 1.33,
+        "excess_return": -0.74
+      },
+      {
+        "run_date": "2026-05-12",
+        "sector": "biotech",
+        "bias": "bullish",
+        "confidence": 66.97,
+        "etf": "XBI",
+        "entry_date": "2026-05-12",
+        "entry_price": 134.91,
+        "exit_date": "2026-05-14",
+        "exit_price": 135.15,
+        "status": "open",
+        "position_usd": 1000.0,
+        "pnl_usd": 1.78,
+        "pnl_pct": 0.18,
+        "spy_return_pct": 1.33,
+        "excess_return": -1.15
+      },
+      {
+        "run_date": "2026-05-12",
+        "sector": "industrials",
+        "bias": "bullish",
+        "confidence": 66.95,
+        "etf": "XLI",
+        "entry_date": "2026-05-12",
+        "entry_price": 174.35,
+        "exit_date": "2026-05-14",
+        "exit_price": 174.395,
+        "status": "open",
+        "position_usd": 1000.0,
+        "pnl_usd": 0.26,
+        "pnl_pct": 0.03,
+        "spy_return_pct": 1.33,
+        "excess_return": -1.3
+      }
+    ],
+    "closed_positions": [
+      {
+        "run_date": "2026-05-07",
+        "sector": "energy",
+        "bias": "bullish",
+        "confidence": 72.79,
+        "etf": "XLE",
+        "entry_date": "2026-05-07",
+        "entry_price": 55.95,
+        "exit_date": "2026-05-11",
+        "exit_price": 57.17,
+        "status": "signal_dropped",
+        "position_usd": 1000.0,
+        "pnl_usd": 21.81,
+        "pnl_pct": 2.18,
+        "spy_return_pct": 1.06,
+        "excess_return": 1.12
+      },
+      {
+        "run_date": "2026-05-01",
+        "sector": "technology",
+        "bias": "bullish",
+        "confidence": 100.0,
+        "etf": "XLK",
+        "entry_date": "2026-05-01",
+        "entry_price": 161.87,
+        "exit_date": "2026-05-12",
+        "exit_price": 175.2,
+        "status": "signal_dropped",
+        "position_usd": 1000.0,
+        "pnl_usd": 82.35,
+        "pnl_pct": 8.24,
+        "spy_return_pct": 2.43,
+        "excess_return": 5.81
+      },
+      {
+        "run_date": "2026-05-01",
+        "sector": "utilities",
+        "bias": "bullish",
+        "confidence": 100.0,
+        "etf": "XLU",
+        "entry_date": "2026-05-01",
+        "entry_price": 46.55,
+        "exit_date": "2026-05-05",
+        "exit_price": 46.37,
+        "status": "signal_dropped",
+        "position_usd": 1000.0,
+        "pnl_usd": -3.87,
+        "pnl_pct": -0.39,
+        "spy_return_pct": 0.43,
+        "excess_return": -0.82
+      },
+      {
+        "run_date": "2026-05-01",
+        "sector": "gold",
+        "bias": "bearish",
+        "confidence": 32.35,
+        "etf": "GDX",
+        "entry_date": "2026-05-01",
+        "entry_price": 87.11,
+        "exit_date": "2026-05-06",
+        "exit_price": 92.44,
+        "status": "signal_dropped",
+        "position_usd": 1000.0,
+        "pnl_usd": -61.19,
+        "pnl_pct": -5.77,
+        "spy_return_pct": 1.83,
+        "excess_return": -7.6
+      },
+      {
+        "run_date": "2026-04-01",
+        "sector": "finance",
+        "bias": "bullish",
+        "confidence": 72.79,
+        "etf": "XLF",
+        "entry_date": "2026-04-01",
+        "entry_price": 49.44,
+        "exit_date": "2026-05-08",
+        "exit_price": 51.24,
+        "status": "signal_dropped",
+        "position_usd": 1000.0,
+        "pnl_usd": 36.41,
+        "pnl_pct": 3.64,
+        "spy_return_pct": 12.57,
+        "excess_return": -8.93
+      },
+      {
+        "run_date": "2026-03-01",
+        "sector": "consumer",
+        "bias": "bullish",
+        "confidence": 77.94,
+        "etf": "XLY",
+        "entry_date": "2026-03-02",
+        "entry_price": 115.1886,
+        "exit_date": "2026-05-07",
+        "exit_price": 119.88,
+        "status": "signal_dropped",
+        "position_usd": 1000.0,
+        "pnl_usd": 40.73,
+        "pnl_pct": 4.07,
+        "spy_return_pct": 6.88,
+        "excess_return": -2.81
+      },
+      {
+        "run_date": "2026-03-01",
+        "sector": "energy",
+        "bias": "bullish",
+        "confidence": 88.24,
+        "etf": "XLE",
+        "entry_date": "2026-03-02",
+        "entry_price": 56.6697,
+        "exit_date": "2026-05-06",
+        "exit_price": 57.0,
+        "status": "signal_dropped",
+        "position_usd": 1000.0,
+        "pnl_usd": 5.83,
+        "pnl_pct": 0.58,
+        "spy_return_pct": 7.21,
+        "excess_return": -6.63
+      },
+      {
+        "run_date": "2026-03-01",
+        "sector": "technology",
+        "bias": "bullish",
+        "confidence": 77.94,
+        "etf": "XLK",
+        "entry_date": "2026-03-02",
+        "entry_price": 139.3667,
+        "exit_date": "2026-04-01",
+        "exit_price": 134.91,
+        "status": "horizon_elapsed",
+        "position_usd": 1000.0,
+        "pnl_usd": -31.98,
+        "pnl_pct": -3.2,
+        "spy_return_pct": -4.28,
+        "excess_return": 1.08
+      }
+    ]
+  }
 }
