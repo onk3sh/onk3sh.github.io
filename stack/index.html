@@ -112,6 +112,21 @@ Technologies and systems across AI engineering, full-stack backend, data, and in
       legendRoot.appendChild(chip);
     });
 
+    function isLightTheme() {
+      return document.documentElement.getAttribute('data-theme') === 'light';
+    }
+
+    function themeVars() {
+      const light = isLightTheme();
+      return {
+        labelColor:      light ? '#1a2a3a' : '#dde8ff',
+        textBorderColor: light ? '#f0f4f8' : '#060f1d',
+        linkColor:       light ? '#94aac0' : '#4a6a90',
+        tooltipText:     light ? '#1a2a3a' : '#dde8ff',
+        tooltipSub:      light ? '#4a6070' : '#b2c4dc',
+      };
+    }
+
     /* build node/link arrays */
     const allNodes = data.graph.nodes.map(n => ({
       id:         n.id,
@@ -122,33 +137,38 @@ Technologies and systems across AI engineering, full-stack backend, data, and in
       symbol:     n.type === 'impact' ? 'diamond' : 'circle',
       itemStyle:  { color: CAT_COLORS[n.group] || '#60a5fa', borderWidth: 0 },
       label: {
-        show:            n.type !== 'tech',
-        color:           '#dde8ff',
-        fontSize:        n.type === 'project' ? 12 : 10,
-        fontWeight:      n.type === 'project' ? 700 : 400,
-        position:        'bottom',
-        distance:        4,
-        textBorderColor: '#060f1d',
-        textBorderWidth: 3
+        show:     n.type !== 'tech',
+        fontSize: n.type === 'project' ? 12 : 10,
+        fontWeight: n.type === 'project' ? 700 : 400,
+        position: 'bottom',
+        distance: 4,
       }
     }));
 
     const allLinks = data.graph.links.map(l => ({
       source:    l.source,
       target:    l.target,
-      lineStyle: { color: '#4a6a90', width: 1.4, opacity: 0.65 }
     }));
 
     const chart = echarts.init(container, null, { renderer: 'canvas' });
 
     function getOption(nodes, links) {
+      const tv = themeVars();
+      const themedNodes = nodes.map(n => ({
+        ...n,
+        label: { ...n.label, color: tv.labelColor, textBorderColor: tv.textBorderColor, textBorderWidth: 3 }
+      }));
+      const themedLinks = links.map(l => ({
+        ...l,
+        lineStyle: { color: tv.linkColor, width: 1.4, opacity: 0.65 }
+      }));
       return {
         backgroundColor: 'transparent',
         tooltip: {
           show: true,
           confine: true,
           formatter: p => p.dataType === 'node'
-            ? `<strong style="color:#dde8ff">${p.data.name}</strong><br><span style="color:#b2c4dc;font-size:12px">${p.data.detail}</span>`
+            ? `<strong style="color:${tv.tooltipText}">${p.data.name}</strong><br><span style="color:${tv.tooltipSub};font-size:12px">${p.data.detail}</span>`
             : ''
         },
         series: [{
@@ -156,8 +176,8 @@ Technologies and systems across AI engineering, full-stack backend, data, and in
           layout:        'force',
           animation:     true,
           animationDuration: 1200,
-          data:          nodes,
-          links:         links,
+          data:          themedNodes,
+          links:         themedLinks,
           roam:          true,
           draggable:     true,
           labelLayout:   { hideOverlap: true },
@@ -179,7 +199,10 @@ Technologies and systems across AI engineering, full-stack backend, data, and in
       };
     }
 
-    chart.setOption(getOption(allNodes, allLinks));
+    let currentNodes = allNodes;
+    let currentLinks = allLinks;
+
+    chart.setOption(getOption(currentNodes, currentLinks));
 
     chart.on('click', 'series.graph', p => {
       if (p.dataType === 'node') {
@@ -193,6 +216,10 @@ Technologies and systems across AI engineering, full-stack backend, data, and in
         detailEl.textContent = p.data.detail;
       }
     });
+
+    new MutationObserver(() => {
+      chart.setOption(getOption(currentNodes, currentLinks));
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
     window.addEventListener('resize', () => chart.resize());
 
@@ -208,10 +235,10 @@ Technologies and systems across AI engineering, full-stack backend, data, and in
         activeType = type;
         filterRoot.querySelectorAll('.stack-chip').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const nodes = activeType === 'all' ? allNodes : allNodes.filter(n => n._type === activeType);
-        const ids   = new Set(nodes.map(n => n.id));
-        const links = allLinks.filter(l => ids.has(l.source) && ids.has(l.target));
-        chart.setOption(getOption(nodes, links));
+        currentNodes = activeType === 'all' ? allNodes : allNodes.filter(n => n._type === activeType);
+        const ids    = new Set(currentNodes.map(n => n.id));
+        currentLinks = allLinks.filter(l => ids.has(l.source) && ids.has(l.target));
+        chart.setOption(getOption(currentNodes, currentLinks));
       });
       filterRoot.appendChild(btn);
     });
