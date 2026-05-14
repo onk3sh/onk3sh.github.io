@@ -1,0 +1,266 @@
+{
+  "as_of": "2026-05-12",
+  "generated_at": "2026-05-12",
+  "systemic_risk": {
+    "level": "LOW",
+    "score": 7.7,
+    "note": "No major risk configurations active. Normal market conditions from astrological perspective."
+  },
+  "sectors": [
+    {
+      "sector": "industrials",
+      "etfs_us": [
+        "XLI",
+        "VIS",
+        "IYJ"
+      ],
+      "etfs_ca": [
+        "ZIN.TO",
+        "XMA.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 65.2,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "cleanenergy",
+      "etfs_us": [
+        "ICLN",
+        "QCLN",
+        "CNRG"
+      ],
+      "etfs_ca": [
+        "ZCLN.TO",
+        "RENE.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 64.9,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "broadmarket",
+      "etfs_us": [
+        "SPY",
+        "IVV",
+        "VOO"
+      ],
+      "etfs_ca": [
+        "XIU.TO",
+        "XIC.TO",
+        "ZCN.TO",
+        "VCE.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 64.5,
+      "group_agreement": 3,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "consumer",
+      "etfs_us": [
+        "XLY",
+        "VCR",
+        "FDIS"
+      ],
+      "etfs_ca": [
+        "XCD.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 63.7,
+      "group_agreement": 3,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "energy",
+      "etfs_us": [
+        "XLE",
+        "VDE",
+        "OIH"
+      ],
+      "etfs_ca": [
+        "XEG.TO",
+        "ZEO.TO",
+        "ENS.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 61.9,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "finance",
+      "etfs_us": [
+        "XLF",
+        "VFH",
+        "KBE"
+      ],
+      "etfs_ca": [
+        "ZEB.TO",
+        "XFN.TO",
+        "ZBK.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 61.1,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "healthcare",
+      "etfs_us": [
+        "XLV",
+        "VHT",
+        "IYH"
+      ],
+      "etfs_ca": [
+        "XHC.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 61.1,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "semiconductors",
+      "etfs_us": [
+        "SOXX",
+        "SMH",
+        "XSD"
+      ],
+      "etfs_ca": [
+        "XIT.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 60.9,
+      "group_agreement": 3,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "materials",
+      "etfs_us": [
+        "XLB",
+        "VAW",
+        "IYM"
+      ],
+      "etfs_ca": [
+        "XMA.TO",
+        "ZMT.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 60.3,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "biotech",
+      "etfs_us": [
+        "XBI",
+        "IBB",
+        "ARKG"
+      ],
+      "etfs_ca": [
+        "XHC.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 59.7,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "technology",
+      "etfs_us": [
+        "XLK",
+        "VGT",
+        "QQQ"
+      ],
+      "etfs_ca": [
+        "XIT.TO",
+        "TXF.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 59.0,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "defense",
+      "etfs_us": [
+        "ITA",
+        "XAR",
+        "DFEN"
+      ],
+      "etfs_ca": [
+        "XAR.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 58.3,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "utilities",
+      "etfs_us": [
+        "XLU",
+        "VPU",
+        "IDU"
+      ],
+      "etfs_ca": [
+        "XUT.TO",
+        "ZUT.TO"
+      ],
+      "bias": "bullish",
+      "confidence": 57.1,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "realestate",
+      "etfs_us": [
+        "VNQ",
+        "IYR",
+        "SCHH"
+      ],
+      "etfs_ca": [
+        "XRE.TO",
+        "ZRE.TO"
+      ],
+      "bias": "neutral",
+      "confidence": 53.1,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    },
+    {
+      "sector": "gold",
+      "etfs_us": [
+        "GDX",
+        "GDXJ",
+        "GLD"
+      ],
+      "etfs_ca": [
+        "XGD.TO",
+        "ZGD.TO",
+        "CGL.TO"
+      ],
+      "bias": "neutral",
+      "confidence": 51.6,
+      "group_agreement": 2,
+      "recommended": false,
+      "horizon_days": 30
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { visualizerSteps, etfs } from '../data/lab';
+import { visualizerSteps } from '../data/lab';
 ---
 
 <BaseLayout title="Lab" description="Interactive demos and experiments">
@@ -74,82 +74,37 @@ import { visualizerSteps, etfs } from '../data/lab';
     </div>
   </section>
 
-  <!-- ── Canadian ETF Screener ── -->
+  <!-- ── CanvestAI Sector Dashboard ── -->
   <section class="section">
-    <h2>CanvestAI — ETF Screener</h2>
+    <h2>CanvestAI — Sector Recommendations</h2>
     <p class="section-sub">
-      Filter and rank Canadian-listed ETFs by category, risk level, and management expense ratio. Powered by the same scoring logic as CanvestAI.
+      Sector bias and confidence from CanvestAI's latest run. Ranked by confidence score.
     </p>
-    <div class="panel etf-panel">
-
-      <!-- Filters -->
-      <div class="etf-filters">
-        <div class="filter-group">
-          <label class="filter-label">Category</label>
-          <div class="filter-chips" id="cat-chips">
-            <button class="chip active" data-cat="all">All</button>
-            <button class="chip" data-cat="equity">Equity</button>
-            <button class="chip" data-cat="fixed-income">Fixed Income</button>
-            <button class="chip" data-cat="balanced">Balanced</button>
-            <button class="chip" data-cat="sector">Sector</button>
-            <button class="chip" data-cat="commodity">Commodity</button>
-          </div>
-        </div>
-        <div class="filter-group">
-          <label class="filter-label">Risk</label>
-          <div class="filter-chips" id="risk-chips">
-            <button class="chip active" data-risk="all">All</button>
-            <button class="chip" data-risk="low">Low</button>
-            <button class="chip" data-risk="medium">Medium</button>
-            <button class="chip" data-risk="high">High</button>
-          </div>
-        </div>
-        <div class="filter-group filter-group-mer">
-          <label class="filter-label">Max MER <span id="mer-val">1.00%</span></label>
-          <input type="range" id="mer-slider" min="0.05" max="1.50" step="0.05" value="1.00" />
-        </div>
+    <div class="panel canvest-panel">
+      <div id="canvest-risk-bar" class="risk-bar" style="display:none">
+        <span class="risk-bar-label">Systemic Risk</span>
+        <span id="canvest-risk-level" class="risk-level-badge"></span>
+        <span id="canvest-risk-note" class="risk-bar-note"></span>
       </div>
-
-      <!-- Sort bar -->
-      <div class="etf-sort-bar">
-        <span class="sort-label">Sort by:</span>
-        <button class="sort-btn active" data-sort="score">Score ↕</button>
-        <button class="sort-btn" data-sort="mer">MER ↕</button>
-        <button class="sort-btn" data-sort="aum">AUM ↕</button>
-        <button class="sort-btn" data-sort="ytd">YTD ↕</button>
-        <span class="etf-count" id="etf-count"></span>
+      <div class="canvest-filter-row">
+        <div class="filter-chips" id="bias-chips">
+          <button class="chip active" data-bias="all">All</button>
+          <button class="chip" data-bias="bullish">Bullish</button>
+          <button class="chip" data-bias="neutral">Neutral</button>
+          <button class="chip" data-bias="bearish">Bearish</button>
+        </div>
+        <span class="etf-count" id="sector-count"></span>
       </div>
-
-      <!-- Table -->
-      <div class="etf-table-wrap">
-        <table class="etf-table" id="etf-table">
-          <thead>
-            <tr>
-              <th>Ticker</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Risk</th>
-              <th>MER</th>
-              <th>AUM</th>
-              <th>YTD</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody id="etf-tbody"></tbody>
-        </table>
-        <p class="etf-empty" id="etf-empty" style="display:none">No ETFs match your filters.</p>
+      <div id="canvest-grid" class="canvest-grid">
+        <p class="canvest-loading">Loading…</p>
       </div>
-
-      <p class="etf-disclaimer">
-        Demo data only — not financial advice. CanvestAI uses live market data from yfinance.
-      </p>
+      <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p>
     </div>
   </section>
 
 </BaseLayout>
 
 <script type="application/json" id="__lab-steps__" set:html={JSON.stringify(visualizerSteps)}></script>
-<script type="application/json" id="__lab-etfs__" set:html={JSON.stringify(etfs)}></script>
 
 <script is:inline>
 (function () {
@@ -231,116 +186,100 @@ import { visualizerSteps, etfs } from '../data/lab';
 
 <script is:inline>
 (function () {
-  const ETFS = JSON.parse(document.getElementById('__lab-etfs__').textContent);
+  var activeBias = 'all';
+  var sectors = [];
 
-  const RISK_COLOR = { low: '#34d399', medium: '#f59e0b', high: '#f87171' };
-  const RISK_LIGHT  = { low: '#0d6f3f', medium: '#92400e', high: '#991b1b' };
-
-  let activeCat  = 'all';
-  let activeRisk = 'all';
-  let maxMer     = 1.00;
-  let sortKey    = 'score';
-  let sortDir    = -1;
+  var BIAS_COLOR = { bullish: '#34d399', neutral: '#f59e0b', bearish: '#f87171' };
+  var BIAS_LIGHT = { bullish: '#0d6f3f', neutral: '#92400e', bearish: '#991b1b' };
 
   function isLight() {
     return document.documentElement.getAttribute('data-theme') === 'light';
   }
 
-  function fmt(n, digits, suffix) {
-    return n.toFixed(digits) + suffix;
-  }
+  function fmt1(n) { return n.toFixed(1); }
 
-  function fmtAum(n) {
-    return n >= 1000 ? '$' + (n / 1000).toFixed(1) + 'B' : '$' + n + 'M';
+  function sectorLabel(s) {
+    var map = {
+      broadmarket:'Broad Market', technology:'Technology', finance:'Finance',
+      healthcare:'Healthcare', energy:'Energy', industrials:'Industrials',
+      consumer:'Consumer', materials:'Materials', realestate:'Real Estate',
+      utilities:'Utilities', semiconductors:'Semiconductors', cleanenergy:'Clean Energy',
+      biotech:'Biotech', defense:'Defense', gold:'Gold'
+    };
+    return map[s] || s.charAt(0).toUpperCase() + s.slice(1);
   }
 
   function render() {
-    const light = isLight();
-    let rows = ETFS.filter(e =>
-      (activeCat  === 'all' || e.cat  === activeCat) &&
-      (activeRisk === 'all' || e.risk === activeRisk) &&
-      e.mer <= maxMer
-    );
-
-    rows.sort((a, b) => sortDir * (b[sortKey] - a[sortKey]));
-
-    const tbody = document.getElementById('etf-tbody');
-    const empty = document.getElementById('etf-empty');
-    const count = document.getElementById('etf-count');
-    count.textContent = rows.length + ' ETF' + (rows.length !== 1 ? 's' : '');
+    var light = isLight();
+    var grid = document.getElementById('canvest-grid');
+    var count = document.getElementById('sector-count');
+    var rows = sectors.filter(function(s) {
+      return activeBias === 'all' || s.bias === activeBias;
+    });
+    count.textContent = rows.length + ' sector' + (rows.length !== 1 ? 's' : '');
 
     if (rows.length === 0) {
-      tbody.innerHTML = '';
-      empty.style.display = '';
+      grid.innerHTML = '<p class="canvest-loading">No sectors match this filter.</p>';
       return;
     }
-    empty.style.display = 'none';
 
-    tbody.innerHTML = rows.map(e => {
-      const rc = light ? RISK_LIGHT[e.risk] : RISK_COLOR[e.risk];
-      const ytdSign = e.ytd >= 0 ? '+' : '';
-      const ytdColor = e.ytd >= 0 ? (light ? '#0d6f3f' : '#34d399') : (light ? '#991b1b' : '#f87171');
-      const scoreBar = Math.round((e.score / 100) * 60);
-      return `<tr>
-        <td class="etf-ticker">${e.ticker}</td>
-        <td class="etf-name">${e.name}</td>
-        <td><span class="etf-cat">${e.cat.replace('-', '‑')}</span></td>
-        <td><span class="etf-risk" style="color:${rc}">${e.risk}</span></td>
-        <td>${fmt(e.mer, 2, '%')}</td>
-        <td>${fmtAum(e.aum)}</td>
-        <td style="color:${ytdColor};font-weight:600">${ytdSign}${fmt(e.ytd, 1, '%')}</td>
-        <td>
-          <div class="score-cell">
-            <span class="score-num">${e.score}</span>
-            <div class="score-bar-wrap"><div class="score-bar" style="width:${scoreBar}px"></div></div>
-          </div>
-        </td>
-      </tr>`;
+    grid.innerHTML = rows.map(function(s) {
+      var bc = light ? BIAS_LIGHT[s.bias] : BIAS_COLOR[s.bias];
+      var barW = Math.round((s.confidence / 100) * 100);
+      var tickers = (s.etfs_ca || []).map(function(t) {
+        return '<span class="ca-ticker">' + t.replace('.TO','') + '</span>';
+      }).join('');
+      return '<div class="sector-card">' +
+        '<div class="sector-card-top">' +
+          '<span class="sector-name">' + sectorLabel(s.sector) + '</span>' +
+          '<span class="bias-badge" style="color:' + bc + '">' + s.bias + '</span>' +
+        '</div>' +
+        '<div class="conf-bar-wrap"><div class="conf-bar" style="width:' + barW + '%"></div></div>' +
+        '<div class="conf-label">' + fmt1(s.confidence) + '% confidence · ' + s.horizon_days + 'd horizon</div>' +
+        (tickers ? '<div class="ca-tickers">' + tickers + '</div>' : '') +
+      '</div>';
     }).join('');
   }
 
-  /* ── chip filters ── */
-  document.getElementById('cat-chips').addEventListener('click', e => {
-    const btn = e.target.closest('[data-cat]');
+  document.getElementById('bias-chips').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-bias]');
     if (!btn) return;
-    activeCat = btn.dataset.cat;
-    document.querySelectorAll('[data-cat]').forEach(b => b.classList.toggle('active', b === btn));
+    activeBias = btn.dataset.bias;
+    document.querySelectorAll('[data-bias]').forEach(function(b) { b.classList.toggle('active', b === btn); });
     render();
   });
 
-  document.getElementById('risk-chips').addEventListener('click', e => {
-    const btn = e.target.closest('[data-risk]');
-    if (!btn) return;
-    activeRisk = btn.dataset.risk;
-    document.querySelectorAll('[data-risk]').forEach(b => b.classList.toggle('active', b === btn));
-    render();
-  });
+  new MutationObserver(render).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
-  /* ── MER slider ── */
-  const slider = document.getElementById('mer-slider');
-  const merVal = document.getElementById('mer-val');
-  slider.addEventListener('input', () => {
-    maxMer = parseFloat(slider.value);
-    merVal.textContent = maxMer.toFixed(2) + '%';
-    render();
-  });
+  fetch('/data/canvest-recommendations.json')
+    .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
+    .then(function(data) {
+      sectors = (data.sectors || []).slice().sort(function(a,b) { return b.confidence - a.confidence; });
 
-  /* ── sort buttons ── */
-  document.querySelectorAll('.sort-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const key = btn.dataset.sort;
-      if (sortKey === key) { sortDir *= -1; }
-      else { sortKey = key; sortDir = -1; }
-      document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b === btn));
+      /* systemic risk bar */
+      if (data.systemic_risk) {
+        var bar = document.getElementById('canvest-risk-bar');
+        var lvl = document.getElementById('canvest-risk-level');
+        var note = document.getElementById('canvest-risk-note');
+        var riskColor = { LOW: '#34d399', MEDIUM: '#f59e0b', HIGH: '#f87171' };
+        bar.style.display = '';
+        lvl.textContent = data.systemic_risk.level + ' (' + data.systemic_risk.score + ')';
+        lvl.style.color = riskColor[data.systemic_risk.level] || '#f59e0b';
+        note.textContent = data.systemic_risk.note;
+      }
+
+      /* disclaimer date */
+      if (data.generated_at) {
+        var d = new Date(data.generated_at);
+        var disc = document.getElementById('canvest-disclaimer');
+        if (disc) disc.textContent = 'Not financial advice. Data from CanvestAI — as of ' + d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' }) + '.';
+      }
+
       render();
+    })
+    .catch(function() {
+      document.getElementById('canvest-grid').innerHTML = '<p class="canvest-loading">Recommendations unavailable.</p>';
     });
-  });
-
-  /* ── re-render on theme change so risk colors update ── */
-  const observer = new MutationObserver(render);
-  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-
-  render();
 })();
 </script>
 
@@ -587,26 +526,43 @@ import { visualizerSteps, etfs } from '../data/lab';
   }
   [data-theme="light"] #viz-play:hover { background: #b2d0ee; }
 
-  /* ── ETF Screener ── */
-  .etf-panel { display: grid; gap: 1.2rem; }
+  /* ── CanvestAI Dashboard ── */
+  .canvest-panel { display: grid; gap: 1.2rem; }
 
-  .etf-filters {
+  .risk-bar {
     display: flex;
+    align-items: center;
+    gap: 0.75rem;
     flex-wrap: wrap;
-    gap: 1rem 1.8rem;
-    align-items: flex-start;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
   }
 
-  .filter-group { display: flex; flex-direction: column; gap: 0.4rem; }
-
-  .filter-label {
-    font-size: 0.75rem;
+  .risk-bar-label {
+    font-size: 0.72rem;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.07em;
     color: var(--text-muted);
     font-weight: 600;
   }
-  .filter-label span { font-weight: 700; color: var(--accent); font-size: 0.82rem; }
+
+  .risk-level-badge { font-weight: 700; font-size: 0.9rem; }
+
+  .risk-bar-note {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    flex: 1;
+  }
+
+  .canvest-filter-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
 
   .filter-chips { display: flex; flex-wrap: wrap; gap: 0.35rem; }
 
@@ -624,121 +580,91 @@ import { visualizerSteps, etfs } from '../data/lab';
   .chip:hover { border-color: var(--accent); color: var(--text); }
   .chip.active { border-color: var(--accent); background: var(--accent-soft); color: var(--text); }
 
-  .filter-group-mer { min-width: 180px; }
-
-  input[type="range"] {
-    width: 100%;
-    accent-color: var(--accent);
-    cursor: pointer;
-  }
-
-  /* ── Sort bar ── */
-  .etf-sort-bar {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-    border-top: 1px solid var(--line);
-    padding-top: 0.9rem;
-  }
-
-  .sort-label {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-right: 0.2rem;
-  }
-
-  .sort-btn {
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--text-muted);
-    border-radius: 8px;
-    padding: 0.22rem 0.6rem;
-    font-size: 0.8rem;
-    cursor: pointer;
-    font-family: inherit;
-    transition: border-color 120ms ease, color 120ms ease;
-  }
-  .sort-btn:hover { border-color: var(--accent); color: var(--text); }
-  .sort-btn.active { border-color: var(--accent); color: var(--accent); font-weight: 600; }
-
   .etf-count {
     margin-left: auto;
     font-size: 0.8rem;
     color: var(--text-muted);
   }
 
-  /* ── Table ── */
-  .etf-table-wrap {
-    overflow-x: auto;
+  .canvest-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+
+  .canvest-loading {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 2rem 0;
+    grid-column: 1/-1;
+    margin: 0;
+  }
+
+  .sector-card {
     border: 1px solid var(--line);
     border-radius: 12px;
+    background: linear-gradient(165deg, rgba(20,28,40,0.9), rgba(14,20,30,0.95));
+    padding: 0.85rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .etf-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.86rem;
+  .sector-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
   }
 
-  .etf-table th {
-    text-align: left;
-    padding: 0.55rem 0.75rem;
-    font-size: 0.74rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--line);
-    white-space: nowrap;
-    background: var(--bg-elev);
-  }
-
-  .etf-table td {
-    padding: 0.6rem 0.75rem;
-    border-bottom: 1px solid var(--line);
-    color: var(--text);
-    vertical-align: middle;
-  }
-  .etf-table tr:last-child td { border-bottom: none; }
-  .etf-table tbody tr:hover { background: var(--accent-soft); }
-
-  .etf-ticker {
+  .sector-name {
+    font-size: 0.88rem;
     font-weight: 700;
+    color: var(--text);
+  }
+
+  .bias-badge {
+    font-size: 0.74rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    flex-shrink: 0;
+  }
+
+  .conf-bar-wrap {
+    height: 4px;
+    background: var(--bg-soft);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .conf-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 400ms ease;
+  }
+
+  .conf-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .ca-tickers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.1rem;
+  }
+
+  .ca-ticker {
+    font-size: 0.72rem;
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    color: var(--accent) !important;
-    white-space: nowrap;
-  }
-
-  .etf-name {
-    color: var(--text-muted) !important;
-    font-size: 0.82rem;
-    max-width: 240px;
-  }
-
-  .etf-cat {
-    font-size: 0.76rem;
+    color: var(--accent);
     background: var(--accent-soft);
     border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.1rem 0.5rem;
-    white-space: nowrap;
-    color: var(--text-muted);
-  }
-
-  .etf-risk { font-weight: 600; text-transform: capitalize; font-size: 0.82rem; }
-
-  .score-cell { display: flex; align-items: center; gap: 0.5rem; }
-  .score-num { font-weight: 700; min-width: 1.8rem; color: var(--accent); }
-  .score-bar-wrap { width: 60px; height: 5px; background: var(--bg-soft); border-radius: 999px; overflow: hidden; }
-  .score-bar { height: 100%; background: var(--accent); border-radius: 999px; }
-
-  .etf-empty {
-    text-align: center;
-    color: var(--text-muted);
-    padding: 2rem 0;
-    font-size: 0.9rem;
+    border-radius: 6px;
+    padding: 0.1rem 0.38rem;
   }
 
   .etf-disclaimer {
@@ -750,8 +676,21 @@ import { visualizerSteps, etfs } from '../data/lab';
     opacity: 0.7;
   }
 
-  @media (max-width: 720px) {
-    .etf-name { max-width: 140px; }
-    .etf-table th:nth-child(6), .etf-table td:nth-child(6) { display: none; }
+  [data-theme="light"] .sector-card {
+    background: linear-gradient(165deg, rgba(255,255,255,0.95), rgba(242,246,252,0.98));
+  }
+
+  [data-theme="light"] .ca-ticker {
+    color: #1e4896;
+    background: rgba(37,99,235,0.08);
+    border-color: #a8c0e0;
+  }
+
+  @media (max-width: 860px) {
+    .canvest-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 560px) {
+    .canvest-grid { grid-template-columns: 1fr; }
   }
 </style>
