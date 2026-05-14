@@ -350,10 +350,11 @@ import { roles } from '../data/experience';
 
   /* ── boot sequence ── */
   async function boot() {
-    await wait(500);
-    await fakeInput('about');
-    await wait(120);
-    CMDS.about();
+    await wait(300);
+    line('Welcome. Available commands:', 'term-muted');
+    rich(VISIBLE.map(function(c) {
+      return '<span class="term-tag">' + c + '</span>';
+    }).join(' '), 'term-tags');
   }
   boot();
 
