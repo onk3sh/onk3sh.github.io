@@ -1,9 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
 import { about } from '../data/about';
 ---
 
 <BaseLayout title="About" description="Onkesh Bansal — Senior engineer building production AI systems, based in Toronto.">
+  <Header slot="header" path={Astro.url.pathname} />
   <section class="section">
     <div class="panel about-intro">
       <h2>{about.headline}</h2>

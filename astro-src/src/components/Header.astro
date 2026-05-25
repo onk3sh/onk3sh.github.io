@@ -1,0 +1,168 @@
+---
+interface Props {
+  path: string;
+  privateMode?: boolean;
+}
+const { path, privateMode = false } = Astro.props;
+const isHome = path === '/';
+---
+
+<header class="site-header" id="site-header">
+  <div class="site-header__inner">
+    <a class="header-brand" href="/">
+      Onkesh Bansal
+      <span class="header-dot" aria-hidden="true"></span>
+    </a>
+
+    {isHome ? (
+      <nav class="header-nav" aria-label="Page sections">
+        <a class="nav-item" href="#work" data-section="work">work/</a>
+        <a class="nav-item" href="#writing" data-section="writing">writing/</a>
+        <a class="nav-item" href="#now" data-section="now">now</a>
+        <a class="nav-item" href="#career" data-section="career">career</a>
+        <a class="nav-item" href="#contact" data-section="contact">contact</a>
+      </nav>
+    ) : (
+      <nav class="header-nav" aria-label="Site navigation">
+        <a class="nav-item" href="/post/">work/</a>
+        <a class="nav-item" href="mailto:onkesh2022@gmail.com">contact</a>
+      </nav>
+    )}
+
+    <div class="header-actions">
+      {privateMode && (
+        <a class="header-cta" href="#contact">Book a slot →</a>
+      )}
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+    background: rgba(251,250,246,0.94);
+    border-bottom: 1px solid var(--line);
+  }
+  [data-theme="dark"] .site-header {
+    background: rgba(13,17,23,0.94);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 56px;
+  }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .header-brand:hover { text-decoration: none; }
+  .header-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .nav-item {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--mute);
+    padding: 6px 10px;
+    border-radius: 3px;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+  }
+  .nav-item:hover, .nav-item.is-active {
+    background: var(--ink);
+    color: var(--paper);
+    text-decoration: none;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-cta {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--accent);
+    color: var(--paper);
+    padding: 8px 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: opacity 0.15s;
+  }
+  .header-cta:hover { opacity: 0.85; text-decoration: none; }
+  .theme-toggle {
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--mute);
+    line-height: 1;
+  }
+  @media (max-width: 768px) {
+    .site-header__inner { padding: 12px 20px; }
+    .header-nav { display: none; }
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // Scroll spy — only runs on homepage (section anchors exist)
+    var items = document.querySelectorAll('.nav-item[data-section]');
+    if (!items.length) return;
+
+    var sections = Array.from(items).map(function (item) {
+      return {
+        el: document.getElementById(item.dataset.section),
+        link: item,
+      };
+    }).filter(function (s) { return s.el; });
+
+    function update() {
+      var fromTop = window.scrollY + 120;
+      var active = null;
+      sections.forEach(function (s) {
+        if (s.el.offsetTop <= fromTop) active = s;
+      });
+      items.forEach(function (i) { i.classList.remove('is-active'); });
+      if (active) active.link.classList.add('is-active');
+    }
+
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+
+    // Smooth scroll on nav click
+    items.forEach(function (item) {
+      item.addEventListener('click', function (e) {
+        var sectionId = item.dataset.section;
+        var target = document.getElementById(sectionId);
+        if (!target) return;
+        e.preventDefault();
+        window.scrollTo({ top: target.offsetTop - 60, behavior: 'smooth' });
+      });
+    });
+  })();
+</script>
