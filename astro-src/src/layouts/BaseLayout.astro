@@ -20,6 +20,9 @@ const pageTitle = path === '/' ? `Onkesh Bansal | Senior Engineer — AI Systems
     <meta name="description" content={description} />
     <meta name="author" content="Onkesh Bansal" />
     <meta name="generator" content={Astro.generator} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
     <link rel="canonical" href={canonicalURL} />
     <title>{pageTitle}</title>
 
@@ -37,53 +40,53 @@ const pageTitle = path === '/' ? `Onkesh Bansal | Senior Engineer — AI Systems
     <slot name="head" />
     <script is:inline>
       (function () {
-        const t = localStorage.getItem('theme');
-        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
       })();
     </script>
   </head>
   <body>
     <div class="page-shell">
-      <header class="top-nav-wrap">
-        <nav class="top-nav">
-          <a class="brand" href="/">Onkesh Bansal</a>
-          <div class="nav-links">
-            <a class={path.startsWith('/about') ? 'active' : ''} href="/about/">About</a>
-            <a class={path.startsWith('/post') ? 'active' : ''} href="/post/">Work</a>
-            <a class={path.startsWith('/stack') ? 'active' : ''} href="/stack/">Stack</a>
-            <a class={path.startsWith('/lab') ? 'active' : ''} href="/lab/">Lab</a>
-            <a class={path.startsWith('/contact') ? 'active' : ''} href="/contact/">Contact</a>
-            <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a>
-          </div>
-          <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button>
-        </nav>
-      </header>
+      <slot name="header" />
 
       <main class="main-content">
         <slot />
       </main>
 
       <footer class="site-footer">
-        <p>© Onkesh Bansal 2026</p>
+        <div class="footer-inner">
+          <span>© Onkesh Bansal · 2026 · Toronto · Remote</span>
+          <span class="footer-links">
+            <a href="/about/">about</a>
+            <a href="/lab/">lab</a>
+            <a href="/stack/">stack</a>
+            <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener">linkedin</a>
+            <a href="https://github.com/onk3sh" target="_blank" rel="noopener">github</a>
+          </span>
+          <a href="mailto:onkesh2022@gmail.com" class="footer-email">hello</a>
+        </div>
       </footer>
     </div>
 
     <script is:inline>
       (function () {
         var btn = document.getElementById('theme-toggle');
+        if (!btn) return;
         function sync() {
-          var light = document.documentElement.getAttribute('data-theme') === 'light';
-          btn.textContent = light ? '🌙' : '☀';
+          var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+          btn.textContent = dark ? '☀' : '🌙';
+          btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
         }
         sync();
         btn.addEventListener('click', function () {
-          var light = document.documentElement.getAttribute('data-theme') === 'light';
-          if (light) {
+          var dark = document.documentElement.getAttribute('data-theme') === 'dark';
+          if (dark) {
             document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('theme', 'dark');
+            localStorage.removeItem('theme');
           } else {
-            document.documentElement.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme', 'light');
+            document.documentElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
           }
           sync();
         });
