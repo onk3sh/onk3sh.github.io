@@ -5,6 +5,8 @@
   --mute: #5a6170;
   --soft: #f1efe7;
   --accent: #c8a23a;
+  --accent-soft: rgba(200,162,58,0.18);
+  --grid-line: rgba(15,17,21,0.067);
   --line: rgba(15,17,21,0.13);
 
   /* legacy aliases — keep inner pages working */
@@ -22,10 +24,12 @@
   --mute: #7a8a9a;
   --soft: #161b22;
   --accent: #c8a23a;
+  --accent-soft: rgba(200,162,58,0.14);
+  --grid-line: rgba(255,255,255,0.04);
   --line: rgba(255,255,255,0.1);
 
   --bg: var(--paper);
-  --bg-elev: #161b22;
+  --bg-elev: var(--soft);
   --bg-soft: var(--soft);
   --text: var(--ink);
   --text-muted: var(--mute);
@@ -40,16 +44,10 @@ html, body {
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
   background: var(--paper);
   background-image:
-    linear-gradient(rgba(15,17,21,0.067) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15,17,21,0.067) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 32px 32px;
   color: var(--ink);
-}
-
-[data-theme="dark"] body {
-  background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
 }
 
 a { color: var(--accent); text-decoration: none; }
