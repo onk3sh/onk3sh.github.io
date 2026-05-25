@@ -1,0 +1,143 @@
+---
+interface Props {
+  availabilityBadge?: boolean;
+}
+const { availabilityBadge = false } = Astro.props;
+---
+
+<section class="hero-section">
+  <div class="hero-left">
+    <p class="hero-path">onk3sh.github.io / index</p>
+
+    {availabilityBadge && (
+      <div class="avail-pill">
+        <span class="avail-dot" aria-hidden="true"></span>
+        <span class="avail-text">1 slot · June 2026</span>
+      </div>
+    )}
+
+    <h1 class="hero-name">
+      Onkesh <em class="hero-name-serif">Bansal</em>
+    </h1>
+    <p class="hero-role">Senior Engineer · AI Systems &amp; Backend Platform</p>
+    <p class="hero-tagline">
+      Senior backend engineer building AI systems. Ten years shipping production platforms
+      in Java and Rails; now working at the seam where backend infrastructure meets autonomous agents.
+      {availabilityBadge && (
+        <span class="hero-highlight">Taking one freelance engagement starting June.</span>
+      )}
+    </p>
+  </div>
+
+  <aside class="hero-facts" aria-label="Quick facts">
+    <p class="facts-title">// facts</p>
+    <div class="facts-row"><span class="facts-label">Based</span><span class="facts-value">Toronto, ON</span></div>
+    <div class="facts-row"><span class="facts-label">Remote</span><span class="facts-value">US / CA</span></div>
+    <div class="facts-row"><span class="facts-label">Format</span><span class="facts-value">Full-time · Consulting</span></div>
+    <div class="facts-row"><span class="facts-label">Years</span><span class="facts-value">10+</span></div>
+    <div class="facts-row"><span class="facts-label">Email</span><span class="facts-value"><a href="mailto:onkesh2022@gmail.com">onkesh2022@gmail.com</a></span></div>
+  </aside>
+</section>
+
+<style>
+  .hero-section {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 64px;
+    align-items: end;
+    padding: 72px 56px 80px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-path {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin: 0 0 24px;
+  }
+  .avail-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(200,162,58,0.13);
+    padding: 6px 12px;
+    border-radius: 999px;
+    margin-bottom: 20px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12px;
+    color: var(--ink);
+  }
+  .avail-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; scale: 1; }
+    50% { opacity: 0.4; scale: 0.8; }
+  }
+  .hero-name {
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 76px;
+    line-height: 0.96;
+    letter-spacing: -0.025em;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 0 0 16px;
+  }
+  .hero-name-serif {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+  }
+  .hero-role {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 14px;
+    color: var(--mute);
+    margin: 0 0 28px;
+  }
+  .hero-tagline {
+    font-family: 'IBM Plex Serif', Georgia, serif;
+    font-size: 26px;
+    line-height: 1.4;
+    max-width: 720px;
+    margin: 0;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+  .hero-highlight {
+    background: linear-gradient(transparent 60%, rgba(200,162,58,0.27) 60%);
+    padding: 0 2px;
+  }
+  .facts-title {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    color: var(--mute);
+    border-bottom: 1px dashed rgba(15,17,21,0.2);
+    padding-bottom: 10px;
+    margin: 0 0 16px;
+  }
+  [data-theme="dark"] .facts-title { border-color: rgba(255,255,255,0.15); }
+  .facts-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 13px;
+    padding: 6px 0;
+  }
+  .facts-label { color: var(--mute); }
+  .facts-value { color: var(--ink); text-align: right; }
+  .facts-value a { color: var(--ink); }
+  .facts-value a:hover { color: var(--accent); text-decoration: none; }
+  @media (max-width: 900px) {
+    .hero-section { grid-template-columns: 1fr; gap: 40px; padding: 48px 20px 56px; }
+    .hero-name { font-size: 52px; }
+    .hero-tagline { font-size: 20px; }
+  }
+</style>
