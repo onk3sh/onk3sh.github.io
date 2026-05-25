@@ -206,3 +206,111 @@ export const recentProjects = [...projects].sort((a, b) =>
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
 }
+
+export interface CaseFileMetric {
+  value: string;
+  label: string;
+}
+
+export interface CaseFileProject {
+  id: string;
+  kind: string;
+  title: string;
+  client: string;
+  year: string;
+  duration: string;
+  role: string;
+  summary: string;
+  problem: string;
+  approach: string[];
+  result: string;
+  metrics: CaseFileMetric[];
+  diagram: 'latency' | 'changelog' | 'gates';
+  testimonial: { quote: string; attribution: string } | null;
+  stack: string[];
+  postSlug: string;
+}
+
+export const caseFiles: CaseFileProject[] = [
+  {
+    id: 'search',
+    kind: 'Performance Engineering',
+    title: 'Search Campaign Builder',
+    client: 'Basis Technologies',
+    year: '2024',
+    duration: '8 months',
+    role: 'Senior IC, performance lead',
+    summary: 'Java / Spring Boot service handling Google Ads campaign data. Diagnosed and resolved four root causes — missing indexes, N+1 queries, lock contention, a concurrency bug — and absorbed 4× workload growth at flat p99.',
+    problem: 'Campaign saves had crept from a comfortable 200ms p99 toward a 4-second cliff. Volume was projected to 4× over the next two quarters. The team had been treating it as a tuning problem; it was four problems wearing one trenchcoat.',
+    approach: [
+      'Instrumented the hot path end-to-end (request → save → Google Ads API) with span-level Datadog traces.',
+      'Built a synthetic reproduction harness to replay production traffic shapes against a staging cluster.',
+      'Separated the four overlapping failures: a missing composite index, an N+1 in line-item targeting, lock contention on a shared counter table, and a race in the bulk-save path.',
+      'Fixed them in order of leverage; measured each independently before stacking.',
+    ],
+    result: 'Flat p50/p95/p99 latency through a 4× traffic ramp. Postgres index hit rate moved from 81% to 93%. Zero on-call pages from the service in the following quarter.',
+    metrics: [
+      { value: '4×', label: 'workload growth absorbed' },
+      { value: 'flat', label: 'p50 / p95 / p99 latency' },
+      { value: '81→93%', label: 'Postgres index hit rate' },
+    ],
+    diagram: 'latency',
+    testimonial: null,
+    stack: ['Java', 'Spring Boot', 'Postgres', 'AWS', 'Datadog'],
+    postSlug: 'search-campaign-builder',
+  },
+  {
+    id: 'changelog',
+    kind: 'Platform Engineering',
+    title: 'Media Activation — Changelog System',
+    client: 'Basis Technologies',
+    year: '2023',
+    duration: '5 months',
+    role: 'Senior IC, sole engineer',
+    summary: 'From-scratch changelog for delivery publishing. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day across 5M+ rows serving 100+ internal users.',
+    problem: 'Trafficking teams could not tell what changed between publishes — they pieced it together from Slack threads and database queries. Mistakes were expensive: a wrong budget cap pushed live cost real client dollars.',
+    approach: [
+      'Designed an immutable snapshot model — each publish writes a normalised JSONB snapshot keyed by entity version.',
+      'Built a field-level diff calculator that walks two snapshots and emits typed change events (added, removed, changed, reordered).',
+      'Categorised changes server-side so the UI never has to do the work — Budget, Targeting, Creative, Status.',
+      'Backfilled six months of historical publishes overnight using Sidekiq batches.',
+    ],
+    result: 'Trafficking time to confirm a publish dropped from 12 minutes to under 90 seconds. Audit trail now satisfies the agency-side compliance team\'s record-of-change requirement.',
+    metrics: [
+      { value: '5M+', label: 'rows under diffing' },
+      { value: '500/day', label: 'publish events' },
+      { value: '100+', label: 'internal users' },
+    ],
+    diagram: 'changelog',
+    testimonial: null,
+    stack: ['Ruby on Rails', 'Postgres', 'Sidekiq', 'React'],
+    postSlug: 'media-activation',
+  },
+  {
+    id: 'harness',
+    kind: 'AI Systems',
+    title: 'Claude Code Office Harness',
+    client: 'Personal · used on production work',
+    year: '2025',
+    duration: 'Ongoing',
+    role: 'Designer & operator',
+    summary: 'Five-phase gate-enforced development pipeline around Claude Code. Three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), autonomous go/no-go reviewer.',
+    problem: 'Coding agents either forget everything between sessions or accumulate noise until they\'re useless. PR feedback patterns are predictable but the agent kept re-tripping on them. I needed a harness that learned from a specific reviewer team\'s habits.',
+    approach: [
+      'Audited 100+ PR review comments across two production codebases over three months — found 16 recurring failure categories.',
+      'Encoded each failure as a non-skippable gate in a five-phase pipeline: plan → search → implement → review → ship.',
+      'Built a three-tier memory: a Karpathy-pattern LLM wiki, an Obsidian second brain, and a JSONL session knowledge graph. Each tier has its own auditor and GC cycle.',
+      'Wrote a custom Bitbucket MCP server and an ast-grep + LSP search router for 70% lower retrieval-token cost.',
+    ],
+    result: 'Used daily on my own engineering work. Recurring review categories have dropped to near zero. Each new agent session resumes within a few hundred tokens of where the last one left off.',
+    metrics: [
+      { value: '5', label: 'iron-law gates' },
+      { value: '70%', label: 'search-token reduction' },
+      { value: '3-tier', label: 'audited memory' },
+    ],
+    diagram: 'gates',
+    testimonial: null,
+    stack: ['Python', 'MCP', 'ast-grep', 'LSP', 'Claude Code'],
+    postSlug: 'claude-code-harness',
+  },
+];

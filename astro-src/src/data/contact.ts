@@ -12,6 +12,7 @@ export type ContactContent = {
   metaDescription: string;
   hero: { headline: string; subline: string };
   intro: { heading: string; body: string };
+  email: string;
   links: SocialLink[];
   openTo: { heading: string; items: OpenToItem[] };
   messagingTips: { heading: string; intro: string; tips: string[] };
@@ -27,9 +28,11 @@ export const contact: ContactContent = {
     heading: 'How to reach me',
     body: 'LinkedIn is the fastest channel. I read everything; I reply to messages with enough context to skip the back-and-forth.',
   },
+  email: 'onkesh2022@gmail.com',
   links: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/in/onkesh' },
     { label: 'GitHub',   href: 'https://github.com/onk3sh' },
+    { label: 'Email',    href: 'mailto:onkesh2022@gmail.com' },
   ],
   openTo: {
     heading: "What I'm open to",
