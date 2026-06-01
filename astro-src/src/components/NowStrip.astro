@@ -1,0 +1,58 @@
+---
+import { now } from '../data/now';
+---
+
+<section class="now-strip" id="now" aria-label="What I'm working on now">
+  <div class="now-inner">
+    <span class="now-label">§ Now</span>
+    <div class="now-items">
+      {now.map((item) => (
+        <span class="now-item">
+          <span class="now-arrow" aria-hidden="true">→</span>
+          {item}
+        </span>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .now-strip {
+    background: var(--soft);
+    border-bottom: 1px solid var(--line);
+    padding: 28px 56px;
+  }
+  .now-inner {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .now-label {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--mute);
+  }
+  .now-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+  }
+  .now-item {
+    display: flex;
+    gap: 8px;
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    align-items: baseline;
+  }
+  .now-arrow { color: var(--accent); }
+  @media (max-width: 700px) {
+    .now-strip { padding: 20px; }
+    .now-inner { grid-template-columns: 1fr; gap: 12px; }
+    .now-items { flex-direction: column; gap: 8px; }
+  }
+</style>
