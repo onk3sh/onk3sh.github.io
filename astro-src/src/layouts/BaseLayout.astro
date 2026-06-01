@@ -4,9 +4,10 @@ import '../styles/site.css';
 interface Props {
   title: string;
   description?: string;
+  fullWidth?: boolean;
 }
 
-const { title, description = 'Onkesh Bansal — Senior engineer building production AI systems. Autonomous workflows, persistent memory, and LLM tooling. Toronto, open to remote US/Canada.' } = Astro.props;
+const { title, description = 'Onkesh Bansal — Senior engineer building production AI systems. Autonomous workflows, persistent memory, and LLM tooling. Toronto, open to remote US/Canada.', fullWidth = false } = Astro.props;
 const path = Astro.url.pathname;
 const canonicalURL = new URL(path, 'https://onk3sh.github.io').href;
 const pageTitle = path === '/' ? `Onkesh Bansal | Senior Engineer — AI Systems & Backend Platform` : `${title} | Onkesh Bansal`;
@@ -50,7 +51,7 @@ const pageTitle = path === '/' ? `Onkesh Bansal | Senior Engineer — AI Systems
     <div class="page-shell">
       <slot name="header" />
 
-      <main class="main-content">
+      <main class={fullWidth ? 'main-content main-content--full' : 'main-content'}>
         <slot />
       </main>
 

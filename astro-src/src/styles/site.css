@@ -72,6 +72,12 @@ a:hover { text-decoration: underline; }
   width: 100%;
 }
 
+.main-content--full {
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 .hero {
   padding: 1.5rem 1.75rem;
   border: 1px solid var(--line);
