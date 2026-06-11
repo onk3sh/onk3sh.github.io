@@ -82,7 +82,7 @@ a:hover { text-decoration: underline; }
   padding: 1.5rem 1.75rem;
   border: 1px solid var(--line);
   border-radius: 20px;
-  background: linear-gradient(160deg, rgba(25, 33, 46, 0.9), rgba(17, 22, 31, 0.94));
+  background: linear-gradient(160deg, rgba(255,255,255,0.92), rgba(238,244,255,0.95));
   box-shadow: var(--shadow);
 }
 
@@ -113,7 +113,7 @@ a:hover { text-decoration: underline; }
 .panel {
   border: 1px solid var(--line);
   border-radius: 16px;
-  background: linear-gradient(170deg, rgba(25, 33, 45, 0.86), rgba(20, 26, 36, 0.92));
+  background: linear-gradient(170deg, rgba(255,255,255,0.92), rgba(242,246,252,0.96));
   padding: 1.15rem 1.2rem;
   box-shadow: var(--shadow);
 }
@@ -139,14 +139,14 @@ a:hover { text-decoration: underline; }
 .card {
   border: 1px solid var(--line);
   border-radius: 16px;
-  background: linear-gradient(165deg, rgba(23, 31, 43, 0.88), rgba(15, 20, 28, 0.95));
+  background: linear-gradient(165deg, rgba(255,255,255,0.96), rgba(242,246,250,0.99));
   padding: 1rem;
   transition: transform 140ms ease, border-color 140ms ease;
 }
 
 .card:hover {
   transform: translateY(-2px);
-  border-color: #3a475d;
+  border-color: #a8bcd8;
   text-decoration: none;
 }
 
@@ -171,9 +171,9 @@ a:hover { text-decoration: underline; }
 
 .card-tag {
   font-size: 0.8rem;
-  color: #c9d4e3;
-  background: var(--accent-soft);
-  border: 1px solid #315178;
+  color: #1e4896;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid #a8c0e0;
   padding: 0.25rem 0.56rem;
   border-radius: 999px;
   text-transform: capitalize;
@@ -188,9 +188,9 @@ a:hover { text-decoration: underline; }
 
 .badge {
   font-size: 0.8rem;
-  color: #c9d4e3;
-  background: var(--accent-soft);
-  border: 1px solid #315178;
+  color: #1e4896;
+  background: rgba(37, 99, 235, 0.1);
+  border: 1px solid #a8c0e0;
   padding: 0.25rem 0.56rem;
   border-radius: 999px;
 }
@@ -231,7 +231,7 @@ a:hover { text-decoration: underline; }
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 0.95rem;
-  background: rgba(20, 27, 37, 0.92);
+  background: rgba(255, 255, 255, 0.88);
 }
 
 .site-footer {
@@ -240,33 +240,31 @@ a:hover { text-decoration: underline; }
   padding: 32px 56px 48px;
 }
 
-/* ── Light mode structural overrides ── */
-[data-theme="light"] .hero {
-  background: linear-gradient(160deg, rgba(255,255,255,0.92), rgba(238,244,255,0.95));
+/* ── Dark mode structural overrides ── */
+[data-theme="dark"] .hero {
+  background: linear-gradient(160deg, rgba(25, 33, 46, 0.9), rgba(17, 22, 31, 0.94));
 }
 
-[data-theme="light"] .panel {
-  background: linear-gradient(170deg, rgba(255,255,255,0.92), rgba(242,246,252,0.96));
+[data-theme="dark"] .panel {
+  background: linear-gradient(170deg, rgba(25, 33, 45, 0.86), rgba(20, 26, 36, 0.92));
 }
 
-[data-theme="light"] .card {
-  background: linear-gradient(165deg, rgba(255,255,255,0.96), rgba(242,246,250,0.99));
+[data-theme="dark"] .card {
+  background: linear-gradient(165deg, rgba(23, 31, 43, 0.88), rgba(15, 20, 28, 0.95));
 }
 
-[data-theme="light"] .card:hover { border-color: #a8bcd8; }
+[data-theme="dark"] .card:hover { border-color: #3a475d; }
 
-[data-theme="light"] .badge,
-[data-theme="light"] .card-tag {
-  color: #1e4896;
-  background: rgba(37, 99, 235, 0.1);
-  border-color: #a8c0e0;
+[data-theme="dark"] .badge,
+[data-theme="dark"] .card-tag {
+  color: #c9d4e3;
+  background: var(--accent-soft);
+  border-color: #315178;
 }
 
-[data-theme="light"] .list-clean li {
-  background: rgba(255, 255, 255, 0.88);
+[data-theme="dark"] .list-clean li {
+  background: rgba(20, 27, 37, 0.92);
 }
-
-[data-theme="light"] .site-footer { color: #6b7e96; }
 
 @media (max-width: 940px) {
   .grid-3,
