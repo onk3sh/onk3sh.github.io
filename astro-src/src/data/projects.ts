@@ -45,21 +45,21 @@ export const projects: Project[] = [
     projectType: 'work',
     tags: ['work', 'AI Systems'],
     summary:
-      'A five-phase gate-enforced development pipeline built around Claude Code. Each gate maps to a recurring PR review failure mode. Includes a three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), and autonomous go/no-go reviewer. Used on my own engineering work.',
+      'A six-phase gate-enforced development pipeline built around Claude Code. Each gate maps to a recurring PR review failure mode. Includes a three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), and autonomous go/no-go reviewer. Used on my own engineering work.',
     featured: true,
     sections: [
       {
         heading: 'Overview',
         paragraphs: [
           'Most AI coding workflows optimize the wrong variable. They tune prompts, swap models, chase context windows — and ship the same defects their human-only workflow shipped, just faster. The Claude Code Harness is the opposite bet: hold the model constant, and engineer the process around it the way you would engineer a deploy pipeline.',
-          'The Harness is a five-phase lifecycle — Requirements, Plan, Stress-Test, Implement, Self-Review, Completion — with non-skippable gates between each. Every gate maps to a specific failure mode observed recurring three or more times in my own pull-request review history. The Plan phase exists because reviewers kept catching scope creep. The Stress-Test phase exists because reviewers kept catching design choices that wouldn\'t survive a follow-up question. The Self-Review phase runs thirteen ordered checks across four parallel agents because those are the thirteen categories my reviewers have flagged most often.',
+          'The Harness is a six-phase lifecycle — Requirements, Plan, Stress-Test, Implement, Self-Review, Completion — with non-skippable gates between each. Every gate maps to a specific failure mode observed recurring three or more times in my own pull-request review history. The Plan phase exists because reviewers kept catching scope creep. The Stress-Test phase exists because reviewers kept catching design choices that wouldn\'t survive a follow-up question. The Self-Review phase runs thirteen ordered checks across four parallel agents because those are the thirteen categories my reviewers have flagged most often.',
           'Underneath the lifecycle sits a supporting stack: ast-grep and LSP queries instead of grep (about a 70% token reduction per task), difft for structural diffs that sub-agents can parse, a three-tier memory layer (LLM Wiki, Obsidian, JSONL session graph) audited by three independent linters, a custom Bitbucket MCP server built from scratch, and shellcheck wired as a hard PostToolUse hook. All of it lives in ~/.claude/ — zero company code, zero proprietary infra.',
         ],
       },
       {
         heading: 'Architecture',
         bullets: [
-          'Five-phase iron-law lifecycle: Requirements → Plan → Stress-Test → Implement → Self-Review → Completion. No phase skippable. Each gate traces to a recurring PR review failure mode.',
+          'Six-phase iron-law lifecycle: Requirements → Plan → Stress-Test → Implement → Self-Review → Completion. No phase skippable. Each gate traces to a recurring PR review failure mode.',
           'Evidence-required completion: no success claim without raw command output. Lint and test logs are the artifact, not a summary.',
           'Thirteen-check self-review across four parallel agents. Findings classified AUTO / BATCH / MANUAL and persisted to Obsidian before completion is allowed.',
           'Autonomous reviewer (dd-reviewer): runs the full thirteen-check pass on any PR and returns a go/no-go report. References /project-commands.md at runtime so review logic stays current.',
@@ -123,7 +123,7 @@ export const projects: Project[] = [
     projectType: 'personal',
     tags: ['personal', 'AI Systems'],
     summary:
-      'Conversational ETF research and portfolio analysis for Canadian markets. Composable Claude Code skills over live TSX data — scoring, risk-matched recommendations, and drift-based rebalancing. Phase 1 working; Phase 2 (portfolio tracking) in progress.',
+      'Conversational ETF research for Canadian retail investors. Phase 1 ships: risk-matched scoring and plain-language recommendations across 25+ TSX ETFs on live data. Phase 2 in progress: portfolio tracking, P&L, and drift-based rebalancing. The hard engineering: feeds that fail silently and scoring that must stay auditable when upstream data is partial.',
     featured: true,
     sections: [
       {
@@ -294,11 +294,11 @@ export const caseFiles: CaseFileProject[] = [
     year: '2025',
     duration: 'Ongoing',
     role: 'Designer & operator',
-    summary: 'Five-phase gate-enforced development pipeline around Claude Code. Three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), autonomous go/no-go reviewer.',
+    summary: 'Six-phase gate-enforced development pipeline around Claude Code. Three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), autonomous go/no-go reviewer.',
     problem: 'Coding agents either forget everything between sessions or accumulate noise until they\'re useless. PR feedback patterns are predictable but the agent kept re-tripping on them. I needed a harness that learned from a specific reviewer team\'s habits.',
     approach: [
       'Audited 100+ PR review comments across two production codebases over three months — found 16 recurring failure categories.',
-      'Encoded each failure as a non-skippable gate in a five-phase pipeline: plan → search → implement → review → ship.',
+      'Encoded each failure as a non-skippable gate in a six-phase pipeline: Requirements → Plan → Stress-Test → Implement → Self-Review → Completion.',
       'Built a three-tier memory: a Karpathy-pattern LLM wiki, an Obsidian second brain, and a JSONL session knowledge graph. Each tier has its own auditor and GC cycle.',
       'Wrote a custom Bitbucket MCP server and an ast-grep + LSP search router for 70% lower retrieval-token cost.',
     ],

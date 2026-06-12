@@ -29,7 +29,7 @@ export const roles: Role[] = [
     period: '2017 – 2021',
     location: 'Gurgaon, IN',
     description:
-      'Senior IC on US BFSI client engagements — insurance carriers and financial services. Owned test architecture and automation on enterprise policy and claims systems. Rewrote a 10,000+ test UI suite with an Excel-driven + Redis cache layer: CI time dropped from 5 hours to 45 minutes, ran on every merge. Delivered across Ruby on Rails, TypeScript, and Python stacks.',
+      'Senior IC on US BFSI enterprise engagements — insurance carriers and financial services. Rebuilt a 10,000+ UI test suite with an Excel-driven data layer and Redis cache: CI dropped from 5 hours to 45 minutes, running on every merge. Owned test architecture across policy and claims systems. Delivered on Ruby on Rails, TypeScript, and Python stacks.',
   },
   {
     company: 'Adobe Systems',
