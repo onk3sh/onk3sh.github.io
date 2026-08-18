@@ -19,7 +19,6 @@ const isHome = path === '/';
         <a class="nav-item" href="#work" data-section="work">work/</a>
         <a class="nav-item" href="#writing" data-section="writing">writing/</a>
         <a class="nav-item" href="#now" data-section="now">now</a>
-        <a class="nav-item" href="#career" data-section="career">career</a>
         <a class="nav-item" href="#contact" data-section="contact">contact</a>
       </nav>
     ) : (
@@ -47,7 +46,7 @@ const isHome = path === '/';
     background: rgba(251,250,246,0.94);
     border-bottom: 1px solid var(--line);
   }
-  [data-theme="dark"] .site-header {
+  :global([data-theme="dark"]) .site-header {
     background: rgba(13,17,23,0.94);
   }
   .site-header__inner {

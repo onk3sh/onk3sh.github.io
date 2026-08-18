@@ -5,7 +5,6 @@ import Hero from '../components/Hero.astro';
 import NowStrip from '../components/NowStrip.astro';
 import SectionBar from '../components/SectionBar.astro';
 import { featuredWorkProjects, featuredPersonalProjects, featuredArticles } from '../data/projects';
-import { roles } from '../data/experience';
 import { hero } from '../data/hero';
 ---
 
@@ -53,25 +52,7 @@ import { hero } from '../data/hero';
     </div>
   </div>
 
-  <SectionBar id="career" label="§ 03" title="Career" />
-  <div class="home-container home-section">
-    <div class="exp-panel">
-      {roles.map((role, i) => (
-        <div class={`exp-row${i < roles.length - 1 ? ' exp-divider' : ''}`}>
-          <div class="exp-left">
-            <div class="exp-period">{role.period}</div>
-            <strong class="exp-company">{role.company}</strong>
-          </div>
-          <div class="exp-right">
-            <div class="exp-title">{role.title} · {role.location}</div>
-            <p>{role.description}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-
-  <SectionBar id="stack" label="§ 04" title="Stack" />
+  <SectionBar id="stack" label="§ 03" title="Stack" />
   <div class="home-container home-section">
     <div class="stack-grid">
       <div class="stack-row">
@@ -120,18 +101,6 @@ import { hero } from '../data/hero';
   .home-container { max-width: 1120px; margin: 0 auto; padding: 0 56px; }
   .home-section { padding-top: 40px; padding-bottom: 40px; }
 
-  .exp-panel { border: 1px solid var(--line); border-radius: 16px; padding: 1.2rem; }
-  .exp-row { display: grid; grid-template-columns: 180px 1fr; gap: 1rem; padding: 1rem 0; }
-  .exp-divider { border-bottom: 1px solid var(--line); }
-  .exp-row:first-child { padding-top: 0; }
-  .exp-row:last-child  { padding-bottom: 0; }
-  .exp-left { display: flex; flex-direction: column; gap: 0.2rem; }
-  .exp-period  { font-size: 0.8rem; color: var(--mute); }
-  .exp-company { color: var(--accent); font-size: 0.95rem; font-weight: 600; }
-  .exp-right { display: flex; flex-direction: column; gap: 0.3rem; }
-  .exp-title { font-size: 0.9rem; font-weight: 600; color: var(--ink); }
-  .exp-right p { margin: 0; font-size: 0.88rem; color: var(--mute); line-height: 1.6; }
-
   .stack-grid { display: flex; flex-direction: column; }
   .stack-row { display: grid; grid-template-columns: 160px 1fr; gap: 1rem; align-items: baseline; padding: 0.65rem 0; border-bottom: 1px solid var(--line); }
   .stack-row:last-child { border-bottom: none; }
@@ -151,7 +120,6 @@ import { hero } from '../data/hero';
 
   @media (max-width: 900px) {
     .home-container { padding: 0 20px; }
-    .exp-row { grid-template-columns: 1fr; }
     .stack-row { grid-template-columns: 1fr; gap: 0.2rem; }
     .contact-strip { flex-direction: column; align-items: flex-start; gap: 12px; }
   }
