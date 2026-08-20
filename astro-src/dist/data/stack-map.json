@@ -26,7 +26,7 @@
   ],
   "graph": {
     "nodes": [
-      {"id": "harness",    "label": "Claude Code Harness", "type": "project", "group": "ai",      "detail": "Autonomous ticket-to-PR workflow with persistent session memory and a self-improving code review agent built on Claude Code."},
+      {"id": "harness",    "label": "Agent Dev Harness",   "type": "project", "group": "ai",      "detail": "Autonomous ticket-to-PR workflow with persistent session memory and a self-improving code review agent built on a coding agent."},
       {"id": "canvestai",  "label": "CanvestAI",           "type": "project", "group": "ai",      "detail": "Conversational ETF analysis and portfolio rebalancing for Canadian investors — live market data, risk-matched scoring, LLM-powered recommendations."},
       {"id": "basis",      "label": "Basis Platform",      "type": "project", "group": "backend", "detail": "Full-stack engineering across a production ad-tech platform — Ruby on Rails and Java Spring Boot services, frontend systems, internal tooling."},
       {"id": "rails",      "label": "Ruby on Rails",       "type": "tech",    "group": "backend", "detail": "Daily production use — full-stack Rails development across a core ad-tech platform."},

@@ -31,6 +31,7 @@ import { hero } from '../data/hero';
         </a>
       ))}
     </div>
+    <a class="section-more" href="/post/">all work →</a>
   </div>
 
   <SectionBar id="writing" label="§ 02" title="Writing" />
@@ -50,6 +51,7 @@ import { hero } from '../data/hero';
         </a>
       ))}
     </div>
+    <a class="section-more" href="/writing/">all writing →</a>
   </div>
 
   <SectionBar id="stack" label="§ 03" title="Stack" />
@@ -106,6 +108,9 @@ import { hero } from '../data/hero';
   .stack-row:last-child { border-bottom: none; }
   .stack-label { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 0.82rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
   .stack-items { font-size: 0.88rem; color: var(--mute); line-height: 1.6; }
+
+  .section-more { display: inline-block; margin-top: 24px; font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 12px; letter-spacing: 0.04em; color: var(--mute); text-decoration: none; transition: color 0.15s; }
+  .section-more:hover { color: var(--accent); text-decoration: none; }
 
   .contact-strip { display: flex; gap: 32px; align-items: center; border-top: 1px solid var(--line); }
   .contact-link { font-family: 'IBM Plex Mono', ui-monospace, monospace; font-size: 13px; color: var(--mute); text-decoration: none; transition: color 0.15s; }

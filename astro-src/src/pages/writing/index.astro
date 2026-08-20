@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import { recentWriting } from '../../data/projects';
+---
+
+<BaseLayout title="Writing" description="Writing by Onkesh Bansal — essays on agent memory, AI code review pipelines, and code search tooling, each grounded in production data.">
+  <Header slot="header" path={Astro.url.pathname} />
+  <section class="hero">
+    <h1>Writing</h1>
+    <p>Essays on agent infrastructure — memory layers, review gates, and search tooling. Each one is grounded in numbers from my own production work rather than benchmarks I did not run.</p>
+  </section>
+
+  <section class="section">
+    <div class="grid-2">
+      {recentWriting.map((article) => (
+        <a class="card" href={`/post/${article.slug}/`}>
+          <h3>{article.title}</h3>
+          <p>{article.summary}</p>
+          <div class="badge-row">
+            <span class="badge">{new Date(article.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+            {article.tags && article.tags.map((tag) => (
+              <span class={`card-tag tag-${article.projectType}`}>{tag}</span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

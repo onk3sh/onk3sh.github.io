@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
-import { recentProjects } from '../../data/projects';
+import { recentWork } from '../../data/projects';
 
 ---
 
@@ -9,12 +9,12 @@ import { recentProjects } from '../../data/projects';
   <Header slot="header" path={Astro.url.pathname} />
   <section class="hero">
     <h1>Work</h1>
-    <p>Projects and write-ups on production AI systems and backend platform engineering.</p>
+    <p>Projects in production AI systems and backend platform engineering. Essays live under <a href="/writing/">writing</a>.</p>
   </section>
 
   <section class="section">
     <div class="grid-2">
-      {recentProjects.map((project) => (
+      {recentWork.map((project) => (
         <a class="card" href={`/post/${project.slug}/`}>
           <h3>{project.title}</h3>
           <p>{project.summary}</p>

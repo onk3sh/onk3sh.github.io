@@ -49,20 +49,20 @@ export const projects: Project[] = [
     sections: [],
   },
   {
-    slug: 'claude-code-harness',
-    title: 'Claude Code Office Harness',
+    slug: 'agent-development-harness',
+    title: 'Agent Development Harness',
     date: '2026-05-01',
     type: 'project',
     projectType: 'work',
     tags: ['work', 'AI Systems'],
     summary:
-      'A six-phase gate-enforced development pipeline built around Claude Code. Each gate maps to a recurring PR review failure mode. Includes a three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), and autonomous go/no-go reviewer. Used on my own engineering work.',
+      'A six-phase gate-enforced development pipeline for AI coding agents. Each gate maps to a recurring PR review failure mode. Includes a three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), and autonomous go/no-go reviewer. Used on my own engineering work.',
     featured: true,
     sections: [
       {
         heading: 'Overview',
         paragraphs: [
-          'Most AI coding workflows optimize the wrong variable. They tune prompts, swap models, chase context windows — and ship the same defects their human-only workflow shipped, just faster. The Claude Code Harness is the opposite bet: hold the model constant, and engineer the process around it the way you would engineer a deploy pipeline.',
+          'Most AI coding workflows optimize the wrong variable. They tune prompts, swap models, chase context windows — and ship the same defects their human-only workflow shipped, just faster. The harness is the opposite bet: hold the model constant, and engineer the process around it the way you would engineer a deploy pipeline.',
           'The Harness is a six-phase lifecycle — Requirements, Plan, Stress-Test, Implement, Self-Review, Completion — with non-skippable gates between each. Every gate maps to a specific failure mode observed recurring three or more times in my own pull-request review history. The Plan phase exists because reviewers kept catching scope creep. The Stress-Test phase exists because reviewers kept catching design choices that wouldn\'t survive a follow-up question. The Self-Review phase runs thirteen ordered checks across four parallel agents because those are the thirteen categories my reviewers have flagged most often.',
           'Underneath the lifecycle sits a supporting stack: ast-grep and LSP queries instead of grep (about a 70% token reduction per task), difft for structural diffs that sub-agents can parse, a three-tier memory layer (LLM Wiki, Obsidian, JSONL session graph) audited by three independent linters, a custom Bitbucket MCP server built from scratch, and shellcheck wired as a hard PostToolUse hook. All of it lives in ~/.claude/ — zero company code, zero proprietary infra.',
         ],
@@ -209,6 +209,10 @@ export const featuredArticles = projects.filter((p) => p.featured && p.type === 
 export const recentProjects = [...projects].sort((a, b) =>
   a.date < b.date ? 1 : -1
 );
+
+// Newest first. `recentWork` backs /post/ (projects only); `recentWriting` backs /writing/.
+export const recentWork = recentProjects.filter((p) => p.type === 'project');
+export const recentWriting = recentProjects.filter((p) => p.type === 'article');
 
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
