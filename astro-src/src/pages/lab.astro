@@ -74,11 +74,11 @@ import { visualizerSteps } from '../data/lab';
     </div>
   </section>
 
-  <!-- ── CanvestAI Sector Dashboard ── -->
+  <!-- ── CanvestAI Dashboard ── -->
   <section class="section">
-    <h2>CanvestAI — Sector Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2>
+    <h2>CanvestAI — Model Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2>
     <p class="section-sub">
-      Equity sector bias signals from CanvestAI · 30-day horizon · 15 sectors · Canadian ETF universe. Ranked by model confidence.
+      Bias signals from CanvestAI · 30-day horizon · Canadian ETF universe. Ranked by model confidence.
     </p>
     <div class="panel canvest-panel">
       <div id="canvest-risk-bar" class="risk-bar" style="display:none">
@@ -87,41 +87,14 @@ import { visualizerSteps } from '../data/lab';
         <span id="canvest-risk-note" class="risk-bar-note"></span>
       </div>
 
-      <!-- Portfolio Allocation -->
-      <div id="canvest-alloc-panel" style="display:none">
-        <div class="alloc-header">
-          <span class="alloc-title">Model Allocation</span>
-          <span class="alloc-meta" id="alloc-meta"></span>
-        </div>
-        <div id="alloc-rows" class="alloc-rows"></div>
-        <div class="alloc-note" id="alloc-note"></div>
-      </div>
-
       <!-- Tabs -->
       <div class="canvest-tabs">
-        <button class="canvest-tab active" data-tab="sectors">Sectors</button>
-        <button class="canvest-tab" data-tab="etfs">ETFs</button>
+        <button class="canvest-tab active" data-tab="etfs">ETFs</button>
         <button class="canvest-tab" data-tab="trades">Paper Trades</button>
       </div>
 
-      <!-- Sectors tab -->
-      <div id="tab-sectors">
-        <div class="canvest-filter-row">
-          <div class="filter-chips" id="bias-chips">
-            <button class="chip active" data-bias="all">All</button>
-            <button class="chip" data-bias="bullish">Bullish</button>
-            <button class="chip" data-bias="neutral">Neutral</button>
-            <button class="chip" data-bias="bearish">Bearish</button>
-          </div>
-          <span class="etf-count" id="sector-count"></span>
-        </div>
-        <div id="canvest-grid" class="canvest-grid">
-          <p class="canvest-loading">Loading…</p>
-        </div>
-      </div>
-
       <!-- ETFs tab -->
-      <div id="tab-etfs" style="display:none">
+      <div id="tab-etfs">
         <div class="canvest-filter-row">
           <div class="filter-chips" id="etf-bias-chips">
             <button class="chip active" data-etf-bias="all">All</button>
@@ -141,7 +114,6 @@ import { visualizerSteps } from '../data/lab';
               <tr>
                 <th>Ticker</th>
                 <th>Name</th>
-                <th>Sector</th>
                 <th>Bias</th>
                 <th title="Model confidence across signal sources">Confidence</th>
                 <th title="Management Expense Ratio">MER %</th>
@@ -168,7 +140,6 @@ import { visualizerSteps } from '../data/lab';
               <tr>
                 <th>ETF</th>
                 <th>Name</th>
-                <th>Sector</th>
                 <th>Entry</th>
                 <th>P&amp;L %</th>
                 <th title="P&L minus SPY return over same period">vs SPY</th>
@@ -268,12 +239,8 @@ import { visualizerSteps } from '../data/lab';
 
 <script is:inline>
 (function () {
-  var activeBias = 'all';
-  var sectors = [];
+  var signalGroups = [];
   var etfMeta = {}; /* ticker -> { name, mer } */
-
-  var BIAS_COLOR = { bullish: '#34d399', neutral: '#f59e0b', bearish: '#f87171' };
-  var BIAS_LIGHT = { bullish: '#0d6f3f', neutral: '#92400e', bearish: '#991b1b' };
 
   function isLight() {
     return document.documentElement.getAttribute('data-theme') === 'light';
@@ -281,48 +248,12 @@ import { visualizerSteps } from '../data/lab';
 
   function fmt1(n) { return n.toFixed(1); }
 
-  function sectorLabel(s) {
-    var map = {
-      broadmarket:'Broad Market', technology:'Technology', finance:'Finance',
-      healthcare:'Healthcare', energy:'Energy', industrials:'Industrials',
-      consumer:'Consumer', materials:'Materials', realestate:'Real Estate',
-      utilities:'Utilities', semiconductors:'Semiconductors', cleanenergy:'Clean Energy',
-      biotech:'Biotech', defense:'Defense', gold:'Gold'
-    };
-    return map[s] || s.charAt(0).toUpperCase() + s.slice(1);
-  }
-
-  function render() {
-    var light = isLight();
-    var grid = document.getElementById('canvest-grid');
-    var count = document.getElementById('sector-count');
-    var rows = sectors.filter(function(s) {
-      return activeBias === 'all' || s.bias === activeBias;
-    });
-    count.textContent = rows.length + ' sector' + (rows.length !== 1 ? 's' : '');
-
-    if (rows.length === 0) {
-      grid.innerHTML = '<p class="canvest-loading">No sectors match this filter.</p>';
-      return;
-    }
-
-    grid.innerHTML = rows.map(function(s) {
-      var bc = light ? BIAS_LIGHT[s.bias] : BIAS_COLOR[s.bias];
-      var barW = Math.round((s.confidence / 100) * 100);
-      var tickers = (s.etfs_ca || []).map(function(t) {
-        var tk = typeof t === 'string' ? t : t.ticker;
-        return '<span class="ca-ticker">' + tk.replace('.TO','') + '</span>';
-      }).join('');
-      return '<div class="sector-card">' +
-        '<div class="sector-card-top">' +
-          '<span class="sector-name">' + sectorLabel(s.sector) + '</span>' +
-          '<span class="bias-badge" style="color:' + bc + '">' + s.bias + '</span>' +
-        '</div>' +
-        '<div class="conf-bar-wrap"><div class="conf-bar" style="width:' + barW + '%"></div></div>' +
-        '<div class="conf-label" title="Confidence reflects model agreement across signal sources">' + fmt1(s.confidence) + '% confidence</div>' +
-        (tickers ? '<div class="ca-tickers">' + tickers + '</div>' : '') +
-      '</div>';
-    }).join('');
+  /* The export carries calendar dates ("2026-08-19"). new Date() reads those as
+     UTC midnight, which lands on the previous day west of Greenwich, so build
+     the date from its parts instead. */
+  function parseDay(s) {
+    var p = String(s).split('-');
+    return new Date(+p[0], +p[1] - 1, +p[2]);
   }
 
   /* ── tabs ── */
@@ -331,18 +262,9 @@ import { visualizerSteps } from '../data/lab';
       document.querySelectorAll('.canvest-tab').forEach(function(t) { t.classList.remove('active'); });
       tab.classList.add('active');
       var target = tab.dataset.tab;
-      document.getElementById('tab-sectors').style.display = target === 'sectors' ? '' : 'none';
       document.getElementById('tab-etfs').style.display = target === 'etfs' ? '' : 'none';
       document.getElementById('tab-trades').style.display = target === 'trades' ? '' : 'none';
     });
-  });
-
-  document.getElementById('bias-chips').addEventListener('click', function(e) {
-    var btn = e.target.closest('[data-bias]');
-    if (!btn) return;
-    activeBias = btn.dataset.bias;
-    document.querySelectorAll('[data-bias]').forEach(function(b) { b.classList.toggle('active', b === btn); });
-    render();
   });
 
   var US_ETF_NAMES = {
@@ -353,8 +275,13 @@ import { visualizerSteps } from '../data/lab';
     XLF: 'Financial Select Sector SPDR',
     XLI: 'Industrial Select Sector SPDR',
     XLU: 'Utilities Select Sector SPDR',
+    XLB: 'Materials Select Sector SPDR',
+    XLV: 'Health Care Select Sector SPDR',
     XBI: 'SPDR S&P Biotech ETF',
-    GDX: 'VanEck Gold Miners ETF'
+    GDX: 'VanEck Gold Miners ETF',
+    IAU: 'iShares Gold Trust',
+    ICLN: 'iShares Global Clean Energy ETF',
+    SMH: 'VanEck Semiconductor ETF'
   };
 
   /* ── ETF tab filter ── */
@@ -382,14 +309,19 @@ import { visualizerSteps } from '../data/lab';
     var BIAS_COLOR_ETF = { bullish: '#34d399', neutral: '#f59e0b', bearish: '#f87171' };
     var BIAS_LIGHT_ETF = { bullish: '#0d6f3f', neutral: '#92400e', bearish: '#991b1b' };
     var rows = [];
-    sectors.forEach(function(s) {
+    var seen = {};
+    signalGroups.forEach(function(s) {
       if (activeEtfBias !== 'all' && s.bias !== activeEtfBias) return;
       (s.etfs_ca || []).forEach(function(t) {
         var clean = (typeof t === 'string' ? t : t.ticker).replace('.TO', '');
+        if (seen[clean]) return;
         var meta = etfMeta[clean] || {};
-        var mer = meta.mer != null ? meta.mer : null;
+        /* the export carries its own MER; fall back to the static lookup */
+        var mer = (typeof t === 'object' && t.mer_pct != null) ? t.mer_pct
+                : (meta.mer != null ? meta.mer : null);
         if (mer !== null && mer > maxMer) return;
-        rows.push({ ticker: clean, name: meta.name || '—', sector: s.sector, bias: s.bias, confidence: s.confidence, mer: mer });
+        seen[clean] = true;
+        rows.push({ ticker: clean, name: meta.name || '—', bias: s.bias, confidence: s.confidence, mer: mer });
       });
     });
     rows.sort(function(a, b) { return b.confidence - a.confidence; });
@@ -404,7 +336,6 @@ import { visualizerSteps } from '../data/lab';
       return '<tr>' +
         '<td class="etf-ticker">' + r.ticker + '</td>' +
         '<td style="font-size:0.82rem;color:var(--text-muted)">' + r.name + '</td>' +
-        '<td style="color:var(--text-muted);font-size:0.85rem">' + sectorLabel(r.sector) + '</td>' +
         '<td><span style="color:' + bc + ';font-weight:700;font-size:0.82rem;text-transform:capitalize">' + r.bias + '</span></td>' +
         '<td><div style="display:flex;align-items:center;gap:0.5rem">' +
           '<div style="width:80px;height:4px;background:var(--bg-soft);border-radius:999px;overflow:hidden">' +
@@ -442,11 +373,10 @@ import { visualizerSteps } from '../data/lab';
       var pnlStr = (t.pnl_pct >= 0 ? '+' : '') + fmt1(t.pnl_pct) + '%';
       var excess = t.excess_return != null ? ((t.excess_return >= 0 ? '+' : '') + fmt1(t.excess_return) + '%') : '—';
       var excessColor = t.excess_return != null ? (t.excess_return >= 0 ? PNL_POS : PNL_NEG) : 'var(--text-muted)';
-      var entryDate = t.entry_date ? new Date(t.entry_date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : '—';
+      var entryDate = t.entry_date ? parseDay(t.entry_date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : '—';
       return '<tr>' +
         '<td class="etf-ticker">' + t.etf + '</td>' +
         '<td style="font-size:0.82rem;color:var(--text-muted)">' + (US_ETF_NAMES[t.etf] || '—') + '</td>' +
-        '<td style="font-size:0.82rem;color:var(--text-muted)">' + sectorLabel(t.sector) + '</td>' +
         '<td style="font-size:0.82rem;color:var(--text-muted)">' + entryDate + '</td>' +
         '<td style="font-weight:700;font-size:0.82rem;color:' + pnlColor + '">' + pnlStr + '</td>' +
         '<td style="font-size:0.82rem;color:' + excessColor + '">' + excess + '</td>' +
@@ -455,7 +385,7 @@ import { visualizerSteps } from '../data/lab';
     }).join('');
   }
 
-  new MutationObserver(function() { render(); renderEtfs(); renderTrades(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  new MutationObserver(function() { renderEtfs(); renderTrades(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   Promise.all([
     fetch('/data/canvest-recommendations.json').then(function(r) { if (!r.ok) throw new Error(); return r.json(); }),
@@ -465,7 +395,7 @@ import { visualizerSteps } from '../data/lab';
       var data = results[0];
       var etfsData = results[1];
       (etfsData.etfs || []).forEach(function(e) { etfMeta[e.ticker] = { name: e.name, mer: e.mer }; });
-      sectors = (data.sectors || []).slice().sort(function(a,b) { return b.confidence - a.confidence; });
+      signalGroups = (data.sectors || []).slice().sort(function(a, b) { return b.confidence - a.confidence; });
 
       /* systemic risk bar */
       if (data.systemic_risk) {
@@ -473,84 +403,54 @@ import { visualizerSteps } from '../data/lab';
         var lvl = document.getElementById('canvest-risk-level');
         var note = document.getElementById('canvest-risk-note');
         var riskColor = { LOW: '#34d399', MEDIUM: '#f59e0b', HIGH: '#f87171' };
-        var bullish = sectors.filter(function(s) { return s.bias === 'bullish'; }).length;
-        var neutral = sectors.filter(function(s) { return s.bias === 'neutral'; }).length;
-        var bearish = sectors.filter(function(s) { return s.bias === 'bearish'; }).length;
-        var generatedNote = bullish + ' of ' + sectors.length + ' sectors bullish';
-        if (neutral > 0) generatedNote += ', ' + neutral + ' neutral';
-        if (bearish > 0) generatedNote += ', ' + bearish + ' bearish';
-        generatedNote += '. ' + (data.horizon_days || 30) + '-day horizon.';
         bar.style.display = '';
         lvl.textContent = data.systemic_risk.level + ' (' + data.systemic_risk.score + ')';
         lvl.style.color = riskColor[data.systemic_risk.level] || '#f59e0b';
-        note.textContent = generatedNote;
-      }
-
-      /* portfolio allocation */
-      var alloc = data.portfolio_allocation;
-      if (alloc && (alloc.allocations || []).length > 0) {
-        var BIAS_ALLOC = { bullish: '#34d399', neutral: '#f59e0b', bearish: '#f87171' };
-        var panel = document.getElementById('canvest-alloc-panel');
-        var meta = document.getElementById('alloc-meta');
-        var rowsEl = document.getElementById('alloc-rows');
-        var noteEl = document.getElementById('alloc-note');
-        var totalInvest = alloc.investment || 0;
-        meta.textContent = 'CAD universe · simulated ' + (alloc.currency || 'USD') + ' ' + totalInvest.toLocaleString() + ' · as of ' + alloc.as_of;
-        rowsEl.innerHTML = alloc.allocations.map(function(a) {
-          var pct = a.allocation_pct || 0;
-          var bc = BIAS_ALLOC[a.bias] || '#f59e0b';
-          var until = a.hold_until ? new Date(a.hold_until).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : '—';
-          return '<div class="alloc-row">' +
-            '<div class="alloc-row-left">' +
-              '<span class="alloc-sector">' + sectorLabel(a.sector) + '</span>' +
-              '<span class="alloc-tickers">' + a.etf_ca.replace('.TO','') + (a.etf_us ? ' · ' + a.etf_us : '') + '</span>' +
-            '</div>' +
-            '<div class="alloc-row-right">' +
-              '<div class="alloc-bar-wrap"><div class="alloc-bar" style="width:' + Math.round(pct) + '%;background:' + bc + '"></div></div>' +
-              '<span class="alloc-pct">' + pct.toFixed(0) + '%</span>' +
-              '<span class="alloc-until">hold to ' + until + '</span>' +
-            '</div>' +
-          '</div>';
-        }).join('');
-        if (alloc.cash_pct > 0) {
-          noteEl.textContent = alloc.cash_pct.toFixed(0) + '% cash · ' + (alloc.note || '');
-        } else {
-          noteEl.textContent = alloc.note || '';
-        }
-        panel.style.display = '';
+        note.textContent = data.systemic_risk.note || ((data.horizon_days || 30) + '-day horizon.');
       }
 
       /* disclaimer date */
       if (data.generated_at) {
-        var d = new Date(data.generated_at);
+        var d = parseDay(data.generated_at);
         var disc = document.getElementById('canvest-disclaimer');
-        if (disc) disc.textContent = 'Not financial advice. Generated by CanvestAI · updated ' + d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' }) + ' · runs on demand.';
+        if (disc) disc.textContent = 'Not financial advice. Generated by CanvestAI \u00b7 updated ' + d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' }) + ' \u00b7 runs on demand.';
       }
 
-      /* paper trades */
-      if (data.paper_trading) {
-        var pt = data.paper_trading;
-        paperTrades.open_positions = pt.open_positions || [];
-        paperTrades.closed_positions = pt.closed_positions || [];
-        paperTrades.summary = pt.summary || {};
-        var s = paperTrades.summary;
-        var summaryEl = document.getElementById('trades-summary');
-        var totalPnl = s.total_pnl_usd || 0;
+      /* paper trades \u2014 the export nests results per risk tier */
+      var pt = data.paper_trading;
+      if (pt) {
+        var tier = pt.standard_tier || pt;
+        paperTrades.open_positions = tier.open_positions || [];
+        paperTrades.closed_positions = tier.closed_positions || [];
+
+        /* default to whichever bucket actually has trades */
+        if (paperTrades.open_positions.length === 0 && paperTrades.closed_positions.length > 0) {
+          activeTradeStatus = 'closed';
+          document.querySelectorAll('[data-trade-status]').forEach(function(b) {
+            b.classList.toggle('active', b.dataset.tradeStatus === 'closed');
+          });
+        }
+
+        var openCount = paperTrades.open_positions.length;
+        var closedCount = paperTrades.closed_positions.length;
+        var winRate = tier.win_rate != null ? tier.win_rate : 0;
+        var totalPnl = tier.total_pnl_usd || 0;
+        var avgExcess = tier.avg_excess_vs_spy || 0;
         var pnlColor = totalPnl >= 0 ? '#34d399' : '#f87171';
-        summaryEl.innerHTML =
-          '<div class="trades-stat"><span class="trades-stat-val">' + (s.win_rate_pct || 0).toFixed(1) + '%</span><span class="trades-stat-label">win rate</span></div>' +
+        document.getElementById('trades-summary').innerHTML =
+          '<div class="trades-stat"><span class="trades-stat-val">' + winRate.toFixed(1) + '%</span><span class="trades-stat-label">win rate</span></div>' +
           '<div class="trades-stat"><span class="trades-stat-val" style="color:' + pnlColor + '">' + (totalPnl >= 0 ? '+' : '') + '$' + totalPnl.toFixed(0) + '</span><span class="trades-stat-label">total P&L</span></div>' +
-          '<div class="trades-stat"><span class="trades-stat-val">' + (s.open_trades || 0) + '</span><span class="trades-stat-label">open</span></div>' +
-          '<div class="trades-stat"><span class="trades-stat-val">' + (s.closed_trades || 0) + '</span><span class="trades-stat-label">closed</span></div>' +
-          '<div class="trades-stat"><span class="trades-stat-val" style="color:' + ((s.avg_excess_vs_spy || 0) >= 0 ? '#34d399' : '#f87171') + '">' + ((s.avg_excess_vs_spy || 0) >= 0 ? '+' : '') + fmt1(s.avg_excess_vs_spy || 0) + '%</span><span class="trades-stat-label">avg vs SPY</span></div>';
+          '<div class="trades-stat"><span class="trades-stat-val">' + openCount + '</span><span class="trades-stat-label">open</span></div>' +
+          '<div class="trades-stat"><span class="trades-stat-val">' + closedCount + '</span><span class="trades-stat-label">closed</span></div>' +
+          '<div class="trades-stat"><span class="trades-stat-val" style="color:' + (avgExcess >= 0 ? '#34d399' : '#f87171') + '">' + (avgExcess >= 0 ? '+' : '') + fmt1(avgExcess) + '%</span><span class="trades-stat-label">avg vs SPY</span></div>';
       }
 
-      render();
       renderEtfs();
       renderTrades();
     })
     .catch(function() {
-      document.getElementById('canvest-grid').innerHTML = '<p class="canvest-loading">Recommendations unavailable.</p>';
+      document.getElementById('canvest-etf-tbody').innerHTML =
+        '<tr><td colspan="5" class="canvest-loading">Recommendations unavailable.</td></tr>';
     });
 })();
 </script>
@@ -947,12 +847,6 @@ import { visualizerSteps } from '../data/lab';
     color: var(--text-muted);
   }
 
-  .canvest-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-  }
-
   .canvest-loading {
     color: var(--text-muted);
     font-size: 0.9rem;
@@ -960,127 +854,6 @@ import { visualizerSteps } from '../data/lab';
     padding: 2rem 0;
     grid-column: 1/-1;
     margin: 0;
-  }
-
-  .sector-card {
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    background: linear-gradient(165deg, rgba(20,28,40,0.9), rgba(14,20,30,0.95));
-    padding: 0.85rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .sector-card-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-  }
-
-  .sector-name {
-    font-size: 0.88rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-
-  .bias-badge {
-    font-size: 0.74rem;
-    font-weight: 700;
-    text-transform: capitalize;
-    flex-shrink: 0;
-  }
-
-  .conf-bar-wrap {
-    height: 4px;
-    background: var(--bg-soft);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-
-  .conf-bar {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 999px;
-    transition: width 400ms ease;
-  }
-
-  .conf-label {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-  }
-
-  .ca-tickers {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-    margin-top: 0.1rem;
-  }
-
-  .ca-ticker {
-    font-size: 0.72rem;
-    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    color: var(--accent);
-    background: var(--accent-soft);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    padding: 0.1rem 0.38rem;
-  }
-
-  /* portfolio allocation panel */
-  #canvest-alloc-panel {
-    margin-bottom: 1.25rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: var(--bg-soft);
-  }
-  .alloc-header {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-  .alloc-title {
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    color: var(--text-muted);
-  }
-  .alloc-meta {
-    font-size: 0.76rem;
-    color: var(--text-muted);
-    opacity: 0.7;
-  }
-  .alloc-rows { display: flex; flex-direction: column; gap: 0.55rem; }
-  .alloc-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-  .alloc-row-left { display: flex; flex-direction: column; gap: 0.1rem; min-width: 120px; }
-  .alloc-sector { font-size: 0.85rem; font-weight: 600; }
-  .alloc-tickers { font-size: 0.75rem; color: var(--accent); font-family: monospace; }
-  .alloc-row-right { display: flex; align-items: center; gap: 0.6rem; flex: 1; }
-  .alloc-bar-wrap {
-    flex: 1;
-    height: 5px;
-    background: var(--line);
-    border-radius: 999px;
-    overflow: hidden;
-    max-width: 180px;
-  }
-  .alloc-bar { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
-  .alloc-pct { font-size: 0.82rem; font-weight: 700; min-width: 36px; text-align: right; }
-  .alloc-until { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
-  .alloc-note {
-    margin-top: 0.6rem;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    opacity: 0.7;
   }
 
   /* trades summary */
@@ -1105,28 +878,13 @@ import { visualizerSteps } from '../data/lab';
     opacity: 0.7;
   }
 
-  [data-theme="light"] .sector-card {
-    background: linear-gradient(165deg, rgba(255,255,255,0.95), rgba(242,246,252,0.98));
-  }
-
-  [data-theme="light"] .ca-ticker {
-    color: #1e4896;
-    background: rgba(37,99,235,0.08);
-    border-color: #a8c0e0;
-  }
-
-  @media (max-width: 860px) {
-    .canvest-grid { grid-template-columns: repeat(2, 1fr); }
-  }
 
   @media (max-width: 560px) {
-    .canvest-grid { grid-template-columns: 1fr; }
-
     /* ETF table — hide Name and MER on small screens */
     #canvest-etf-table th:nth-child(2),
     #canvest-etf-table td:nth-child(2),
-    #canvest-etf-table th:nth-child(6),
-    #canvest-etf-table td:nth-child(6) { display: none; }
+    #canvest-etf-table th:nth-child(5),
+    #canvest-etf-table td:nth-child(5) { display: none; }
 
     /* Trades table — hide Name and Conf on small screens */
     #canvest-trades-table th:nth-child(2),

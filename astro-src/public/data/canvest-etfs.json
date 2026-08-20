@@ -1,48 +1,464 @@
 {
-  "generated_at": "2026-05-14T00:00:00Z",
+  "generated_at": "2026-08-19",
   "etfs": [
-    {"ticker":"XIU", "name":"iShares S&P/TSX 60 Index ETF",                    "cat":"equity",       "risk":"medium", "mer":0.18, "aum":14200, "ytd":5.2,  "score":92},
-    {"ticker":"XIC", "name":"iShares Core S&P/TSX Capped Composite",           "cat":"equity",       "risk":"medium", "mer":0.06, "aum":11400, "ytd":4.8,  "score":95},
-    {"ticker":"VCN", "name":"Vanguard FTSE Canada All Cap Index ETF",           "cat":"equity",       "risk":"medium", "mer":0.05, "aum":6900,  "ytd":5.0,  "score":96},
-    {"ticker":"XUS", "name":"iShares Core S&P 500 Index ETF (CAD)",             "cat":"equity",       "risk":"medium", "mer":0.10, "aum":8700,  "ytd":12.3, "score":91},
-    {"ticker":"VFV", "name":"Vanguard S&P 500 Index ETF",                       "cat":"equity",       "risk":"medium", "mer":0.09, "aum":10200, "ytd":12.5, "score":93},
-    {"ticker":"XQQ", "name":"iShares NASDAQ 100 Index ETF (CAD)",               "cat":"equity",       "risk":"high",   "mer":0.39, "aum":3100,  "ytd":15.8, "score":78},
-    {"ticker":"HXQ", "name":"Horizons NASDAQ-100 Index ETF",                    "cat":"equity",       "risk":"high",   "mer":0.28, "aum":1800,  "ytd":16.1, "score":81},
-    {"ticker":"XEQT","name":"iShares Core Equity ETF Portfolio",                "cat":"balanced",     "risk":"medium", "mer":0.20, "aum":5600,  "ytd":7.1,  "score":88},
-    {"ticker":"VEQT","name":"Vanguard All-Equity ETF Portfolio",                "cat":"balanced",     "risk":"medium", "mer":0.24, "aum":4900,  "ytd":7.3,  "score":87},
-    {"ticker":"XGRO","name":"iShares Core Growth ETF Portfolio",                "cat":"balanced",     "risk":"medium", "mer":0.20, "aum":3800,  "ytd":6.0,  "score":89},
-    {"ticker":"VGRO","name":"Vanguard Growth ETF Portfolio",                    "cat":"balanced",     "risk":"medium", "mer":0.24, "aum":3200,  "ytd":6.2,  "score":86},
-    {"ticker":"XBAL","name":"iShares Core Balanced ETF Portfolio",              "cat":"balanced",     "risk":"low",    "mer":0.20, "aum":2100,  "ytd":4.5,  "score":88},
-    {"ticker":"VBAL","name":"Vanguard Balanced ETF Portfolio",                  "cat":"balanced",     "risk":"low",    "mer":0.24, "aum":1900,  "ytd":4.7,  "score":86},
-    {"ticker":"XBB", "name":"iShares Core Canadian Universe Bond ETF",          "cat":"fixed-income", "risk":"low",    "mer":0.10, "aum":3700,  "ytd":2.1,  "score":84},
-    {"ticker":"VAB", "name":"Vanguard Canadian Aggregate Bond Index ETF",       "cat":"fixed-income", "risk":"low",    "mer":0.09, "aum":4100,  "ytd":2.3,  "score":86},
-    {"ticker":"ZAG", "name":"BMO Aggregate Bond Index ETF",                     "cat":"fixed-income", "risk":"low",    "mer":0.09, "aum":3500,  "ytd":2.2,  "score":85},
-    {"ticker":"XSB", "name":"iShares Core Canadian Short Term Bond ETF",        "cat":"fixed-income", "risk":"low",    "mer":0.10, "aum":2800,  "ytd":3.8,  "score":83},
-    {"ticker":"XHYC","name":"iShares Canadian High Yield Bond ETF",             "cat":"fixed-income", "risk":"medium", "mer":0.61, "aum":1100,  "ytd":5.1,  "score":68},
-    {"ticker":"ZRE", "name":"BMO Equal Weight REITs Index ETF",                 "cat":"sector",       "risk":"medium", "mer":0.61, "aum":1050,  "ytd":1.8,  "score":71},
-    {"ticker":"XRE", "name":"iShares S&P/TSX Capped REIT Index ETF",           "cat":"sector",       "risk":"medium", "mer":0.61, "aum":1200,  "ytd":1.6,  "score":70},
-    {"ticker":"XEG", "name":"iShares S&P/TSX Capped Energy Index ETF",         "cat":"sector",       "risk":"high",   "mer":0.61, "aum":1600,  "ytd":-2.4, "score":62},
-    {"ticker":"XFN", "name":"iShares S&P/TSX Capped Financials Index ETF",     "cat":"sector",       "risk":"medium", "mer":0.61, "aum":2100,  "ytd":6.8,  "score":74},
-    {"ticker":"ZGD", "name":"BMO Junior Gold Index ETF",                        "cat":"commodity",    "risk":"high",   "mer":0.61, "aum":310,   "ytd":18.3, "score":59},
-    {"ticker":"CGL", "name":"iShares Gold Bullion ETF (Hedged)",                "cat":"commodity",    "risk":"medium", "mer":0.55, "aum":580,   "ytd":14.1, "score":67},
-    {"ticker":"HUG", "name":"Horizons Gold ETF",                                "cat":"commodity",    "risk":"medium", "mer":0.35, "aum":420,   "ytd":14.4, "score":71},
-    {"ticker":"ENS",  "name":"iShares Energy & Utilities ETF",                  "cat":"sector",       "risk":"medium", "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"HCLN", "name":"Horizons Clean Energy ETF",                       "cat":"sector",       "risk":"high",   "mer":0.50, "aum":null, "ytd":null, "score":null},
-    {"ticker":"TXF",  "name":"CI Tech Giants Covered Call ETF",                 "cat":"sector",       "risk":"high",   "mer":0.65, "aum":null, "ytd":null, "score":null},
-    {"ticker":"VCE",  "name":"Vanguard FTSE Canada Index ETF",                  "cat":"equity",       "risk":"medium", "mer":0.05, "aum":null, "ytd":null, "score":null},
-    {"ticker":"XCD",  "name":"iShares S&P/TSX Capped Consumer Disc. Index ETF", "cat":"sector",       "risk":"medium", "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"XGD",  "name":"iShares S&P/TSX Global Gold Index ETF",           "cat":"commodity",    "risk":"high",   "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"XHC",  "name":"iShares Global Healthcare Index ETF (CAD)",       "cat":"sector",       "risk":"medium", "mer":0.67, "aum":null, "ytd":null, "score":null},
-    {"ticker":"XIT",  "name":"iShares S&P/TSX Capped Info Tech Index ETF",      "cat":"sector",       "risk":"high",   "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"XMA",  "name":"iShares S&P/TSX Capped Materials Index ETF",      "cat":"sector",       "risk":"high",   "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"XUT",  "name":"iShares S&P/TSX Capped Utilities Index ETF",      "cat":"sector",       "risk":"medium", "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"ZBK",  "name":"BMO Equal Weight US Banks Index ETF",              "cat":"sector",       "risk":"medium", "mer":0.35, "aum":null, "ytd":null, "score":null},
-    {"ticker":"ZCLN", "name":"BMO Clean Energy Index ETF",                      "cat":"sector",       "risk":"high",   "mer":0.40, "aum":null, "ytd":null, "score":null},
-    {"ticker":"ZCN",  "name":"BMO S&P/TSX Capped Composite Index ETF",          "cat":"equity",       "risk":"medium", "mer":0.06, "aum":null, "ytd":null, "score":null},
-    {"ticker":"ZEB",  "name":"BMO Equal Weight Banks Index ETF",                 "cat":"sector",       "risk":"medium", "mer":0.28, "aum":null, "ytd":null, "score":null},
-    {"ticker":"ZEO",  "name":"BMO Equal Weight Oil & Gas Index ETF",             "cat":"sector",       "risk":"high",   "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"ZIN",  "name":"BMO Equal Weight Industrials Index ETF",           "cat":"sector",       "risk":"medium", "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"ZMT",  "name":"BMO Equal Weight Global Base Metals Index ETF",   "cat":"sector",       "risk":"high",   "mer":0.61, "aum":null, "ytd":null, "score":null},
-    {"ticker":"ZUT",  "name":"BMO Equal Weight Utilities Index ETF",             "cat":"sector",       "risk":"medium", "mer":0.61, "aum":null, "ytd":null, "score":null}
+    {
+      "ticker": "CGL",
+      "name": "iShares Gold Bullion ETF (Hedged)",
+      "cat": "commodity",
+      "risk": "medium",
+      "mer": 0.55,
+      "aum": 580,
+      "ytd": 14.1,
+      "score": 67
+    },
+    {
+      "ticker": "ENS",
+      "name": "iShares Energy & Utilities ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "HCLN",
+      "name": "Horizons Clean Energy ETF",
+      "cat": "sector",
+      "risk": "high",
+      "mer": 0.5,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "HUG",
+      "name": "Horizons Gold ETF",
+      "cat": "commodity",
+      "risk": "medium",
+      "mer": 0.35,
+      "aum": 420,
+      "ytd": 14.4,
+      "score": 71
+    },
+    {
+      "ticker": "HXQ",
+      "name": "Horizons NASDAQ-100 Index ETF",
+      "cat": "equity",
+      "risk": "high",
+      "mer": 0.28,
+      "aum": 1800,
+      "ytd": 16.1,
+      "score": 81
+    },
+    {
+      "ticker": "RBOT",
+      "name": "Global X Robotics & AI Index ETF"
+    },
+    {
+      "ticker": "TEC",
+      "name": "TD Global Technology Leaders Index ETF"
+    },
+    {
+      "ticker": "TXF",
+      "name": "CI Tech Giants Covered Call ETF",
+      "cat": "sector",
+      "risk": "high",
+      "mer": 0.65,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "VAB",
+      "name": "Vanguard Canadian Aggregate Bond Index ETF",
+      "cat": "fixed-income",
+      "risk": "low",
+      "mer": 0.09,
+      "aum": 4100,
+      "ytd": 2.3,
+      "score": 86
+    },
+    {
+      "ticker": "VBAL",
+      "name": "Vanguard Balanced ETF Portfolio",
+      "cat": "balanced",
+      "risk": "low",
+      "mer": 0.24,
+      "aum": 1900,
+      "ytd": 4.7,
+      "score": 86
+    },
+    {
+      "ticker": "VCE",
+      "name": "Vanguard FTSE Canada Index ETF",
+      "cat": "equity",
+      "risk": "medium",
+      "mer": 0.05,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "VCN",
+      "name": "Vanguard FTSE Canada All Cap Index ETF",
+      "cat": "equity",
+      "risk": "medium",
+      "mer": 0.05,
+      "aum": 6900,
+      "ytd": 5.0,
+      "score": 96
+    },
+    {
+      "ticker": "VEQT",
+      "name": "Vanguard All-Equity ETF Portfolio",
+      "cat": "balanced",
+      "risk": "medium",
+      "mer": 0.24,
+      "aum": 4900,
+      "ytd": 7.3,
+      "score": 87
+    },
+    {
+      "ticker": "VFV",
+      "name": "Vanguard S&P 500 Index ETF",
+      "cat": "equity",
+      "risk": "medium",
+      "mer": 0.09,
+      "aum": 10200,
+      "ytd": 12.5,
+      "score": 93
+    },
+    {
+      "ticker": "VGRO",
+      "name": "Vanguard Growth ETF Portfolio",
+      "cat": "balanced",
+      "risk": "medium",
+      "mer": 0.24,
+      "aum": 3200,
+      "ytd": 6.2,
+      "score": 86
+    },
+    {
+      "ticker": "XBAL",
+      "name": "iShares Core Balanced ETF Portfolio",
+      "cat": "balanced",
+      "risk": "low",
+      "mer": 0.2,
+      "aum": 2100,
+      "ytd": 4.5,
+      "score": 88
+    },
+    {
+      "ticker": "XBB",
+      "name": "iShares Core Canadian Universe Bond ETF",
+      "cat": "fixed-income",
+      "risk": "low",
+      "mer": 0.1,
+      "aum": 3700,
+      "ytd": 2.1,
+      "score": 84
+    },
+    {
+      "ticker": "XCD",
+      "name": "iShares S&P/TSX Capped Consumer Disc. Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "XEG",
+      "name": "iShares S&P/TSX Capped Energy Index ETF",
+      "cat": "sector",
+      "risk": "high",
+      "mer": 0.61,
+      "aum": 1600,
+      "ytd": -2.4,
+      "score": 62
+    },
+    {
+      "ticker": "XEQT",
+      "name": "iShares Core Equity ETF Portfolio",
+      "cat": "balanced",
+      "risk": "medium",
+      "mer": 0.2,
+      "aum": 5600,
+      "ytd": 7.1,
+      "score": 88
+    },
+    {
+      "ticker": "XFN",
+      "name": "iShares S&P/TSX Capped Financials Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": 2100,
+      "ytd": 6.8,
+      "score": 74
+    },
+    {
+      "ticker": "XGD",
+      "name": "iShares S&P/TSX Global Gold Index ETF",
+      "cat": "commodity",
+      "risk": "high",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "XGRO",
+      "name": "iShares Core Growth ETF Portfolio",
+      "cat": "balanced",
+      "risk": "medium",
+      "mer": 0.2,
+      "aum": 3800,
+      "ytd": 6.0,
+      "score": 89
+    },
+    {
+      "ticker": "XHC",
+      "name": "iShares Global Healthcare Index ETF (CAD)",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.67,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "XHYC",
+      "name": "iShares Canadian High Yield Bond ETF",
+      "cat": "fixed-income",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": 1100,
+      "ytd": 5.1,
+      "score": 68
+    },
+    {
+      "ticker": "XIC",
+      "name": "iShares Core S&P/TSX Capped Composite",
+      "cat": "equity",
+      "risk": "medium",
+      "mer": 0.06,
+      "aum": 11400,
+      "ytd": 4.8,
+      "score": 95
+    },
+    {
+      "ticker": "XIN",
+      "name": "iSHARES MSCI EAFE INDEX ETF"
+    },
+    {
+      "ticker": "XIT",
+      "name": "iShares S&P/TSX Capped Info Tech Index ETF",
+      "cat": "sector",
+      "risk": "high",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "XIU",
+      "name": "iShares S&P/TSX 60 Index ETF",
+      "cat": "equity",
+      "risk": "medium",
+      "mer": 0.18,
+      "aum": 14200,
+      "ytd": 5.2,
+      "score": 92
+    },
+    {
+      "ticker": "XMA",
+      "name": "iShares S&P/TSX Capped Materials Index ETF",
+      "cat": "sector",
+      "risk": "high",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "XQQ",
+      "name": "iShares NASDAQ 100 Index ETF (CAD)",
+      "cat": "equity",
+      "risk": "high",
+      "mer": 0.39,
+      "aum": 3100,
+      "ytd": 15.8,
+      "score": 78
+    },
+    {
+      "ticker": "XRE",
+      "name": "iShares S&P/TSX Capped REIT Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": 1200,
+      "ytd": 1.6,
+      "score": 70
+    },
+    {
+      "ticker": "XSB",
+      "name": "iShares Core Canadian Short Term Bond ETF",
+      "cat": "fixed-income",
+      "risk": "low",
+      "mer": 0.1,
+      "aum": 2800,
+      "ytd": 3.8,
+      "score": 83
+    },
+    {
+      "ticker": "XST",
+      "name": "iShares S&P/TSX Capped Consumer Staples Index ETF"
+    },
+    {
+      "ticker": "XUS",
+      "name": "iShares Core S&P 500 Index ETF (CAD)",
+      "cat": "equity",
+      "risk": "medium",
+      "mer": 0.1,
+      "aum": 8700,
+      "ytd": 12.3,
+      "score": 91
+    },
+    {
+      "ticker": "XUT",
+      "name": "iShares S&P/TSX Capped Utilities Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "ZAG",
+      "name": "BMO Aggregate Bond Index ETF",
+      "cat": "fixed-income",
+      "risk": "low",
+      "mer": 0.09,
+      "aum": 3500,
+      "ytd": 2.2,
+      "score": 85
+    },
+    {
+      "ticker": "ZBK",
+      "name": "BMO Equal Weight US Banks Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.35,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "ZCLN",
+      "name": "BMO Clean Energy Index ETF",
+      "cat": "sector",
+      "risk": "high",
+      "mer": 0.4,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "ZCN",
+      "name": "BMO S&P/TSX Capped Composite Index ETF",
+      "cat": "equity",
+      "risk": "medium",
+      "mer": 0.06,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "ZCS",
+      "name": "BMO Short Corporate Bond Index ETF"
+    },
+    {
+      "ticker": "ZEB",
+      "name": "BMO Equal Weight Banks Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.28,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "ZEO",
+      "name": "BMO Equal Weight Oil & Gas Index ETF",
+      "cat": "sector",
+      "risk": "high",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "ZGD",
+      "name": "BMO Junior Gold Index ETF",
+      "cat": "commodity",
+      "risk": "high",
+      "mer": 0.61,
+      "aum": 310,
+      "ytd": 18.3,
+      "score": 59
+    },
+    {
+      "ticker": "ZIN",
+      "name": "BMO Equal Weight Industrials Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "ZMT",
+      "name": "BMO Equal Weight Global Base Metals Index ETF",
+      "cat": "sector",
+      "risk": "high",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    },
+    {
+      "ticker": "ZRE",
+      "name": "BMO Equal Weight REITs Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": 1050,
+      "ytd": 1.8,
+      "score": 71
+    },
+    {
+      "ticker": "ZSP",
+      "name": "BMO S&P 500 Index ETF",
+      "mer": 0.09
+    },
+    {
+      "ticker": "ZUH",
+      "name": "BMO Equal Weight US Health Care Hedged to CAD Index ETF"
+    },
+    {
+      "ticker": "ZUT",
+      "name": "BMO Equal Weight Utilities Index ETF",
+      "cat": "sector",
+      "risk": "medium",
+      "mer": 0.61,
+      "aum": null,
+      "ytd": null,
+      "score": null
+    }
   ]
 }
