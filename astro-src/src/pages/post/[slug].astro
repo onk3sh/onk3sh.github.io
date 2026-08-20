@@ -1,11 +1,27 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
 import { getProjectBySlug, projects } from '../../data/projects';
 
 export function getStaticPaths() {
-  return projects.map((project) => ({
-    params: { slug: project.slug }
-  }));
+  // These slugs have hand-written pages at src/pages/post/<slug>/index.astro,
+  // which take routing priority. Generating them here too only produces
+  // discarded routes and a build warning per slug. Declared inside
+  // getStaticPaths because Astro hoists it out of frontmatter scope.
+  const staticPostSlugs = new Set([
+    'search-campaign-builder',
+    'media-activation',
+    'agent-memory-three-tiers',
+    'rg-vs-ast-grep',
+    'iron-law-gates',
+    'basis-platform',
+  ]);
+
+  return projects
+    .filter((project) => !staticPostSlugs.has(project.slug))
+    .map((project) => ({
+      params: { slug: project.slug }
+    }));
 }
 
 const { slug } = Astro.params;
@@ -17,6 +33,8 @@ if (!project) {
 ---
 
 <BaseLayout title={project.title} description={project.summary}>
+  <Header slot="header" path={Astro.url.pathname} />
+
   <article class="project-hero">
     <section class="hero">
       <h1>{project.title}</h1>

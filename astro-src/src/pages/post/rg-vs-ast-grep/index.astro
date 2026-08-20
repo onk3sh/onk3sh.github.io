@@ -1,11 +1,14 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
 ---
 
 <BaseLayout
   title="Code search tool benchmark: rg, ast-grep, MCP, and what the data actually says"
-  description="331 sessions, 4 production codebases, 15 tables. rg wins 10/12 query-class cells. ast-grep wins one. MCP is faster but costs more tokens. Model routing is the biggest cost driver by far."
+  description="331 sessions, 4 production codebases, 15 tables. rg wins 9/12 query-class cells. ast-grep wins one. MCP is faster but costs more tokens. Model routing is the biggest cost driver by far."
 >
+  <Header slot="header" path={Astro.url.pathname} />
+
   <article class="post-article">
     <section class="hero">
       <div class="post-meta">
@@ -63,7 +66,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p><strong>rg wins 10/12, ties 2, loses 1.</strong> The single ast-grep win is React/TSX structural patterns — the one query class where rg returns 0% and ast-grep returns 66.7%. Across every other query class and every other repo, rg wins outright. This is a decisive result, not a nuanced one.</p>
+      <p><strong>rg wins 9/12, ties 2, loses 1.</strong> The single ast-grep win is React/TSX structural patterns — the one query class where rg returns 0% and ast-grep returns 66.7%. Across every other query class and every other repo, rg wins outright. This is a decisive result, not a nuanced one.</p>
 
       <h2>The one case where ast-grep is mandatory</h2>
 
@@ -198,7 +201,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>rg wins 11/12 cells. The ∞ values represent 0% hit rate — the tool cannot find the answer at any cost. ast-grep shows ∞ on two Java cells where it returned zero hits across all rounds. rg shows ∞ on JSX structural — the one confirmed ast-grep use case.</p>
+      <p>rg wins 9/12 cells. The ∞ values represent 0% hit rate — the tool cannot find the answer at any cost. ast-grep shows ∞ on two Java cells where it returned zero hits across all rounds. rg shows ∞ on JSX structural — the one confirmed ast-grep use case.</p>
 
       <h2>Table 8 — Zero-result and rabbit-hole behaviour</h2>
 

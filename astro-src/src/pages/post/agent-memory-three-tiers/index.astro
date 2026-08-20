@@ -1,11 +1,14 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
 ---
 
 <BaseLayout
   title="The three-tier memory layer I built for my coding agent"
   description="Most agent memory designs collapse under real workloads. Here's the architecture that didn't: a Karpathy-pattern LLM wiki, an Obsidian second brain, and a JSONL session knowledge graph — each audited independently."
 >
+  <Header slot="header" path={Astro.url.pathname} />
+
   <article class="post-article">
     <section class="hero">
       <div class="post-meta">

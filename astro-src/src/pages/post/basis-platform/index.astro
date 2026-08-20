@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
 import { productionWork } from '../../../data/projects';
 
 const pw = productionWork[0];
@@ -9,14 +10,15 @@ const pw = productionWork[0];
   title="Basis Platform — Production Engineering"
   description="Performance engineering under 4× load growth and a from-scratch changelog system serving 100+ internal users at Basis Technologies."
 >
+  <Header slot="header" path={Astro.url.pathname} />
+
   <article class="post-article">
     <section class="hero">
       <div class="post-meta">
         <span class="badge">Basis Technologies</span>
-        <span class="badge">2022 – Present</span>
         <span class="badge">Production</span>
       </div>
-      <h1>Basis Platform</h1>
+      <h1>Basis Platform — Production Engineering</h1>
       <p class="post-lede">{pw.summary}</p>
     </section>
 

@@ -1,11 +1,14 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
 ---
 
 <BaseLayout
   title="Iron-Law Gates"
   description="I audited 100+ PR review comments across two production codebases, found 16 recurring failure categories, and encoded each as a non-skippable gate in an AI-assisted development pipeline."
 >
+  <Header slot="header" path={Astro.url.pathname} />
+
   <article class="post-article">
     <section class="hero">
       <div class="post-meta">
@@ -103,7 +106,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>The pipeline: disciplined-development</h2>
 
-      <p>Five phases, each non-skippable, all built on Claude Code. The discipline is the product. The model is incidental.</p>
+      <p>Six phases, each non-skippable, all built on Claude Code. The discipline is the product. The model is incidental.</p>
 
       <h3>Phase 1 — Requirements (<code>dd-scout</code>)</h3>
 
@@ -178,7 +181,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
       <ul>
         <li><strong>N = 10 is a pilot.</strong> It's enough to know the gates fire correctly on the failures they were built for. It is not enough to claim a defect-rate reduction. I'm not going to claim one.</li>
         <li><strong>Single-user.</strong> Every calibration decision was mine. A second engineer would tune the AUTO/BATCH/MANUAL thresholds differently.</li>
-        <li><strong>Ceremony versus throughput.</strong> Five phases with hard gates is slower than just writing code for a one-line CSS fix. I skip the pipeline for trivial tickets. That's a feature, not a bug — but it means this isn't a universal answer.</li>
+        <li><strong>Ceremony versus throughput.</strong> Six phases with hard gates is slower than just writing code for a one-line CSS fix. I skip the pipeline for trivial tickets. That's a feature, not a bug — but it means this isn't a universal answer.</li>
         <li><strong>The audit is a snapshot.</strong> Three months, two services, one engineer. Reviewer composition changes. Codebases evolve. I'll re-run the audit next quarter.</li>
       </ul>
 

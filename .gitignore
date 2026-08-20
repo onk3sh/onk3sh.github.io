@@ -13,3 +13,7 @@ exotic-earth/
 
 # Local screenshots/debug captures
 *.png
+
+# ...except site assets that must ship
+!astro-src/public/og-image.png
+!astro-src/dist/og-image.png

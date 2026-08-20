@@ -1,10 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
 import { recentProjects } from '../../data/projects';
 
 ---
 
 <BaseLayout title="Work" description="Work by Onkesh Bansal — production AI systems, agent engineering, and backend platform projects.">
+  <Header slot="header" path={Astro.url.pathname} />
   <section class="hero">
     <h1>Work</h1>
     <p>Projects and write-ups on production AI systems and backend platform engineering.</p>

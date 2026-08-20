@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
 import { productionWork } from '../../../data/projects';
 
 const section = productionWork[0].sections.find(s => s.heading === 'Search Campaign Builder');
@@ -9,6 +10,8 @@ const section = productionWork[0].sections.find(s => s.heading === 'Search Campa
   title="Search Campaign Builder — Performance Engineering"
   description="Diagnosed and resolved 4 root causes under 4× load growth at Basis Technologies — missing indexes, N+1 queries, lock contention, and a concurrency bug. Flat p99 maintained throughout."
 >
+  <Header slot="header" path={Astro.url.pathname} />
+
   <article class="post-article">
     <section class="hero">
       <div class="post-meta">
