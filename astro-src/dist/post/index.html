@@ -1,121 +1,26 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Work by Onkesh Bansal — production AI systems, agent engineering, and backend platform projects."><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"><link rel="canonical" href="https://onk3sh.github.io/post/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Work | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/post/"><meta property="og:title" content="Work | Onkesh Bansal"><meta property="og:description" content="Work by Onkesh Bansal — production AI systems, agent engineering, and backend platform projects."><meta property="og:site_name" content="Onkesh Bansal"><meta property="og:image" content="https://onk3sh.github.io/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Onkesh Bansal — AI systems engineer building production agent infrastructure."><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Work | Onkesh Bansal"><meta name="twitter:description" content="Work by Onkesh Bansal — production AI systems, agent engineering, and backend platform projects."><meta name="twitter:image" content="https://onk3sh.github.io/og-image.png"><script>
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Work by Onkesh Bansal — production AI systems, agent engineering, and backend platform projects."><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="canonical" href="https://onk3sh.github.io/post/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Work | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/post/"><meta property="og:title" content="Work | Onkesh Bansal"><meta property="og:description" content="Work by Onkesh Bansal — production AI systems, agent engineering, and backend platform projects."><meta property="og:site_name" content="Onkesh Bansal"><meta property="og:image" content="https://onk3sh.github.io/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Onkesh Bansal — Senior Engineer, AI Systems & Backend Platform"><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Work | Onkesh Bansal"><meta name="twitter:description" content="Work by Onkesh Bansal — production AI systems, agent engineering, and backend platform projects."><meta name="twitter:image" content="https://onk3sh.github.io/og-image.png"><script>
       (function () {
-        if (localStorage.getItem('theme') === 'dark') {
-          document.documentElement.setAttribute('data-theme', 'dark');
-        }
+        const t = localStorage.getItem('theme');
+        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
       })();
-    </script><link rel="stylesheet" href="/_astro/Header._9olhh_7.css"></head> <body> <div class="page-shell"> <header class="site-header" id="site-header" data-astro-cid-3ef6ksr2> <div class="site-header__inner" data-astro-cid-3ef6ksr2> <a class="header-brand" href="/" data-astro-cid-3ef6ksr2>
-Onkesh Bansal
-<span class="header-dot" aria-hidden="true" data-astro-cid-3ef6ksr2></span> </a> <nav class="header-nav" aria-label="Site navigation" data-astro-cid-3ef6ksr2> <a class="nav-item" href="/post/" data-astro-cid-3ef6ksr2>work/</a> <a class="nav-item" href="/writing/" data-astro-cid-3ef6ksr2>writing/</a> <a class="nav-item" href="/contact/" data-astro-cid-3ef6ksr2>contact</a> </nav> <div class="header-actions" data-astro-cid-3ef6ksr2>  <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" data-astro-cid-3ef6ksr2>🌙</button> </div> </div> </header>  <script>
-  (function () {
-    // Scroll spy — only runs on homepage (section anchors exist)
-    var items = document.querySelectorAll('.nav-item[data-section]');
-    if (!items.length) return;
-
-    var sections = Array.from(items).map(function (item) {
-      return {
-        el: document.getElementById(item.dataset.section),
-        link: item,
-      };
-    }).filter(function (s) { return s.el; });
-
-    function update() {
-      var fromTop = window.scrollY + 120;
-      var active = null;
-      sections.forEach(function (s) {
-        if (s.el.offsetTop <= fromTop) active = s;
-      });
-      items.forEach(function (i) { i.classList.remove('is-active'); });
-      if (active) active.link.classList.add('is-active');
-    }
-
-    window.addEventListener('scroll', update, { passive: true });
-    update();
-
-    // Smooth scroll on nav click
-    items.forEach(function (item) {
-      item.addEventListener('click', function (e) {
-        var sectionId = item.dataset.section;
-        var target = document.getElementById(sectionId);
-        if (!target) return;
-        e.preventDefault();
-        window.scrollTo({ top: target.offsetTop - 60, behavior: 'smooth' });
-      });
-    });
-  })();
-</script> <main class="main-content">   <section class="hero"> <h1>Work</h1> <p>Projects in production AI systems and backend platform engineering. Essays live under <a href="/writing/">writing</a>.</p> </section> <section class="section"> <div class="grid-2"> <a class="card" href="/post/search-campaign-builder/"> <h3>Search Campaign Builder — Performance Engineering</h3> <p>Java/Spring Boot service handling Google Ads campaign data on the Basis ad-tech platform. Diagnosed and resolved 4 root causes (missing indexes, N+1 queries, lock contention, concurrency bug) — absorbed 4× workload growth at flat p99.</p> <div class="badge-row"> <span class="badge">May 2026</span> <span class="card-tag tag-work">work</span><span class="card-tag tag-work">Performance Engineering</span> </div> </a><a class="card" href="/post/media-activation/"> <h3>Media Activation — Delivery &amp; Changelog</h3> <p>Built a from-scratch changelog system for delivery publishing on the Basis ad-tech platform. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day, 5M+ rows, serving 100+ internal users.</p> <div class="badge-row"> <span class="badge">May 2026</span> <span class="card-tag tag-work">work</span><span class="card-tag tag-work">Ruby on Rails</span> </div> </a><a class="card" href="/post/basis-platform/"> <h3>Basis Platform — Production Engineering</h3> <p>The umbrella view of the Basis platform work: performance engineering that absorbed 4× load growth at flat p99, and a from-scratch changelog system serving 100+ internal users.</p> <div class="badge-row"> <span class="badge">May 2026</span> <span class="card-tag tag-work">work</span><span class="card-tag tag-work">Platform</span> </div> </a><a class="card" href="/post/agent-development-harness/"> <h3>Agent Development Harness</h3> <p>A six-phase gate-enforced development pipeline for AI coding agents. Each gate maps to a recurring PR review failure mode. Includes a three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), and autonomous go/no-go reviewer. Used on my own engineering work.</p> <div class="badge-row"> <span class="badge">Apr 2026</span> <span class="card-tag tag-work">work</span><span class="card-tag tag-work">AI Systems</span> </div> </a><a class="card" href="/post/canvestai/"> <h3>CanvestAI</h3> <p>Conversational ETF research for Canadian retail investors. Phase 1 ships: risk-matched scoring and plain-language recommendations across 25+ TSX ETFs on live data. Phase 2 in progress: portfolio tracking, P&amp;L, and drift-based rebalancing. The hard engineering: feeds that fail silently and scoring that must stay auditable when upstream data is partial.</p> <div class="badge-row"> <span class="badge">Mar 2026</span> <span class="card-tag tag-personal">personal</span><span class="card-tag tag-personal">AI Systems</span> </div> </a> </div> </section>  </main> <footer class="site-footer"> <div class="footer-inner"> <span>© Onkesh Bansal · 2026 · Toronto · Remote</span> <span class="footer-links"> <a href="/about/">about</a> <a href="/post/">work</a> <a href="/writing/">writing</a> <a href="/lab/">lab</a> <a href="/stack/">stack</a> <a href="/contact/">contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener">linkedin</a> <a href="https://github.com/onk3sh" target="_blank" rel="noopener">github</a> </span> <a href="mailto:onkesh2022@gmail.com" class="footer-email">hello</a> </div> </footer> </div> <script>
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.CPwukmzw.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class="active" href="/post/">Work</a> <a class href="/writing/">Writing</a> <a class href="/stack/">Stack</a> <a class href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">  <section class="hero"> <h1>Work</h1> <p>Projects in production AI systems and backend platform engineering. Essays live under <a href="/writing/">writing</a>.</p> </section> <section class="section"> <div class="grid-2"> <a class="card" href="/post/search-campaign-builder/"> <h3>Search Campaign Builder — Performance Engineering</h3> <p>Java/Spring Boot service handling Google Ads campaign data on the Basis ad-tech platform. Diagnosed and resolved 4 root causes (missing indexes, N+1 queries, lock contention, concurrency bug) — absorbed 4× workload growth at flat p99.</p> <div class="badge-row"> <span class="badge">May 2026</span> <span class="card-tag tag-work">work</span><span class="card-tag tag-work">Performance Engineering</span> </div> </a><a class="card" href="/post/media-activation/"> <h3>Media Activation — Delivery &amp; Changelog</h3> <p>Built a from-scratch changelog system for delivery publishing on the Basis ad-tech platform. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day, 5M+ rows, serving 100+ internal users.</p> <div class="badge-row"> <span class="badge">May 2026</span> <span class="card-tag tag-work">work</span><span class="card-tag tag-work">Ruby on Rails</span> </div> </a><a class="card" href="/post/basis-platform/"> <h3>Basis Platform — Production Engineering</h3> <p>The umbrella view of the Basis platform work: performance engineering that absorbed 4× load growth at flat p99, and a from-scratch changelog system serving 100+ internal users.</p> <div class="badge-row"> <span class="badge">May 2026</span> <span class="card-tag tag-work">work</span><span class="card-tag tag-work">Platform</span> </div> </a><a class="card" href="/post/agent-development-harness/"> <h3>Agent Development Harness</h3> <p>A six-phase gate-enforced development pipeline for AI coding agents. Each gate maps to a recurring PR review failure mode. Includes a three-tier audited memory layer, custom Bitbucket MCP server, ast-grep + LSP search (70% token reduction), and autonomous go/no-go reviewer. Used on my own engineering work.</p> <div class="badge-row"> <span class="badge">Apr 2026</span> <span class="card-tag tag-work">work</span><span class="card-tag tag-work">AI Systems</span> </div> </a><a class="card" href="/post/canvestai/"> <h3>CanvestAI</h3> <p>Conversational ETF research for Canadian retail investors. Phase 1 ships: risk-matched scoring and plain-language recommendations across 25+ TSX ETFs on live data. Phase 2 in progress: portfolio tracking, P&amp;L, and drift-based rebalancing. The hard engineering: feeds that fail silently and scoring that must stay auditable when upstream data is partial.</p> <div class="badge-row"> <span class="badge">Mar 2026</span> <span class="card-tag tag-personal">personal</span><span class="card-tag tag-personal">AI Systems</span> </div> </a> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
       (function () {
         var btn = document.getElementById('theme-toggle');
-        if (!btn) return;
         function sync() {
-          var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-          btn.textContent = dark ? '☀' : '🌙';
-          btn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '🌙' : '☀';
         }
         sync();
         btn.addEventListener('click', function () {
-          var dark = document.documentElement.getAttribute('data-theme') === 'dark';
-          if (dark) {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          if (light) {
             document.documentElement.removeAttribute('data-theme');
-            localStorage.removeItem('theme');
-          } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
             localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
           }
           sync();
         });
       })();
-    </script> </body> </html> <style>
-  .other-heading {
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    margin: 0 0 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-  }
-
-  .other-list { display: grid; gap: 0.75rem; }
-
-  .other-card {
-    display: block;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: linear-gradient(165deg, rgba(23,31,43,0.7), rgba(15,20,28,0.8));
-    padding: 0.9rem 1rem;
-    text-decoration: none;
-    transition: border-color 140ms ease, transform 140ms ease;
-  }
-  .other-card:hover { border-color: #3a475d; transform: translateY(-1px); text-decoration: none; }
-
-  [data-theme="light"] .other-card {
-    background: linear-gradient(165deg, rgba(255,255,255,0.7), rgba(242,246,250,0.85));
-  }
-
-  .other-card-top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .other-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .other-date {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .other-summary {
-    margin: 0 0 0.6rem;
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-</style>
+    </script> </body> </html>

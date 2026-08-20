@@ -1,10 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
 ---
 
 <BaseLayout title="Not Found" description="Page not found">
-  <Header slot="header" path={Astro.url.pathname} />
   <section class="hero">
     <h1>Page Not Found</h1>
     <p>The page you requested does not exist or was moved.</p>

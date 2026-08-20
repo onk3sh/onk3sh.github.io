@@ -1,13 +1,11 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
 ---
 
 <BaseLayout
   title="Code search tool benchmark: rg, ast-grep, MCP, and what the data actually says"
   description="331 sessions, 4 production codebases, 15 tables. rg wins 9/12 query-class cells. ast-grep wins one. MCP is faster but costs more tokens. Model routing is the biggest cost driver by far."
 >
-  <Header slot="header" path={Astro.url.pathname} />
 
   <article class="post-article">
     <section class="hero">

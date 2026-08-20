@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
 import { getProjectBySlug, projects } from '../../data/projects';
 
 export function getStaticPaths() {
@@ -33,7 +32,6 @@ if (!project) {
 ---
 
 <BaseLayout title={project.title} description={project.summary}>
-  <Header slot="header" path={Astro.url.pathname} />
 
   <article class="project-hero">
     <section class="hero">

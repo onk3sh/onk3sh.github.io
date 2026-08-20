@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import Header from '../../../components/Header.astro';
 import { productionWork } from '../../../data/projects';
 
 const section = productionWork[0].sections.find(s => s.heading === 'Media Activation — Delivery & Changelog');
@@ -10,7 +9,6 @@ const section = productionWork[0].sections.find(s => s.heading === 'Media Activa
   title="Media Activation — Delivery & Changelog"
   description="Built a from-scratch changelog system for delivery publishing on the Basis ad-tech platform. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day, 5M+ rows, 100+ users."
 >
-  <Header slot="header" path={Astro.url.pathname} />
 
   <article class="post-article">
     <section class="hero">

@@ -1,10 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
 ---
 
 <BaseLayout title="Stack Map" description="Interactive engineering stack and experience map">
-  <Header slot="header" path={Astro.url.pathname} />
   <Fragment slot="head">
     <script is:inline src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
   </Fragment>

@@ -1,11 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Header from '../components/Header.astro';
 import { visualizerSteps } from '../data/lab';
 ---
 
 <BaseLayout title="Lab" description="Interactive demos and experiments">
-  <Header slot="header" path={Astro.url.pathname} />
   <section class="hero">
     <h1>Lab</h1>
     <p>Interactive demos of the systems I'm building.</p>

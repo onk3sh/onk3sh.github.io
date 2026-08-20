@@ -1,12 +1,9 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Header from '../../components/Header.astro';
 import { recentWork } from '../../data/projects';
-
 ---
 
 <BaseLayout title="Work" description="Work by Onkesh Bansal — production AI systems, agent engineering, and backend platform projects.">
-  <Header slot="header" path={Astro.url.pathname} />
   <section class="hero">
     <h1>Work</h1>
     <p>Projects in production AI systems and backend platform engineering. Essays live under <a href="/writing/">writing</a>.</p>
@@ -28,60 +25,4 @@ import { recentWork } from '../../data/projects';
       ))}
     </div>
   </section>
-
 </BaseLayout>
-
-<style is:inline>
-  .other-heading {
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    margin: 0 0 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-  }
-
-  .other-list { display: grid; gap: 0.75rem; }
-
-  .other-card {
-    display: block;
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    background: linear-gradient(165deg, rgba(23,31,43,0.7), rgba(15,20,28,0.8));
-    padding: 0.9rem 1rem;
-    text-decoration: none;
-    transition: border-color 140ms ease, transform 140ms ease;
-  }
-  .other-card:hover { border-color: #3a475d; transform: translateY(-1px); text-decoration: none; }
-
-  [data-theme="light"] .other-card {
-    background: linear-gradient(165deg, rgba(255,255,255,0.7), rgba(242,246,250,0.85));
-  }
-
-  .other-card-top {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .other-title {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text);
-  }
-
-  .other-date {
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .other-summary {
-    margin: 0 0 0.6rem;
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-  }
-</style>
