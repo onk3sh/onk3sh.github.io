@@ -17,12 +17,12 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: 'search-campaign-builder',
-    title: 'Search Campaign Builder',
+    title: 'Search Campaign Builder — Performance Engineering',
     date: '2026-05-14',
     type: 'project',
     projectType: 'work',
     tags: ['work', 'Performance Engineering'],
-    summary: 'Java/Spring Boot service handling Google Ads campaign data at Basis Technologies. Diagnosed and resolved 4 root causes (missing indexes, N+1 queries, lock contention, concurrency bug) — absorbed 4× workload growth at flat p99.',
+    summary: 'Java/Spring Boot service handling Google Ads campaign data on the Basis ad-tech platform. Diagnosed and resolved 4 root causes (missing indexes, N+1 queries, lock contention, concurrency bug) — absorbed 4× workload growth at flat p99.',
     featured: true,
     sections: [],
   },
@@ -33,7 +33,7 @@ export const projects: Project[] = [
     type: 'project',
     projectType: 'work',
     tags: ['work', 'Ruby on Rails'],
-    summary: 'Built a from-scratch changelog system for delivery publishing at Basis Technologies. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day, 5M+ rows, serving 100+ internal users.',
+    summary: 'Built a from-scratch changelog system for delivery publishing on the Basis ad-tech platform. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day, 5M+ rows, serving 100+ internal users.',
     featured: true,
     sections: [],
   },
@@ -45,7 +45,7 @@ export const projects: Project[] = [
     projectType: 'work',
     tags: ['work', 'Platform'],
     summary:
-      'The umbrella view of the Basis Technologies work: performance engineering that absorbed 4× load growth at flat p99, and a from-scratch changelog system serving 100+ internal users.',
+      'The umbrella view of the Basis platform work: performance engineering that absorbed 4× load growth at flat p99, and a from-scratch changelog system serving 100+ internal users.',
     sections: [],
   },
   {
@@ -163,7 +163,6 @@ export const projects: Project[] = [
 ];
 
 export type ProductionProject = {
-  company: string;
   title: string;
   summary: string;
   sections: Array<{
@@ -175,7 +174,6 @@ export type ProductionProject = {
 
 export const productionWork: ProductionProject[] = [
   {
-    company: 'Basis Technologies',
     title: 'Basis Platform',
     summary: 'Production ad-tech platform serving media agencies — campaign creation, line item management, and delivery publishing across Google Ads, Meta, LinkedIn, and CM360.',
     sections: [
