@@ -1,6 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { visualizerSteps } from '../data/lab';
+
+// The paper-trading track record stays unpublished while CanvestAI books direct
+// index shorts, which this account cannot place. One such trade (short SPY,
+// Mar 30 -> Apr 27) is 95% of the reported loss and could never have been
+// executed. Flip to true once trades are built from tradeable instruments.
+const SHOW_PAPER_TRADES = false;
 ---
 
 <BaseLayout title="Lab" description="Interactive demos and experiments">
@@ -78,7 +84,7 @@ import { visualizerSteps } from '../data/lab';
   <section class="section">
     <h2>CanvestAI — Model Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2>
     <p class="section-sub">
-      Bias signals from CanvestAI · 30-day horizon · Canadian ETF universe. Ranked by model confidence.
+      Bias signals from CanvestAI · 30-day horizon · Canadian ETF universe. Ranked most bullish first.
     </p>
     <div class="panel canvest-panel">
       <div id="canvest-risk-bar" class="risk-bar" style="display:none">
@@ -87,11 +93,13 @@ import { visualizerSteps } from '../data/lab';
         <span id="canvest-risk-note" class="risk-bar-note"></span>
       </div>
 
-      <!-- Tabs -->
-      <div class="canvest-tabs">
-        <button class="canvest-tab active" data-tab="etfs">ETFs</button>
-        <button class="canvest-tab" data-tab="trades">Paper Trades</button>
-      </div>
+      <!-- Tabs — only worth showing when there is more than one -->
+      {SHOW_PAPER_TRADES && (
+        <div class="canvest-tabs">
+          <button class="canvest-tab active" data-tab="etfs">ETFs</button>
+          <button class="canvest-tab" data-tab="trades">Paper Trades</button>
+        </div>
+      )}
 
       <!-- ETFs tab -->
       <div id="tab-etfs">
@@ -115,7 +123,7 @@ import { visualizerSteps } from '../data/lab';
                 <th>Ticker</th>
                 <th>Name</th>
                 <th>Bias</th>
-                <th title="Model confidence across signal sources">Confidence</th>
+                <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th>
                 <th title="Management Expense Ratio">MER %</th>
               </tr>
             </thead>
@@ -125,31 +133,33 @@ import { visualizerSteps } from '../data/lab';
       </div>
 
       <!-- Trades tab -->
-      <div id="tab-trades" style="display:none">
-        <div class="trades-summary" id="trades-summary"></div>
-        <div class="canvest-filter-row" style="margin-top:0.75rem">
-          <div class="filter-chips" id="trades-status-chips">
-            <button class="chip active" data-trade-status="open">Open</button>
-            <button class="chip" data-trade-status="closed">Closed</button>
+      {SHOW_PAPER_TRADES && (
+        <div id="tab-trades" style="display:none">
+          <div class="trades-summary" id="trades-summary"></div>
+          <div class="canvest-filter-row" style="margin-top:0.75rem">
+            <div class="filter-chips" id="trades-status-chips">
+              <button class="chip active" data-trade-status="open">Open</button>
+              <button class="chip" data-trade-status="closed">Closed</button>
+            </div>
+            <span class="etf-count" id="trades-count"></span>
           </div>
-          <span class="etf-count" id="trades-count"></span>
+          <div class="etf-table-wrap">
+            <table class="etf-table" id="canvest-trades-table">
+              <thead>
+                <tr>
+                  <th>ETF</th>
+                  <th>Name</th>
+                  <th>Entry</th>
+                  <th>P&amp;L %</th>
+                  <th title="P&L minus SPY return over same period">vs SPY</th>
+                  <th title="Directional signal at entry (0-100)">Signal</th>
+                </tr>
+              </thead>
+              <tbody id="canvest-trades-tbody"></tbody>
+            </table>
+          </div>
         </div>
-        <div class="etf-table-wrap">
-          <table class="etf-table" id="canvest-trades-table">
-            <thead>
-              <tr>
-                <th>ETF</th>
-                <th>Name</th>
-                <th>Entry</th>
-                <th>P&amp;L %</th>
-                <th title="P&L minus SPY return over same period">vs SPY</th>
-                <th title="Model confidence at signal time">Conf</th>
-              </tr>
-            </thead>
-            <tbody id="canvest-trades-tbody"></tbody>
-          </table>
-        </div>
-      </div>
+      )}
 
       <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p>
     </div>
@@ -256,16 +266,23 @@ import { visualizerSteps } from '../data/lab';
     return new Date(+p[0], +p[1] - 1, +p[2]);
   }
 
+  /* The Paper Trades panel is gated at build time (SHOW_PAPER_TRADES in the
+     frontmatter). This script is is:inline, so Astro emits it verbatim and it
+     cannot read that constant — the panel's presence in the DOM is the flag. */
+  var TRADES_ON = !!document.getElementById('tab-trades');
+
   /* ── tabs ── */
-  document.querySelectorAll('.canvest-tab').forEach(function(tab) {
-    tab.addEventListener('click', function() {
-      document.querySelectorAll('.canvest-tab').forEach(function(t) { t.classList.remove('active'); });
-      tab.classList.add('active');
-      var target = tab.dataset.tab;
-      document.getElementById('tab-etfs').style.display = target === 'etfs' ? '' : 'none';
-      document.getElementById('tab-trades').style.display = target === 'trades' ? '' : 'none';
+  if (TRADES_ON) {
+    document.querySelectorAll('.canvest-tab').forEach(function(tab) {
+      tab.addEventListener('click', function() {
+        document.querySelectorAll('.canvest-tab').forEach(function(t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        var target = tab.dataset.tab;
+        document.getElementById('tab-etfs').style.display = target === 'etfs' ? '' : 'none';
+        document.getElementById('tab-trades').style.display = target === 'trades' ? '' : 'none';
+      });
     });
-  });
+  }
 
   var US_ETF_NAMES = {
     SPY: 'SPDR S&P 500 ETF Trust',
@@ -352,15 +369,18 @@ import { visualizerSteps } from '../data/lab';
   var paperTrades = { open_positions: [], closed_positions: [], summary: {} };
   var activeTradeStatus = 'open';
 
-  document.getElementById('trades-status-chips').addEventListener('click', function(e) {
-    var btn = e.target.closest('[data-trade-status]');
-    if (!btn) return;
-    activeTradeStatus = btn.dataset.tradeStatus;
-    document.querySelectorAll('[data-trade-status]').forEach(function(b) { b.classList.toggle('active', b === btn); });
-    renderTrades();
-  });
+  if (TRADES_ON) {
+    document.getElementById('trades-status-chips').addEventListener('click', function(e) {
+      var btn = e.target.closest('[data-trade-status]');
+      if (!btn) return;
+      activeTradeStatus = btn.dataset.tradeStatus;
+      document.querySelectorAll('[data-trade-status]').forEach(function(b) { b.classList.toggle('active', b === btn); });
+      renderTrades();
+    });
+  }
 
   function renderTrades() {
+    if (!TRADES_ON) return;
     var light = isLight();
     var PNL_POS = light ? '#0d6f3f' : '#34d399';
     var PNL_NEG = light ? '#991b1b' : '#f87171';
@@ -418,7 +438,7 @@ import { visualizerSteps } from '../data/lab';
 
       /* paper trades \u2014 the export nests results per risk tier */
       var pt = data.paper_trading;
-      if (pt) {
+      if (pt && TRADES_ON) {
         var tier = pt.standard_tier || pt;
         paperTrades.open_positions = tier.open_positions || [];
         paperTrades.closed_positions = tier.closed_positions || [];
