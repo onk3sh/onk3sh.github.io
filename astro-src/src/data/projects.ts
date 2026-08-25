@@ -22,7 +22,7 @@ export const projects: Project[] = [
     type: 'project',
     projectType: 'work',
     tags: ['work', 'Performance Engineering'],
-    summary: 'Java/Spring Boot service handling Google Ads campaign data on the Basis ad-tech platform. Diagnosed and resolved 4 root causes (missing indexes, N+1 queries, lock contention, concurrency bug) — absorbed 4× workload growth at flat p99.',
+    summary: 'Java/Spring Boot service handling Google Ads campaign data on a production ad-tech platform. Diagnosed and resolved 4 root causes (missing indexes, N+1 queries, lock contention, concurrency bug) — absorbed 4× workload growth at flat p99.',
     featured: true,
     sections: [],
   },
@@ -33,19 +33,19 @@ export const projects: Project[] = [
     type: 'project',
     projectType: 'work',
     tags: ['work', 'Ruby on Rails'],
-    summary: 'Built a from-scratch changelog system for delivery publishing on the Basis ad-tech platform. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day, 5M+ rows, serving 100+ internal users.',
+    summary: 'Built a from-scratch changelog system for delivery publishing on a production ad-tech platform. Before/after snapshot diffing, field-level change calculator, server-side categorization. 500 events/day, 5M+ rows, serving 100+ internal users.',
     featured: true,
     sections: [],
   },
   {
-    slug: 'basis-platform',
-    title: 'Basis Platform — Production Engineering',
+    slug: 'adtech-platform',
+    title: 'Ad-Tech Platform — Production Engineering',
     date: '2026-05-10',
     type: 'project',
     projectType: 'work',
     tags: ['work', 'Platform'],
     summary:
-      'The umbrella view of the Basis platform work: performance engineering that absorbed 4× load growth at flat p99, and a from-scratch changelog system serving 100+ internal users.',
+      'The umbrella view of the ad-tech platform work: performance engineering that absorbed 4× load growth at flat p99, and a from-scratch changelog system serving 100+ internal users.',
     sections: [],
   },
   {
@@ -85,7 +85,7 @@ export const projects: Project[] = [
       {
         heading: 'Status',
         paragraphs: [
-          'In active use. Core pipeline (all six phases), memory layer (all three tiers + three auditors), dd-reviewer, PR-Pulse, and Slack observability are working. V0085 performance optimization (76M row table) deployed May 2026 — results pending.',
+          'In active use. Core pipeline (all six phases), memory layer (all three tiers + three auditors), dd-reviewer, PR-Pulse, and Slack observability are working. A performance optimization on a 76M-row table deployed May 2026 — results pending.',
         ],
       },
     ],
@@ -245,13 +245,13 @@ export type ProductionProject = {
 
 export const productionWork: ProductionProject[] = [
   {
-    title: 'Basis Platform',
+    title: 'Ad-Tech Platform',
     summary: 'Production ad-tech platform serving media agencies — campaign creation, line item management, and delivery publishing across Google Ads, Meta, LinkedIn, and CM360.',
     sections: [
       {
         heading: 'Search Campaign Builder',
         paragraphs: [
-          'Search Campaign Builder lets Basis users create and manage Google Ads search campaigns directly from the platform. The backend — a Java/Spring Boot service called WGS — acts as the middle layer between the Rails platform and Google Ads, storing campaign hierarchy data for all entities. As campaign counts grew, WGS started showing performance issues under load. A customer-reported production incident confirmed it.',
+          'Search Campaign Builder lets platform users create and manage Google Ads search campaigns directly from the platform. The backend — a Java/Spring Boot service — acts as the middle layer between the Rails platform and Google Ads, storing campaign hierarchy data for all entities. As campaign counts grew, the service started showing performance issues under load. A customer-reported production incident confirmed it.',
           'Led the investigation and fixes end-to-end, pairing with the tech lead at key decision points and checkpoints. Diagnosis started in Datadog — query breakdown surfaced sequential scans across the hot paths, total query counts, and cumulative execution time. The same scenarios were replicated locally to confirm and isolate. A structured benchmarking exercise — importing Google Ads campaigns with variable entity counts across iterations — mapped the scaling curve precisely. Three root causes emerged independently: missing indexes on hot query paths, N+1 queries in the campaign fetch layer, and transaction lock contention.',
           'A fourth issue surfaced during benchmarking: the same long-running campaign, when imported at different builds concurrently, caused collisions. This was a correctness problem hiding inside the performance failure.',
           'Each issue required a separate fix. Indexes were added on the hot paths. N+1 queries were consolidated. Transaction scope was narrowed — accepting a slightly wider consistency window in exchange for shorter lock durations. An idempotency guard was added at the import layer rather than a DB-level constraint, as the coordination needed to happen before the transaction opened, across build boundaries. The benchmark harness was re-run at 4× load to verify the fixes held.',
@@ -261,10 +261,10 @@ export const productionWork: ProductionProject[] = [
       {
         heading: 'Media Activation — Delivery & Changelog',
         paragraphs: [
-          'Media Activation handles publishing Basis line item placements to external systems, starting with CM360. The internal media agency team had no way to track what changed in the delivery view without going to CM360 directly — every discrepancy meant a support request across 100+ users.',
-          'The existing changelog was a simple append log with no query management, no categorisation, and no structured output for UI consumption. Rather than extend it — the existing system had accumulated complexity that made modification risky — a new changelog was built: 80% net-new, sharing only the ActiveRecord integration layer and the data table schema. Reusing the schema avoided a data migration; owning the logic gave full control over query management and event structure. The tradeoff: some duplication with the old system that will need consolidating over time.',
-          'The core is a before/after snapshot approach. Before a save, a filtered hashmap of tracked fields is captured inline. After the save, a field-level change calculator compares old and new values key-by-key, producing a structured diff. Only tracked fields are included — keeping the JSONB payload lean and avoiding unnecessary storage. That diff flows into a categorisation layer, then formatted into a UI-ready output structure server-side, so diff logic lives in one place and event grouping stays consistent. Virtual list pagination handles large changelog histories without degrading rendering performance.',
-          'The delivery tab was built on top of Transis (https://github.com/centro/transis), an open-source client-side state chart system that tightly coupled the UI to the backend. Full refactoring would have introduced significant regression risk across existing delivery flows — changes were made alongside Transis with minimal surface contact instead.',
+          'Media Activation handles publishing line item placements to external systems, starting with CM360. The internal media agency team had no way to track what changed in the delivery view without going to CM360 directly — every discrepancy meant a support request across 100+ users.',
+          'The existing changelog was a simple append log with no query management, no categorization, and no structured output for UI consumption. Rather than extend it — the existing system had accumulated complexity that made modification risky — a new changelog was built: 80% net-new, sharing only the ActiveRecord integration layer and the data table schema. Reusing the schema avoided a data migration; owning the logic gave full control over query management and event structure. The tradeoff: some duplication with the old system that will need consolidating over time.',
+          'The core is a before/after snapshot approach. Before a save, a filtered hashmap of tracked fields is captured inline. After the save, a field-level change calculator compares old and new values key-by-key, producing a structured diff. Only tracked fields are included — keeping the JSONB payload lean and avoiding unnecessary storage. That diff flows into a categorization layer, then formatted into a UI-ready output structure server-side, so diff logic lives in one place and event grouping stays consistent. Virtual list pagination handles large changelog histories without degrading rendering performance.',
+          'The delivery tab was built on top of an open-source client-side state chart library that tightly coupled the UI to the backend. Full refactoring would have introduced significant regression risk across existing delivery flows — changes were made alongside it with minimal surface contact instead.',
           'Result: 500 events/day, 5M+ rows in production since launch. Eliminated CM360 round-trips for 100+ internal agency users.',
         ],
       },
