@@ -3,7 +3,7 @@
 
 The lab dashboard fetches two files at runtime:
 
-  public/data/canvest-recommendations.json  — the model export (bias, confidence, paper trades)
+  public/data/canvest-recommendations.json  — the public slice of the model export (bias, signal, risk)
   public/data/canvest-etfs.json             — a ticker -> {name, mer} lookup for display
 
 Both live in the CanvestAI project, not here, so they go stale silently.
@@ -21,7 +21,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -36,6 +35,32 @@ CANVEST_UNIVERSE = CANVEST_ROOT / "scripts" / "etf_universe.json"
 
 RECOMMENDATIONS_DEST = PUBLIC_DATA / "canvest-recommendations.json"
 ETFS_DEST = PUBLIC_DATA / "canvest-etfs.json"
+
+# CanvestAI is a private repo; this site is public, and whatever lands in
+# public/data is served verbatim at onk3sh.github.io/data/. So the export is
+# copied field by field rather than wholesale — a new key in the pipeline should
+# fail this script, not publish itself.
+PUBLIC_TOP_LEVEL = ("as_of", "generated_at", "systemic_risk", "sectors")
+
+# Known keys held back on purpose, with the reason.
+WITHHELD = {
+    "paper_trading": "track record stays unpublished (see SHOW_PAPER_TRADES in lab.astro)",
+}
+
+
+def to_public(raw: dict) -> dict:
+    """Project the CanvestAI export down to the fields the public site may serve."""
+    unknown = set(raw) - set(PUBLIC_TOP_LEVEL) - set(WITHHELD)
+    if unknown:
+        sys.exit(
+            "CanvestAI export carries fields this script has never seen: "
+            f"{', '.join(sorted(unknown))}\n"
+            "Review them, then add each to PUBLIC_TOP_LEVEL or WITHHELD."
+        )
+    for key, why in WITHHELD.items():
+        if key in raw:
+            print(f"   . withholding {key!r} — {why}")
+    return {k: raw[k] for k in PUBLIC_TOP_LEVEL if k in raw}
 
 
 def regenerate_export() -> None:
@@ -161,8 +186,9 @@ def main() -> None:
     as_of = export.get("as_of", "unknown")
 
     PUBLIC_DATA.mkdir(parents=True, exist_ok=True)
-    shutil.copyfile(CANVEST_EXPORT, RECOMMENDATIONS_DEST)
-    print(f"-> copied export (as of {as_of}) to {RECOMMENDATIONS_DEST.relative_to(SITE_ROOT)}")
+    public = to_public(export)
+    RECOMMENDATIONS_DEST.write_text(json.dumps(public, indent=2) + "\n")
+    print(f"-> wrote public export (as of {as_of}) to {RECOMMENDATIONS_DEST.relative_to(SITE_ROOT)}")
 
     lookup = build_lookup(export, allow_fetch=not args.no_fetch)
     ETFS_DEST.write_text(json.dumps(lookup, indent=2) + "\n")
