@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getProjectBySlug, projects } from '../../data/projects';
+import { getProjectBySlug, projects, parseDay } from '../../data/projects';
 
 export function getStaticPaths() {
   // These slugs have hand-written pages at src/pages/post/<slug>/index.astro,
@@ -38,7 +38,7 @@ if (!project) {
       <h1>{project.title}</h1>
       <p>{project.summary}</p>
       <div class="badge-row">
-        <span class="badge">{new Date(project.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
+        <span class="badge">{parseDay(project.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
       </div>
     </section>
 

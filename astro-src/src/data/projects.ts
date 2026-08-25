@@ -129,33 +129,104 @@ export const projects: Project[] = [
   {
     slug: 'canvestai',
     title: 'CanvestAI',
-    date: '2026-03-17',
+    date: '2026-08-25',
     type: 'project',
     projectType: 'personal',
     tags: ['personal', 'AI Systems'],
     summary:
-      'Conversational ETF research for Canadian retail investors. Phase 1 ships: risk-matched scoring and plain-language recommendations across 25+ TSX ETFs on live data. Phase 2 in progress: portfolio tracking, P&L, and drift-based rebalancing. The hard engineering: feeds that fail silently and scoring that must stay auditable when upstream data is partial.',
+      'ETF research for Canadian retail investors, rebuilt as two systems over one SQLite database: a nightly pipeline where eight weighted lenses score 16 equity sectors and deliberate, and a LangGraph conversational advisor that fans out to four discipline agents per turn. Every recommendation is scored again once its horizon elapses — including each lens separately, so the weights have to earn themselves.',
     featured: true,
     sections: [
       {
         heading: 'Overview',
         paragraphs: [
-          'Canadian retail investors face a fragmented research experience — scattered data, opaque fees, and generic advice that doesn\'t account for personal risk tolerance or tax situation. CanvestAI wraps live ETF data, scoring logic, and a conversational interface into a single tool you can run from your terminal.',
+          'Canadian retail investors face a fragmented research experience — scattered data, opaque fees, and generic advice that doesn\'t account for personal risk tolerance or tax situation. CanvestAI started as a set of composable ETF-scoring skills run from a terminal. It is now two systems sharing one SQLite database, and the split is the point: the part that must run unattended does not depend on the part that talks.',
+          'The nightly pipeline requires no LLM at all. It is cron-safe Python and bash. The conversational orchestrator sits on top and reads the pipeline\'s output through a read-only MCP surface, adding live market and web data at question time. If the orchestrator is down, the pipeline still produces its verdicts; if a data feed is down, the pipeline degrades a lens rather than skipping the night.',
         ],
       },
       {
-        heading: 'Architecture',
+        heading: 'The nightly pipeline',
+        paragraphs: [
+          'Eight lens agents score 16 equity sectors in parallel, each carrying a fixed weight: technical (0.25), business cycle (0.20), monetary policy (0.15), astro (0.15), geopolitical (0.10), sentiment (0.08), social media (0.05), numerology (0.02). A deliberation agent combines them into a weighted score and — more usefully — detects conflict between lenses and keeps a dissent log, so a verdict that only looks confident because seven lenses were quiet is distinguishable from one where they agreed.',
+          'Ephemeris data, charts, and the Vedic lens no longer live in this repo. They were extracted into a separate astro agent reached over A2A, with a single client module in CanvestAI speaking that protocol.',
+          'Verdicts are written to a recommendations table and then graded. Once a recommendation\'s horizon elapses, the outcome is scored against what actually happened — and each lens is scored separately, at its own horizon. That is the part that keeps the weights honest: a lens that carries 0.25 of the vote has a track record you can go and read.',
+        ],
+      },
+      {
+        heading: 'The conversational orchestrator',
         bullets: [
-          'Claude Code skill system: composable sub-skills for fetching, scoring, filtering, and recommending ETFs.',
-          'Live market data via yfinance — covers 25+ TSX-listed ETFs (XIU, XIC, VFV, ZEB, XRE among them) with no API key required.',
-          'Scoring engine: ranks ETFs by MER, 1/3/5yr returns, volatility, and dividend yield against a risk profile.',
-          'Phase 2 (in progress): portfolio tracking with SQLite, P&L analysis, and drift-based rebalancing suggestions.',
+          'LangGraph supervisor spine: fold memory, route the turn, then either clarify, answer directly, or run the full chain.',
+          'Recommendation turns fan out to four discipline agents in parallel — fundamental, technical, astro, research — then join, deliberate, rank ETFs in code, recommend, and challenge the recommendation before composing a reply.',
+          'Ranking stays in code rather than in a prompt, so the same inputs produce the same ordering and the step is testable.',
+          'A dedicated challenge agent argues against the recommendation before the user sees it.',
+          'Narrow routes (research only, astro only, sky only, portfolio review) skip the deliberation chain entirely instead of paying for a fan-out that has nothing to merge.',
+          'Agents are reached only through an A2A seam — no graph node imports an agent directly.',
+          'Per-turn cost ceiling: a callback meters real token usage and prices it live. On a hard breach, nodes degrade to no-ops and record themselves, so the turn always reaches a reply built from what was gathered.',
         ],
       },
       {
         heading: 'Status',
         paragraphs: [
-          'Phase 1 (ETF recommendations) is working. Phase 2 (portfolio tracking and rebalancing) is in active development.',
+          'Both systems run. The pipeline scores sectors nightly and grades its own past calls; the orchestrator answers turns end to end.',
+          'The open problem is trade construction, not signal generation. Paper-trading results are currently withheld from the public dashboard because the engine books positions the target account cannot actually place — a bearish sector view was being expressed as a direct index short rather than through an available instrument. Until that is fixed, the recorded P&L measures the modelling error more than the model.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'a2a-agent-orchestration',
+    title: 'Every agent behind one seam: what A2A orchestration actually bought me',
+    date: '2026-08-25',
+    type: 'article',
+    projectType: 'personal',
+    tags: ['personal', 'AI Systems'],
+    summary:
+      'A conversational advisor that fans out to four agents per turn, deliberates, and composes a reply. The design decision that mattered was not the model or the prompt — it was refusing to let any node import an agent directly. Two production bugs, one cost ceiling, and what the seam paid back.',
+    featured: true,
+    sections: [
+      {
+        heading: 'Overview',
+        paragraphs: [
+          'CanvestAI\'s orchestrator answers a question by fanning out to four discipline agents in parallel — fundamental, technical, astro, research — joining their verdicts, deliberating over them, ranking ETFs in code, recommending, challenging its own recommendation, and composing a reply. It is a LangGraph supervisor spine, and on paper it is a normal multi-agent chatbot.',
+          'The decision that shaped it was not which model to route to. It was a rule: no graph node may import an agent. Every call goes through a single function — `dispatch(name, task)` — on an A2A client. Nodes know agent names, not agent modules.',
+          'That is a hub topology, and for the MVP it is a lie in the useful sense: the agents run in-process, in the same Python process as the graph, because the box has 16 GB of RAM and per-agent server processes would not fit. The seam is real even though the network is not. Promoting to full A2A — the SDK, one server per agent, agent cards — means reimplementing one module. No node changes.',
+          'The lie is already half-retired. Planetary positions, aspects, and dasha periods used to be computed inside the repo. They now live in a separate service reached over actual A2A: a JSON-RPC 2.0 `message/send` carrying a named op and its parameters, pointed at `ASTRO_AGENT_URL`. One module in CanvestAI speaks that protocol. Everything upstream of it changed a single import line, because the client functions kept the same names, the same signatures, and the same return types as the local functions they replaced — dates still come back as `datetime.date`, not ISO strings.',
+        ],
+      },
+      {
+        heading: 'The contracts are deliberately different',
+        paragraphs: [
+          'The same remote agent is reached two ways, and the difference is the whole point of putting a seam there.',
+          '`call(op, **params)` never raises. It returns an unavailable marker. The orchestrator uses this, because a dead astro agent should cost you one lens out of four, not the entire turn.',
+          '`require(op, **params)` raises, and names both the URL and how to start the agent. Batch scripts use this, because silently writing a nightly report with no astrology in it is worse than stopping and saying so.',
+          'A single "handle the error" convention would have gotten one of those two cases wrong. Which failure is acceptable depends on who is waiting for the answer.',
+        ],
+      },
+      {
+        heading: 'What parallelism broke',
+        paragraphs: [
+          'Two bugs came out of running the four discipline nodes concurrently, and both are worth writing down because neither is visible in a sequential test.',
+          'The first: the A2A client is a process-wide singleton, built lazily. The original code published the singleton and then filled its registry. The four discipline nodes run in one superstep, on separate threads, and all of them call the accessor. Whichever threads arrived after publication but before registration dispatched against a half-built registry — a live turn lost fundamental, technical, and research to `no A2A agent registered`, while astro succeeded. The fix is unglamorous: build the client fully, then publish it, under a lock.',
+          'The second: agent registration imports each agent module. A comment claimed a broken module would simply fail to register. It did not. One bad import raised out of the builder, and because the builder runs inside the singleton construction, a single broken agent took down every agent for the process. Now each import is isolated and a failure costs only that agent — the graph already knows how to degrade one lens, record why, and compose from the rest.',
+          'The shape of both bugs is the same. Concurrency turned a latent ordering assumption into a partial outage, and in a fan-out system the partial outage is the dangerous one: the turn still returns an answer, just a quieter and worse-informed one.',
+        ],
+      },
+      {
+        heading: 'Efficiency is a budget, not a prompt',
+        paragraphs: [
+          'Multi-agent fan-out multiplies cost per turn, so the ceiling is enforced rather than hoped for. A LangChain callback meters real token usage across every LLM call in a turn, prices it from a models config, and exposes soft and hard breach checks. One meter per graph invocation.',
+          'Enforcement is graceful by default. Nodes check the meter before spawning optional work; on a hard breach a node degrades to a no-op and records itself in a `degraded` list on the state. The turn always reaches compose, and the reply is assembled from whatever was actually gathered. Raising a budget error at the user is available, but it is the opt-in path, not the normal one.',
+          'Cost is attributed per agent, not just per turn. Every model the factory builds is stamped with an `agent:<name>` tag, so the meter can say which agent spent the money — the number you need before deciding which lens to cut or route to a cheaper model. The meter also tracks cache reads and writes separately from fresh input tokens. Those are currently zero everywhere, which is itself the finding: no prefix is being cached yet.',
+        ],
+      },
+      {
+        heading: 'What the seam paid back',
+        bullets: [
+          'Agents moved from in-process to a separate service without touching a single graph node — the astro migration changed one import line at each call site.',
+          'A broken agent degrades one lens with a recorded reason instead of failing the turn, because there is exactly one place that knows how to dispatch and how to fail.',
+          'Cost is attributable per agent, which makes routing decisions arguable from data rather than intuition.',
+          'The in-process shortcut stayed honest: it is confined to one module, and the constraint that forced it (16 GB) is written down next to it.',
+          'The failure modes above were fixable in one file each. That is the actual return on refusing to let nodes import agents.',
         ],
       },
     ],
@@ -216,4 +287,17 @@ export const recentWriting = recentProjects.filter((p) => p.type === 'article');
 
 export function getProjectBySlug(slug: string): Project | undefined {
   return projects.find((project) => project.slug === slug);
+}
+
+/**
+ * Build a Date from a `date` field without going through UTC.
+ *
+ * These are calendar dates ("2026-08-25"). `new Date()` reads that form as UTC
+ * midnight, which lands on the previous day anywhere west of Greenwich — a post
+ * dated the 25th rendered as the 24th, and one dated the 1st rendered in the
+ * previous month. Build from the parts instead.
+ */
+export function parseDay(value: string): Date {
+  const [year, month, day] = value.split('-').map(Number);
+  return new Date(year, month - 1, day);
 }

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { recentWriting } from '../../data/projects';
+import { recentWriting, parseDay } from '../../data/projects';
 ---
 
 <BaseLayout title="Writing" description="Writing by Onkesh Bansal — essays on agent memory, AI code review pipelines, and code search tooling, each grounded in production data.">
@@ -16,7 +16,7 @@ import { recentWriting } from '../../data/projects';
           <h3>{article.title}</h3>
           <p>{article.summary}</p>
           <div class="badge-row">
-            <span class="badge">{new Date(article.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+            <span class="badge">{parseDay(article.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
             {article.tags && article.tags.map((tag) => (
               <span class={`card-tag tag-${article.projectType}`}>{tag}</span>
             ))}
