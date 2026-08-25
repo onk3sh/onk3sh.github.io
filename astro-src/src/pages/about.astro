@@ -6,7 +6,7 @@ import { about } from '../data/about';
 <BaseLayout title="About" description="Onkesh Bansal — Senior engineer building production AI systems, based in Toronto.">
   <section class="section">
     <div class="panel about-intro">
-      <h2>{about.headline}</h2>
+      <h1>{about.headline}</h1>
       {about.paragraphs.map((p) => <p>{p}</p>)}
       <div class="about-cta">
         <a href="/post/">Selected Work</a>
@@ -19,7 +19,7 @@ import { about } from '../data/about';
 </BaseLayout>
 
 <style is:inline>
-  .about-intro h2 {
+  .about-intro h1 {
     margin: 0 0 0.85rem;
     font-size: clamp(1.2rem, 2vw, 1.6rem);
     letter-spacing: -0.01em;

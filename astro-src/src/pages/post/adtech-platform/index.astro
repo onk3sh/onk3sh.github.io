@@ -6,8 +6,8 @@ const pw = productionWork[0];
 ---
 
 <BaseLayout
-  title="Basis Platform — Production Engineering"
-  description="Performance engineering under 4× load growth and a from-scratch changelog system serving 100+ internal users on the Basis ad-tech platform."
+  title="Ad-Tech Platform — Production Engineering"
+  description="Performance engineering under 4× load growth and a from-scratch changelog system serving 100+ internal users on a production ad-tech platform."
 >
 
   <article class="post-article">
@@ -16,7 +16,7 @@ const pw = productionWork[0];
         <span class="badge">Ad-Tech Platform</span>
         <span class="badge">Production</span>
       </div>
-      <h1>Basis Platform — Production Engineering</h1>
+      <h1>Ad-Tech Platform — Production Engineering</h1>
       <p class="post-lede">{pw.summary}</p>
     </section>
 
@@ -24,7 +24,7 @@ const pw = productionWork[0];
       {pw.sections.map((section) => (
         <div class="case-study-section">
           <h2>{section.heading}</h2>
-          {section.paragraphs && section.paragraphs.map((p) => <p set:html={p.replace(/\(https:\/\/github\.com\/centro\/transis\)/g, '(<a href="https://github.com/centro/transis" target="_blank" rel="noopener">github.com/centro/transis</a>)')} />)}
+          {section.paragraphs && section.paragraphs.map((p) => <p>{p}</p>)}
           {section.bullets && (
             <ul>
               {section.bullets.map((b) => <li>{b}</li>)}

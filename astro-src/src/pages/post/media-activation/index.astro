@@ -7,7 +7,7 @@ const section = productionWork[0].sections.find(s => s.heading === 'Media Activa
 
 <BaseLayout
   title="Media Activation — Delivery & Changelog"
-  description="Built a from-scratch changelog system for delivery publishing on the Basis ad-tech platform. Before/after snapshot diffing, field-level change calculator, server-side categorisation. 500 events/day, 5M+ rows, 100+ users."
+  description="Built a from-scratch changelog system for delivery publishing on a production ad-tech platform. Before/after snapshot diffing, field-level change calculator, server-side categorization. 500 events/day, 5M+ rows, 100+ users."
 >
 
   <article class="post-article">
@@ -23,7 +23,7 @@ const section = productionWork[0].sections.find(s => s.heading === 'Media Activa
 
     <div class="post-body panel">
       {section && section.paragraphs && section.paragraphs.map((p) => (
-        <p set:html={p.replace('Transis (https://github.com/centro/transis)', '<a href="https://github.com/centro/transis" target="_blank" rel="noopener">Transis</a>')} />
+        <p>{p}</p>
       ))}
     </div>
   </article>
