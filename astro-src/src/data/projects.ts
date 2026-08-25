@@ -5,8 +5,10 @@ export type Project = {
   summary: string;
   featured?: boolean;
   type: 'project' | 'article';
-  projectType?: 'work' | 'personal';
+  projectType?: 'work' | 'personal' | 'open-source';
   tags?: string[];
+  // Where the work itself lives. Falls back to the GitHub profile when absent.
+  link?: { label: string; href: string };
   sections: Array<{
     heading: string;
     paragraphs?: string[];
@@ -231,6 +233,76 @@ export const projects: Project[] = [
       },
     ],
   },
+  {
+    slug: 'pytest-approx-nested-containers',
+    title: 'pytest \u2014 approx() and nested containers',
+    date: '2026-08-25',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'Python'],
+    summary:
+      'Merged into pytest. approx() refused to descend into a nested container and said so clearly, but only when that container matched the type of the one holding it. A dict inside a list slipped past and was compared exactly, so the tolerance was silently ignored. Reported in 2022, still reproducing on main.',
+    link: { label: 'pytest-dev/pytest #14934 \u2014 merged', href: 'https://github.com/pytest-dev/pytest/pull/14934' },
+    sections: [
+      {
+        heading: 'What was wrong',
+        paragraphs: [
+          'Both nesting guards tested the child against the type of its parent: isinstance(value, type(expected)) in ApproxMapping, and the same shape in ApproxSequenceLike. A list inside a list matched and raised the intended error. A dict inside a list did not match, so it was treated as a leaf and compared with ==.',
+          'That comparison is exact, which makes the failure quiet rather than loud. [{"a": 0.1 + 1e-9}] == approx([{"a": 0.1}]) returned False even though the values are well inside the default tolerance. Passing rel= explicitly produced a third behaviour: an error from a lower layer that never mentions nesting at all.',
+        ],
+      },
+      {
+        heading: 'The change',
+        paragraphs: [
+          'Ask whether the value is a container at all, rather than whether it matches the parent type. A single helper tests for Collection and excludes str, bytes, and bytearray, which approx treats as leaves on purpose.',
+          'An earlier attempt in 2022 patched only ApproxSequenceLike, which would have left approx({"a": [1.0]}) silently wrong. This one covers both sides, and both existing error messages are untouched, so each container still reports in its own wording.',
+        ],
+      },
+      {
+        heading: 'Behaviour change worth flagging',
+        paragraphs: [
+          'A numpy array nested inside a list or dict now raises instead of returning a result. That case was already broken, returning False for values inside the tolerance, so this converts a silent wrong answer into a clear error. A top-level array is unaffected: ApproxNumpy handles it and does its own nesting.',
+        ],
+      },
+      {
+        heading: 'Tests',
+        bullets: [
+          'Extended the type-error test with every cross-kind combination: list-of-tuple, list-of-set, list-of-dict, tuple-of-dict, dict-of-list, dict-of-tuple, dict-of-set.',
+          'Added a test that pins the actual bug, where values inside the default tolerance used to compare unequal instead of raising.',
+          'Extended the non-numeric equality test with bytes leaves, so the str/bytes exclusion is held by a test rather than by the implementation.',
+          '11 of these failed before the change. After it: 149 passed in the approx suite, 4483 passed across the full run, ruff and mypy clean on both touched files.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'fortymm-email-templates',
+    title: 'FortyMM \u2014 transactional email templates',
+    date: '2025-09-17',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'Ruby on Rails'],
+    summary:
+      'Merged into FortyMM, an open-source table tennis league platform. Rewrote the Devise mailer templates: plain-text alternatives for every HTML mail, email-safe responsive CSS, and wording that reads like the sport the product is about.',
+    link: { label: 'mightymoose/fortymm-- #341 \u2014 merged', href: 'https://github.com/mightymoose/fortymm--/pull/341' },
+    sections: [
+      {
+        heading: 'What changed',
+        bullets: [
+          'Every Devise mailer template rewritten, with the transactional wording aligned to the product rather than to the framework defaults.',
+          'Added a plain-text version of each template. HTML-only mail is a deliverability liability, and Devise ships no text part by default.',
+          'Reworked the mail layouts around email-safe CSS and a responsive width, so the templates survive clients that ignore modern layout.',
+          'Pulled the shared markup into an email helper instead of repeating it per template.',
+        ],
+      },
+      {
+        heading: 'Why it mattered',
+        paragraphs: [
+          'Transactional mail is the part of a product a user meets before they have an account, and it was the part still speaking in framework defaults. 29 files, roughly 1,500 lines added.',
+        ],
+      },
+    ],
+  },
 ];
 
 export type ProductionProject = {
@@ -276,6 +348,11 @@ export const featuredProjects = projects.filter((p) => p.featured);
 export const featuredWorkProjects = projects.filter((p) => p.featured && p.type === 'project' && p.projectType === 'work');
 export const featuredPersonalProjects = projects.filter((p) => p.featured && p.type === 'project' && p.projectType === 'personal');
 export const featuredArticles = projects.filter((p) => p.featured && p.type === 'article');
+
+// Merged upstream contributions only. Newest first.
+export const openSourceContributions = projects
+  .filter((p) => p.projectType === 'open-source')
+  .sort((a, b) => (a.date < b.date ? 1 : -1));
 
 export const recentProjects = [...projects].sort((a, b) =>
   a.date < b.date ? 1 : -1

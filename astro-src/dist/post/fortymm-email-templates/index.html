@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Merged into FortyMM, an open-source table tennis league platform. Rewrote the Devise mailer templates: plain-text alternatives for every HTML mail, email-safe responsive CSS, and wording that reads like the sport the product is about."><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="canonical" href="https://onk3sh.github.io/post/fortymm-email-templates/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>FortyMM — transactional email templates | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/post/fortymm-email-templates/"><meta property="og:title" content="FortyMM — transactional email templates | Onkesh Bansal"><meta property="og:description" content="Merged into FortyMM, an open-source table tennis league platform. Rewrote the Devise mailer templates: plain-text alternatives for every HTML mail, email-safe responsive CSS, and wording that reads like the sport the product is about."><meta property="og:site_name" content="Onkesh Bansal"><meta property="og:image" content="https://onk3sh.github.io/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Onkesh Bansal — Senior Engineer, AI Systems & Backend Platform"><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="FortyMM — transactional email templates | Onkesh Bansal"><meta name="twitter:description" content="Merged into FortyMM, an open-source table tennis league platform. Rewrote the Devise mailer templates: plain-text alternatives for every HTML mail, email-safe responsive CSS, and wording that reads like the sport the product is about."><meta name="twitter:image" content="https://onk3sh.github.io/og-image.png"><script>
+      (function () {
+        const t = localStorage.getItem('theme');
+        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.CPwukmzw.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class="active" href="/post/">Work</a> <a class href="/writing/">Writing</a> <a class href="/stack/">Stack</a> <a class href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">  <article class="project-hero"> <section class="hero"> <h1>FortyMM — transactional email templates</h1> <p>Merged into FortyMM, an open-source table tennis league platform. Rewrote the Devise mailer templates: plain-text alternatives for every HTML mail, email-safe responsive CSS, and wording that reads like the sport the product is about.</p> <div class="badge-row"> <span class="badge">September 17, 2025</span> </div> </section> <section class="panel project-content">  <h2>What changed</h2> <ul> <li>Every Devise mailer template rewritten, with the transactional wording aligned to the product rather than to the framework defaults.</li><li>Added a plain-text version of each template. HTML-only mail is a deliverability liability, and Devise ships no text part by default.</li><li>Reworked the mail layouts around email-safe CSS and a responsive width, so the templates survive clients that ignore modern layout.</li><li>Pulled the shared markup into an email helper instead of repeating it per template.</li> </ul> <h2>Why it mattered</h2> <p>Transactional mail is the part of a product a user meets before they have an account, and it was the part still speaking in framework defaults. 29 files, roughly 1,500 lines added.</p> <p> <a href="https://github.com/mightymoose/fortymm--/pull/341" target="_blank" rel="noopener noreferrer"> mightymoose/fortymm-- #341 — merged </a> </p> </section> </article>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '🌙' : '☀';
+        }
+        sync();
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          if (light) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+          }
+          sync();
+        });
+      })();
+    </script> </body> </html>
