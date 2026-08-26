@@ -358,8 +358,12 @@ export const recentProjects = [...projects].sort((a, b) =>
   a.date < b.date ? 1 : -1
 );
 
-// Newest first. `recentWork` backs /post/ (projects only); `recentWriting` backs /writing/.
-export const recentWork = recentProjects.filter((p) => p.type === 'project');
+// Newest first. `recentWork` backs /post/, `recentWriting` backs /writing/, and
+// `openSourceContributions` backs /open-source/. Work excludes the open-source
+// entries so each contribution is listed under exactly one tab.
+export const recentWork = recentProjects.filter(
+  (p) => p.type === 'project' && p.projectType !== 'open-source'
+);
 export const recentWriting = recentProjects.filter((p) => p.type === 'article');
 
 export function getProjectBySlug(slug: string): Project | undefined {

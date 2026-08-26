@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Open-source contributions by Onkesh Bansal — patches merged upstream into the projects they belong to."><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="canonical" href="https://onk3sh.github.io/open-source/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Open Source | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/open-source/"><meta property="og:title" content="Open Source | Onkesh Bansal"><meta property="og:description" content="Open-source contributions by Onkesh Bansal — patches merged upstream into the projects they belong to."><meta property="og:site_name" content="Onkesh Bansal"><meta property="og:image" content="https://onk3sh.github.io/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Onkesh Bansal — Senior Engineer, AI Systems & Backend Platform"><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Open Source | Onkesh Bansal"><meta name="twitter:description" content="Open-source contributions by Onkesh Bansal — patches merged upstream into the projects they belong to."><meta name="twitter:image" content="https://onk3sh.github.io/og-image.png"><script>
+      (function () {
+        const t = localStorage.getItem('theme');
+        if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
+      })();
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.CPwukmzw.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class href="/post/">Work</a> <a class href="/writing/">Writing</a> <a class="active" href="/open-source/">Open Source</a> <a class href="/stack/">Stack</a> <a class href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">  <section class="hero"> <h1>Open Source</h1> <p>Patches merged upstream. Everything listed here landed in the project it was sent to — nothing pending, nothing superseded. Each entry links to the pull request so the review and the diff are readable in full.</p> </section> <section class="section"> <div class="grid-2"> <a class="card" href="/post/pytest-approx-nested-containers/"> <h3>pytest — approx() and nested containers</h3> <p>Merged into pytest. approx() refused to descend into a nested container and said so clearly, but only when that container matched the type of the one holding it. A dict inside a list slipped past and was compared exactly, so the tolerance was silently ignored. Reported in 2022, still reproducing on main.</p> <div class="badge-row"> <span class="badge">Aug 2026</span> <span class="badge">merged</span> <span class="card-tag tag-open-source">open source</span><span class="card-tag tag-open-source">Python</span> </div> </a><a class="card" href="/post/fortymm-email-templates/"> <h3>FortyMM — transactional email templates</h3> <p>Merged into FortyMM, an open-source table tennis league platform. Rewrote the Devise mailer templates: plain-text alternatives for every HTML mail, email-safe responsive CSS, and wording that reads like the sport the product is about.</p> <div class="badge-row"> <span class="badge">Sep 2025</span> <span class="badge">merged</span> <span class="card-tag tag-open-source">open source</span><span class="card-tag tag-open-source">Ruby on Rails</span> </div> </a> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+      (function () {
+        var btn = document.getElementById('theme-toggle');
+        function sync() {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          btn.textContent = light ? '🌙' : '☀';
+        }
+        sync();
+        btn.addEventListener('click', function () {
+          var light = document.documentElement.getAttribute('data-theme') === 'light';
+          if (light) {
+            document.documentElement.removeAttribute('data-theme');
+            localStorage.setItem('theme', 'dark');
+          } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+          }
+          sync();
+        });
+      })();
+    </script> </body> </html>
