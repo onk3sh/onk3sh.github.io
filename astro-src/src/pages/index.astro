@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { featuredWorkProjects, featuredPersonalProjects, featuredArticles } from '../data/projects';
+import { featuredWorkProjects, featuredPersonalProjects, featuredArticles, openSourceContributions } from '../data/projects';
 import { hero } from '../data/hero';
 ---
 
@@ -77,6 +77,26 @@ import { hero } from '../data/hero';
       ))}
     </div>
     <a class="section-more" href="/writing/">all writing →</a>
+  </section>
+
+  <section class="section reveal-up">
+    <h2>Open Source</h2>
+    <div class="grid-3">
+      {openSourceContributions.map((contribution) => (
+        <a class="card reveal-up" href={`/post/${contribution.slug}/`}>
+          {contribution.tags && (
+            <div class="card-tags">
+              {contribution.tags.map((tag) => (
+                <span class={`card-tag tag-${contribution.projectType}`}>{tag}</span>
+              ))}
+            </div>
+          )}
+          <h3>{contribution.title}</h3>
+          <p>{contribution.summary}</p>
+        </a>
+      ))}
+    </div>
+    <a class="section-more" href="https://github.com/onk3sh" target="_blank" rel="noopener noreferrer">github profile →</a>
   </section>
 
 </BaseLayout>
@@ -219,7 +239,7 @@ import { hero } from '../data/hero';
 
     lab: function() {
       rich('experiments &rarr; <a href="/lab/" class="term-link">/lab/</a>');
-      line('  Packet Runner  &middot;  Data Stream  &middot;  more incoming', 'term-muted');
+      line('  Harness Workflow Visualizer  &middot;  CanvestAI Model Signals', 'term-muted');
     },
 
     clear: function() { out.innerHTML = ''; },
