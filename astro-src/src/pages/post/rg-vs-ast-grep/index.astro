@@ -24,7 +24,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>I ran a controlled benchmark across 331 Claude Code sessions covering four production codebases — two Java services (Spring Boot and Quarkus), a Rails service, and a React/TSX frontend. 97 sessions had active search activity (hit-rate and cost-per-found-block figures). 325 had usage data (token cost and model routing figures). Here is what I found.</p>
 
-      <p>The most actionable finding has nothing to do with rg vs ast-grep: <strong>Opus costs 19× more per session than Haiku.</strong> Model routing is the dominant cost lever. Every search-tool optimisation in this article operates inside a rounding error by comparison. That number is in Table 12 — read it first if you only have time for one table.</p>
+      <p>The most actionable finding has nothing to do with rg vs ast-grep: <strong>Opus costs 19× more per session than Haiku.</strong> Model routing is the dominant cost lever. Every search-tool optimization in this article operates inside a rounding error by comparison. That number is in Table 12 — read it first if you only have time for one table.</p>
 
       <h2>Setup</h2>
 
@@ -171,7 +171,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p><strong>MCP never crosses over.</strong> At every session size measured — median (5 calls), p75 (11), p90 (27), p99 (79) — MCP costs more tokens than Grep or Bash. The 1,576-token load tax at session start is never amortized. The MCP round-trip is cheaper per call than Grep (284 vs 324), but not cheap enough to offset the fixed cost. If you are optimising for token cost, Grep or Bash+rg is the right tool. If you are optimising for latency or structured error semantics, MCP is the right tool. These are different optimisation targets.</p>
+      <p><strong>MCP never crosses over.</strong> At every session size measured — median (5 calls), p75 (11), p90 (27), p99 (79) — MCP costs more tokens than Grep or Bash. The 1,576-token load tax at session start is never amortized. The MCP round-trip is cheaper per call than Grep (284 vs 324), but not cheap enough to offset the fixed cost. If you are optimizing for token cost, Grep or Bash+rg is the right tool. If you are optimizing for latency or structured error semantics, MCP is the right tool. These are different optimization targets.</p>
 
       <h2>Table 7 — Cost-per-found-block</h2>
 
@@ -220,7 +220,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>Model routing: the number that dwarfs all of this</h2>
 
-      <p>All of the above is search-layer optimisation. Table 12 puts it in context.</p>
+      <p>All of the above is search-layer optimization. Table 12 puts it in context.</p>
 
       <h3>Table 9 — Search volume by model family</h3>
 
@@ -272,7 +272,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>Opus costs 19× more per session than Haiku. Sonnet costs 2.9×. The entire MCP load tax (1,576 tokens) represents 0.27% of an Opus session's token budget. Optimising rg vs ast-grep vs MCP while defaulting to Opus for search-heavy tasks is rearranging deck chairs.</p>
+      <p>Opus costs 19× more per session than Haiku. Sonnet costs 2.9×. The entire MCP load tax (1,576 tokens) represents 0.27% of an Opus session's token budget. Optimizing rg vs ast-grep vs MCP while defaulting to Opus for search-heavy tasks is rearranging deck chairs.</p>
 
       <p>The practical implication: search-heavy reasoning belongs on Sonnet. Haiku handles all file operations on known paths with zero search overhead. Opus is reserved for architecture, security review, and high-stakes decisions where its reasoning quality justifies the cost.</p>
 
