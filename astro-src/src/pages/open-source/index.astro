@@ -1,0 +1,29 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { openSourceContributions, parseDay } from '../../data/projects';
+---
+
+<BaseLayout title="Open Source" description="Open-source contributions by Onkesh Bansal — patches merged upstream into the projects they belong to.">
+  <section class="hero">
+    <h1>Open Source</h1>
+    <p>Patches merged upstream. Everything listed here landed in the project it was sent to — nothing pending, nothing superseded. Each entry links to the pull request so the review and the diff are readable in full.</p>
+  </section>
+
+  <section class="section">
+    <div class="grid-2">
+      {openSourceContributions.map((contribution) => (
+        <a class="card" href={`/post/${contribution.slug}/`}>
+          <h3>{contribution.title}</h3>
+          <p>{contribution.summary}</p>
+          <div class="badge-row">
+            <span class="badge">{parseDay(contribution.date).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+            <span class="badge">merged</span>
+            {contribution.tags && contribution.tags.map((tag) => (
+              <span class={`card-tag tag-${contribution.projectType}`}>{tag}</span>
+            ))}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
