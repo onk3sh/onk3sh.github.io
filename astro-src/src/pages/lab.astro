@@ -90,7 +90,6 @@ const SHOW_PAPER_TRADES = false;
       <div id="canvest-risk-bar" class="risk-bar" style="display:none">
         <span class="risk-bar-label">Systemic Risk</span>
         <span id="canvest-risk-level" class="risk-level-badge"></span>
-        <span id="canvest-risk-note" class="risk-bar-note"></span>
       </div>
 
       <!-- Tabs — only worth showing when there is more than one -->
@@ -421,12 +420,10 @@ const SHOW_PAPER_TRADES = false;
       if (data.systemic_risk) {
         var bar = document.getElementById('canvest-risk-bar');
         var lvl = document.getElementById('canvest-risk-level');
-        var note = document.getElementById('canvest-risk-note');
         var riskColor = { LOW: '#34d399', MEDIUM: '#f59e0b', HIGH: '#f87171' };
         bar.style.display = '';
         lvl.textContent = data.systemic_risk.level + ' (' + data.systemic_risk.score + ')';
         lvl.style.color = riskColor[data.systemic_risk.level] || '#f59e0b';
-        note.textContent = data.systemic_risk.note || ((data.horizon_days || 30) + '-day horizon.');
       }
 
       /* disclaimer date */
@@ -831,12 +828,6 @@ const SHOW_PAPER_TRADES = false;
   }
 
   .risk-level-badge { font-weight: 700; font-size: 0.9rem; }
-
-  .risk-bar-note {
-    color: var(--text-muted);
-    font-size: 0.82rem;
-    flex: 1;
-  }
 
   .canvest-filter-row {
     display: flex;
