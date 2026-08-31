@@ -7,7 +7,7 @@
 An autonomous ticket-to-PR pipeline with persistent memory. Step through each stage or watch it run.
 </p> <div class="panel viz-panel"> <!-- Pipeline nodes --> <div class="pipeline" id="pipeline"> <div class="pipe-node" data-step="0"> <div class="pipe-icon">🧠</div> <div class="pipe-label">Session Memory</div> <div class="pipe-sublabel">Scan last 50 sessions</div> </div> <div class="pipe-arrow">→</div> <div class="pipe-node" data-step="1"> <div class="pipe-icon">🔍</div> <div class="pipe-label">Codebase Analysis</div> <div class="pipe-sublabel">Map relevant files</div> </div> <div class="pipe-arrow">→</div> <div class="pipe-node" data-step="2"> <div class="pipe-icon">📋</div> <div class="pipe-label">Plan & Draft</div> <div class="pipe-sublabel">Spec the implementation</div> </div> <div class="pipe-arrow">→</div> <div class="pipe-node" data-step="3"> <div class="pipe-icon">⚙️</div> <div class="pipe-label">Execute</div> <div class="pipe-sublabel">Write, test, commit</div> </div> <div class="pipe-arrow">→</div> <div class="pipe-node" data-step="4"> <div class="pipe-icon">🔎</div> <div class="pipe-label">Review</div> <div class="pipe-sublabel">Self-improving loop</div> </div> <div class="pipe-arrow">→</div> <div class="pipe-node" data-step="5"> <div class="pipe-icon">🚀</div> <div class="pipe-label">Open PR</div> <div class="pipe-sublabel">Human validates</div> </div> </div> <!-- Detail panel --> <div class="viz-detail" id="viz-detail"> <div class="viz-detail-inner" id="viz-detail-inner"> <p class="viz-hint">Click a stage or press <strong>Play</strong> to walk through the pipeline.</p> </div> </div> <!-- Controls --> <div class="viz-controls"> <button id="viz-play" type="button">▶ Play</button> <button id="viz-prev" type="button">← Prev</button> <button id="viz-next" type="button">Next →</button> <button id="viz-reset" type="button">Reset</button> </div> </div> </section>  <section class="section"> <h2>CanvestAI — Model Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2> <p class="section-sub">
 Bias signals from CanvestAI · 30-day horizon · Canadian ETF universe. Ranked most bullish first.
-</p> <div class="panel canvest-panel"> <div id="canvest-risk-bar" class="risk-bar" style="display:none"> <span class="risk-bar-label">Systemic Risk</span> <span id="canvest-risk-level" class="risk-level-badge"></span> <span id="canvest-risk-note" class="risk-bar-note"></span> </div> <!-- Tabs — only worth showing when there is more than one -->  <!-- ETFs tab --> <div id="tab-etfs"> <div class="canvest-filter-row"> <div class="filter-chips" id="etf-bias-chips"> <button class="chip active" data-etf-bias="all">All</button> <button class="chip" data-etf-bias="bullish">Bullish</button> <button class="chip" data-etf-bias="neutral">Neutral</button> <button class="chip" data-etf-bias="bearish">Bearish</button> </div> <span class="etf-count" id="etf-list-count"></span> </div> <div class="mer-filter-row"> <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label> <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider"> </div> <div class="etf-table-wrap"> <table class="etf-table" id="canvest-etf-table"> <thead> <tr> <th>Ticker</th> <th>Name</th> <th>Bias</th> <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th> <th title="Management Expense Ratio">MER %</th> </tr> </thead> <tbody id="canvest-etf-tbody"></tbody> </table> </div> </div> <!-- Trades tab -->  <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+</p> <div class="panel canvest-panel"> <div id="canvest-risk-bar" class="risk-bar" style="display:none"> <span class="risk-bar-label">Systemic Risk</span> <span id="canvest-risk-level" class="risk-level-badge"></span> </div> <!-- Tabs — only worth showing when there is more than one -->  <!-- ETFs tab --> <div id="tab-etfs"> <div class="canvest-filter-row"> <div class="filter-chips" id="etf-bias-chips"> <button class="chip active" data-etf-bias="all">All</button> <button class="chip" data-etf-bias="bullish">Bullish</button> <button class="chip" data-etf-bias="neutral">Neutral</button> <button class="chip" data-etf-bias="bearish">Bearish</button> </div> <span class="etf-count" id="etf-list-count"></span> </div> <div class="mer-filter-row"> <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label> <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider"> </div> <div class="etf-table-wrap"> <table class="etf-table" id="canvest-etf-table"> <thead> <tr> <th>Ticker</th> <th>Name</th> <th>Bias</th> <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th> <th title="Management Expense Ratio">MER %</th> </tr> </thead> <tbody id="canvest-etf-tbody"></tbody> </table> </div> </div> <!-- Trades tab -->  <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
       (function () {
         var btn = document.getElementById('theme-toggle');
         function sync() {
@@ -277,12 +277,10 @@ Bias signals from CanvestAI · 30-day horizon · Canadian ETF universe. Ranked m
       if (data.systemic_risk) {
         var bar = document.getElementById('canvest-risk-bar');
         var lvl = document.getElementById('canvest-risk-level');
-        var note = document.getElementById('canvest-risk-note');
         var riskColor = { LOW: '#34d399', MEDIUM: '#f59e0b', HIGH: '#f87171' };
         bar.style.display = '';
         lvl.textContent = data.systemic_risk.level + ' (' + data.systemic_risk.score + ')';
         lvl.style.color = riskColor[data.systemic_risk.level] || '#f59e0b';
-        note.textContent = data.systemic_risk.note || ((data.horizon_days || 30) + '-day horizon.');
       }
 
       /* disclaimer date */
@@ -685,12 +683,6 @@ Bias signals from CanvestAI · 30-day horizon · Canadian ETF universe. Ranked m
   }
 
   .risk-level-badge { font-weight: 700; font-size: 0.9rem; }
-
-  .risk-bar-note {
-    color: var(--text-muted);
-    font-size: 0.82rem;
-    flex: 1;
-  }
 
   .canvest-filter-row {
     display: flex;

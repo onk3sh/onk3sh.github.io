@@ -47,20 +47,40 @@ WITHHELD = {
     "paper_trading": "track record stays unpublished (see SHOW_PAPER_TRADES in lab.astro)",
 }
 
+# systemic_risk is projected too. Allowlisting only the top level let its `note`
+# through wholesale, and that note carried the model's internal rationale — the
+# astrological terms CanvestAI reasons in — onto a page read as financial
+# analysis. The level and the score are the parts a visitor can read.
+PUBLIC_RISK = ("level", "score")
+
+WITHHELD_RISK = {
+    "note": "model's internal rationale; not interpretable as financial analysis",
+}
+
+
+def project(raw: dict, allowed: tuple, withheld: dict, label: str = "") -> dict:
+    """Keep only allowlisted keys, and fail on any key this script has not seen."""
+    unknown = set(raw) - set(allowed) - set(withheld)
+    if unknown:
+        sys.exit(
+            f"CanvestAI export carries {label}fields this script has never seen: "
+            f"{', '.join(sorted(unknown))}\n"
+            "Review them, then add each to the allowlist or the withheld list."
+        )
+    for key, why in withheld.items():
+        if key in raw:
+            print(f"   . withholding {label}{key!r} — {why}")
+    return {k: raw[k] for k in allowed if k in raw}
+
 
 def to_public(raw: dict) -> dict:
     """Project the CanvestAI export down to the fields the public site may serve."""
-    unknown = set(raw) - set(PUBLIC_TOP_LEVEL) - set(WITHHELD)
-    if unknown:
-        sys.exit(
-            "CanvestAI export carries fields this script has never seen: "
-            f"{', '.join(sorted(unknown))}\n"
-            "Review them, then add each to PUBLIC_TOP_LEVEL or WITHHELD."
+    public = project(raw, PUBLIC_TOP_LEVEL, WITHHELD)
+    if "systemic_risk" in public:
+        public["systemic_risk"] = project(
+            public["systemic_risk"], PUBLIC_RISK, WITHHELD_RISK, "systemic_risk."
         )
-    for key, why in WITHHELD.items():
-        if key in raw:
-            print(f"   . withholding {key!r} — {why}")
-    return {k: raw[k] for k in PUBLIC_TOP_LEVEL if k in raw}
+    return public
 
 
 def regenerate_export() -> None:
