@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { visualizerSteps } from '../data/lab';
+import { visualizerSteps, cascadeFields } from '../data/lab';
 
 // The paper-trading track record stays unpublished while CanvestAI books direct
 // index shorts, which this account cannot place. One such trade (short SPY,
@@ -13,6 +13,57 @@ const SHOW_PAPER_TRADES = false;
   <section class="hero">
     <h1>Lab</h1>
     <p>Interactive demos of the systems I'm building.</p>
+  </section>
+
+  <!-- ── Model Cascade Simulator ── -->
+  <section class="section">
+    <h2>Model Cascade — Cost and Quality</h2>
+    <p class="section-sub">
+      Run the cheap model first, escalate to the frontier model when a verifier objects.
+      Put your own numbers in and see where the cascade stops paying for itself.
+    </p>
+    <div class="panel casc-panel">
+
+      <div class="casc-inputs" id="casc-inputs"></div>
+
+      <p class="casc-note">
+        Starting values are illustrative, not quoted prices. Cost is per task, so nothing
+        here depends on a vendor price sheet that would go stale.
+      </p>
+
+      <div class="casc-results">
+        <table class="casc-table">
+          <thead>
+            <tr>
+              <th>Strategy</th>
+              <th title="Share of tasks the pipeline gets right">Quality</th>
+              <th title="Average cost of one task, including the verifier">$ / task</th>
+              <th title="What you pay for each task that actually comes out right">$ / success</th>
+              <th title="Cost across the month at your task volume">Monthly</th>
+            </tr>
+          </thead>
+          <tbody id="casc-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="casc-verdict" id="casc-verdict"></div>
+
+      <div class="casc-chart-wrap">
+        <h3 class="casc-chart-title">Cost against quality, as the verifier gets more aggressive</h3>
+        <p class="casc-chart-sub">
+          A verifier cannot catch more wrong answers without also flagging more right ones.
+          The curve sweeps that trade-off through the operating point you entered.
+        </p>
+        <div id="casc-chart" class="casc-chart"></div>
+        <div class="casc-legend">
+          <span><i class="casc-dot casc-dot-cascade"></i>cascade</span>
+          <span><i class="casc-dot casc-dot-you"></i>your settings</span>
+          <span><i class="casc-dot casc-dot-cheap"></i>cheap only</span>
+          <span><i class="casc-dot casc-dot-exp"></i>frontier only</span>
+        </div>
+      </div>
+
+    </div>
   </section>
 
   <!-- ── Agent Development Harness Visualizer ── -->
@@ -167,6 +218,231 @@ const SHOW_PAPER_TRADES = false;
 </BaseLayout>
 
 <script type="application/json" id="__lab-steps__" set:html={JSON.stringify(visualizerSteps)}></script>
+<script type="application/json" id="__casc-fields__" set:html={JSON.stringify(cascadeFields)}></script>
+
+<script is:inline>
+(function () {
+  var host = document.getElementById('casc-inputs');
+  if (!host) return;
+
+  var FIELDS = JSON.parse(document.getElementById('__casc-fields__').textContent);
+  var state = {};
+  FIELDS.forEach(function (f) { state[f.key] = f.value; });
+
+  /* ── formatting ── */
+  function money(x) {
+    if (!isFinite(x)) return '—';
+    if (x >= 1000) return '$' + Math.round(x).toLocaleString();
+    if (x >= 1) return '$' + x.toFixed(2);
+    return '$' + x.toFixed(4);
+  }
+  function pct(x) { return isFinite(x) ? (x * 100).toFixed(1) + '%' : '—'; }
+  function clamp(x, lo, hi) { return Math.min(hi, Math.max(lo, x)); }
+
+  /* ── the model ──
+   * Every task pays the cheap model and the verifier. The verifier escalates a
+   * wrong answer with probability catchRate and a right answer with probability
+   * falseAlarm, and only escalated tasks pay the frontier model.
+   *
+   * Quality counts three ways a task ends up correct: the cheap model was right
+   * and the verifier let it through; the cheap model was right but got escalated
+   * anyway and the frontier model was also right; the cheap model was wrong, the
+   * verifier caught it, and the frontier model got it right. Escalating a correct
+   * answer can lose quality, because the frontier model is not perfect either.
+   */
+  function evaluate(v) {
+    var esc = (1 - v.pCheap) * v.catchRate + v.pCheap * v.falseAlarm;
+    var quality =
+      v.pCheap * (1 - v.falseAlarm) +
+      v.pCheap * v.falseAlarm * v.pExp +
+      (1 - v.pCheap) * v.catchRate * v.pExp;
+    var perTask = v.cheapCost + v.verifierCost + esc * v.expCost;
+    return { esc: esc, quality: quality, perTask: perTask };
+  }
+
+  /* Escalation rate at which the cascade costs exactly what frontier-only costs.
+   * Above it you are paying the cheap model and the verifier for nothing. */
+  function breakEven(v) {
+    if (v.expCost <= 0) return 0;
+    return (v.expCost - v.cheapCost - v.verifierCost) / v.expCost;
+  }
+
+  /* A verifier cannot raise its catch rate without also raising false alarms.
+   * Model that trade-off as a ROC curve fa = t^k, and derive k from the operating
+   * point the visitor entered so the sweep passes through their own measurement. */
+  function rocExponent(v) {
+    if (v.falseAlarm <= 0) return Infinity;
+    if (v.catchRate <= 0 || v.catchRate >= 1 || v.falseAlarm >= 1) return null;
+    return Math.log(v.falseAlarm) / Math.log(v.catchRate);
+  }
+
+  function sweep(v) {
+    var k = rocExponent(v);
+    var pts = [];
+    for (var i = 0; i <= 100; i++) {
+      var t = i / 100;
+      var fa;
+      if (k === Infinity) fa = 0;
+      else if (k === null) fa = v.falseAlarm;
+      else fa = Math.pow(t, k);
+      var probe = Object.assign({}, v, { catchRate: t, falseAlarm: fa });
+      var r = evaluate(probe);
+      pts.push({ t: t, quality: r.quality, perTask: r.perTask });
+    }
+    return pts;
+  }
+
+  /* ── inputs ── */
+  FIELDS.forEach(function (f) {
+    var wrap = document.createElement('label');
+    wrap.className = 'casc-field';
+    var shown = f.unit === 'pct' ? f.value * 100 : f.value;
+    var step = f.unit === 'pct' ? f.step * 100 : f.step;
+    wrap.innerHTML =
+      '<span class="casc-label">' + f.label +
+      (f.unit === 'pct' ? ' <em>%</em>' : f.unit === 'usd' ? ' <em>$</em>' : '') +
+      '</span>' +
+      '<input type="number" class="casc-input" data-key="' + f.key +
+      '" data-unit="' + f.unit + '" value="' + shown + '" step="' + step +
+      '" min="0"' + (f.unit === 'pct' ? ' max="100"' : '') + '>' +
+      '<span class="casc-hint">' + f.hint + '</span>';
+    host.appendChild(wrap);
+  });
+
+  host.addEventListener('input', function (e) {
+    var el = e.target;
+    if (!el.classList || !el.classList.contains('casc-input')) return;
+    var raw = parseFloat(el.value);
+    if (!isFinite(raw)) return;
+    var unit = el.getAttribute('data-unit');
+    state[el.getAttribute('data-key')] =
+      unit === 'pct' ? clamp(raw, 0, 100) / 100 : Math.max(0, raw);
+    render();
+  });
+
+  /* ── chart ── */
+  function chart(pts, v, cur) {
+    var W = 620, H = 300, P = { t: 16, r: 18, b: 44, l: 62 };
+    var cheap = { quality: v.pCheap, perTask: v.cheapCost };
+    var front = { quality: v.pExp, perTask: v.expCost };
+    var all = pts.concat([cheap, front, cur]);
+
+    var qs = all.map(function (p) { return p.quality; });
+    var cs = all.map(function (p) { return p.perTask; });
+    var q0 = Math.min.apply(null, qs), q1 = Math.max.apply(null, qs);
+    var c0 = 0, c1 = Math.max.apply(null, cs);
+    if (q1 - q0 < 1e-6) { q0 -= 0.01; q1 += 0.01; }
+    if (c1 <= 0) c1 = 1;
+    c1 *= 1.08;
+
+    function X(q) { return P.l + ((q - q0) / (q1 - q0)) * (W - P.l - P.r); }
+    function Y(c) { return H - P.b - ((c - c0) / (c1 - c0)) * (H - P.t - P.b); }
+
+    var s = '<svg viewBox="0 0 ' + W + ' ' + H + '" class="casc-svg" role="img" ' +
+      'aria-label="Cost per task plotted against pipeline quality">';
+
+    /* gridlines + axis labels */
+    for (var g = 0; g <= 4; g++) {
+      var cv = c0 + (c1 - c0) * (g / 4);
+      var y = Y(cv);
+      s += '<line x1="' + P.l + '" y1="' + y + '" x2="' + (W - P.r) + '" y2="' + y +
+        '" class="casc-grid"/>';
+      s += '<text x="' + (P.l - 8) + '" y="' + (y + 4) +
+        '" class="casc-axis casc-axis-y">' + money(cv) + '</text>';
+    }
+    for (var h = 0; h <= 4; h++) {
+      var qv = q0 + (q1 - q0) * (h / 4);
+      var x = X(qv);
+      s += '<text x="' + x + '" y="' + (H - P.b + 20) +
+        '" class="casc-axis casc-axis-x">' + pct(qv) + '</text>';
+    }
+    s += '<text x="' + (W / 2) + '" y="' + (H - 6) +
+      '" class="casc-axis casc-axis-title">pipeline quality</text>';
+
+    /* the cascade frontier */
+    var d = pts.map(function (p, i) {
+      return (i ? 'L' : 'M') + X(p.quality).toFixed(1) + ' ' + Y(p.perTask).toFixed(1);
+    }).join(' ');
+    s += '<path d="' + d + '" class="casc-line"/>';
+
+    function dot(p, cls, label) {
+      return '<circle cx="' + X(p.quality).toFixed(1) + '" cy="' + Y(p.perTask).toFixed(1) +
+        '" r="5" class="' + cls + '"><title>' + label + ' — ' + pct(p.quality) +
+        ' quality at ' + money(p.perTask) + ' per task</title></circle>';
+    }
+    s += dot(cheap, 'casc-pt casc-pt-cheap', 'Cheap only');
+    s += dot(front, 'casc-pt casc-pt-exp', 'Frontier only');
+    s += dot(cur, 'casc-pt casc-pt-you', 'Your settings');
+    s += '</svg>';
+    return s;
+  }
+
+  /* ── render ── */
+  function render() {
+    var v = state;
+    var casc = evaluate(v);
+    var be = breakEven(v);
+
+    var rows = [
+      { label: 'Cheap only', quality: v.pCheap, perTask: v.cheapCost },
+      { label: 'Cascade', quality: casc.quality, perTask: casc.perTask, mark: true },
+      { label: 'Frontier only', quality: v.pExp, perTask: v.expCost }
+    ];
+    document.getElementById('casc-tbody').innerHTML = rows.map(function (r) {
+      return '<tr' + (r.mark ? ' class="casc-row-active"' : '') + '>' +
+        '<td>' + r.label + '</td>' +
+        '<td>' + pct(r.quality) + '</td>' +
+        '<td>' + money(r.perTask) + '</td>' +
+        '<td>' + money(r.quality > 0 ? r.perTask / r.quality : Infinity) + '</td>' +
+        '<td>' + money(r.perTask * v.volume) + '</td>' +
+        '</tr>';
+    }).join('');
+
+    /* Verdict. $/success is the honest comparison: a cheaper pipeline that is
+     * wrong more often has just moved the cost somewhere off this table. */
+    var frontSucc = v.pExp > 0 ? v.expCost / v.pExp : Infinity;
+    var cascSucc = casc.quality > 0 ? casc.perTask / casc.quality : Infinity;
+    var msg, tone;
+    /* Quality is compared at the precision the table prints. Claiming the
+     * cascade "answers correctly less often" while both rows show the same
+     * number reads as a contradiction, even when it is true in the third decimal. */
+    var qualityGap = v.pExp - casc.quality;
+    var gapVisible = Math.abs(qualityGap) >= 0.0005;
+
+    if (v.expCost <= 0) {
+      tone = 'warn';
+      msg = 'Give the frontier model a cost per task — without one there is nothing ' +
+        'for the cascade to save against.';
+    } else if (be <= 0) {
+      tone = 'bad';
+      msg = 'The cheap model and the verifier together already cost as much as the ' +
+        'frontier model. No escalation rate makes this cascade worth building.';
+    } else if (casc.esc > be) {
+      tone = 'bad';
+      msg = 'Escalating ' + pct(casc.esc) + ' of tasks puts you past the ' + pct(be) +
+        ' break-even, so the cascade costs ' +
+        pct(casc.perTask / v.expCost - 1) + ' more per task than simply always ' +
+        'calling the frontier model' +
+        (gapVisible ? ' — and it answers correctly less often.' : ', for no gain in quality.');
+    } else {
+      tone = cascSucc <= frontSucc ? 'good' : 'warn';
+      msg = 'The cascade escalates ' + pct(casc.esc) + ' of tasks and costs ' +
+        pct(1 - casc.perTask / v.expCost) + ' less per task than frontier-only, ' +
+        'giving up ' + ((v.pExp - casc.quality) * 100).toFixed(1) +
+        ' points of quality. Per task answered correctly that is ' + money(cascSucc) +
+        ' against ' + money(frontSucc) + '. Break-even escalation sits at ' + pct(be) + '.';
+    }
+    var verdict = document.getElementById('casc-verdict');
+    verdict.className = 'casc-verdict casc-' + tone;
+    verdict.textContent = msg;
+
+    document.getElementById('casc-chart').innerHTML =
+      chart(sweep(v), v, { quality: casc.quality, perTask: casc.perTask });
+  }
+
+  render();
+})();
+</script>
 
 <script is:inline>
 (function () {
@@ -473,6 +749,103 @@ const SHOW_PAPER_TRADES = false;
 </script>
 
 <style is:inline>
+  /* ── model cascade simulator ── */
+  .casc-inputs {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 0.9rem 1.2rem;
+  }
+
+  .casc-field { display: flex; flex-direction: column; gap: 0.25rem; }
+
+  .casc-label { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+  .casc-label em { color: var(--text-muted); font-style: normal; font-weight: 400; }
+
+  .casc-input {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.55rem;
+    width: 100%;
+  }
+  .casc-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .casc-hint { font-size: 0.72rem; color: var(--text-muted); line-height: 1.35; }
+
+  .casc-note {
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    margin: 1rem 0 0;
+  }
+
+  .casc-results { overflow-x: auto; margin-top: 1.1rem; }
+
+  .casc-table { border-collapse: collapse; width: 100%; min-width: 480px; }
+  .casc-table th,
+  .casc-table td {
+    border-bottom: 1px solid var(--line);
+    padding: 0.5rem 0.6rem;
+    text-align: right;
+    font-size: 0.86rem;
+  }
+  .casc-table th:first-child,
+  .casc-table td:first-child { text-align: left; }
+  .casc-table th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; }
+  .casc-row-active td { background: var(--accent-soft); font-weight: 600; }
+
+  .casc-verdict {
+    border-left: 3px solid var(--line);
+    border-radius: 0 6px 6px 0;
+    font-size: 0.86rem;
+    line-height: 1.5;
+    margin-top: 1.1rem;
+    padding: 0.7rem 0.9rem;
+    background: var(--bg-soft);
+  }
+  .casc-good { border-left-color: #34d399; }
+  .casc-warn { border-left-color: #f59e0b; }
+  .casc-bad { border-left-color: #f87171; }
+
+  .casc-chart-wrap { margin-top: 1.6rem; }
+  .casc-chart-title { font-size: 0.92rem; margin: 0 0 0.25rem; }
+  .casc-chart-sub {
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    line-height: 1.45;
+    margin: 0 0 0.6rem;
+  }
+  .casc-chart { width: 100%; }
+  .casc-svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+  .casc-grid { stroke: var(--line); stroke-width: 1; }
+  .casc-axis { fill: var(--text-muted); font-size: 10px; }
+  .casc-axis-y { text-anchor: end; }
+  .casc-axis-x { text-anchor: middle; }
+  .casc-axis-title { text-anchor: middle; font-size: 10.5px; }
+  .casc-line { fill: none; stroke: var(--accent); stroke-width: 2; }
+  .casc-pt { stroke: var(--bg-elev); stroke-width: 2; }
+  .casc-pt-cheap { fill: #34d399; }
+  .casc-pt-exp { fill: #f87171; }
+  .casc-pt-you { fill: var(--accent); }
+
+  .casc-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    color: var(--text-muted);
+    font-size: 0.74rem;
+    margin-top: 0.5rem;
+  }
+  .casc-legend span { align-items: center; display: inline-flex; gap: 0.35rem; }
+  .casc-dot { border-radius: 50%; height: 8px; width: 8px; display: inline-block; }
+  .casc-dot-cascade { background: var(--accent); }
+  .casc-dot-you { background: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  .casc-dot-cheap { background: #34d399; }
+  .casc-dot-exp { background: #f87171; }
+
   .section-sub {
     color: var(--text-muted);
     font-size: 0.95rem;
