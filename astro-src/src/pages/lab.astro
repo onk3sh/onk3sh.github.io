@@ -135,7 +135,9 @@ const SHOW_PAPER_TRADES = false;
   <section class="section">
     <h2>CanvestAI — Model Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2>
     <p class="section-sub">
-      Bias signals from CanvestAI · 30-day horizon · Canadian ETF universe. Ranked most bullish first.
+      Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
+      Horizons differ by sector and are shown per row — a signal looking a year out
+      is not the same call as a 30-day one.
     </p>
     <div class="panel canvest-panel">
       <div id="canvest-risk-bar" class="risk-bar" style="display:none">
@@ -174,6 +176,7 @@ const SHOW_PAPER_TRADES = false;
                 <th>Name</th>
                 <th>Bias</th>
                 <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th>
+                <th title="How far out this sector's signal looks. Rows with different horizons are not directly comparable.">Horizon</th>
                 <th title="Management Expense Ratio">MER %</th>
               </tr>
             </thead>
@@ -596,6 +599,16 @@ const SHOW_PAPER_TRADES = false;
     renderEtfs();
   });
 
+  /* Horizons in the export run from 30 days to 2555. Printing raw day counts
+   * buries that spread, so scale the unit and let the outliers read as outliers. */
+  function fmtHorizon(d) {
+    if (d == null || !isFinite(d)) return '—';
+    if (d < 90) return d + 'd';
+    if (d < 365) return Math.round(d / 30.44) + 'mo';
+    var y = d / 365.25;
+    return (y < 10 ? y.toFixed(1) : Math.round(y)) + 'y';
+  }
+
   function renderEtfs() {
     var light = isLight();
     var BIAS_COLOR_ETF = { bullish: '#34d399', neutral: '#f59e0b', bearish: '#f87171' };
@@ -613,7 +626,7 @@ const SHOW_PAPER_TRADES = false;
                 : (meta.mer != null ? meta.mer : null);
         if (mer !== null && mer > maxMer) return;
         seen[clean] = true;
-        rows.push({ ticker: clean, name: meta.name || '—', bias: s.bias, confidence: s.confidence, mer: mer });
+        rows.push({ ticker: clean, name: meta.name || '—', bias: s.bias, confidence: s.confidence, mer: mer, horizon: s.horizon_days });
       });
     });
     rows.sort(function(a, b) { return b.confidence - a.confidence; });
@@ -635,6 +648,7 @@ const SHOW_PAPER_TRADES = false;
           '</div>' +
           '<span style="font-size:0.82rem;color:var(--text-muted)">' + fmt1(r.confidence) + '%</span>' +
         '</div></td>' +
+        '<td class="etf-horizon' + (r.horizon >= 365 ? ' etf-horizon-long' : '') + '">' + fmtHorizon(r.horizon) + '</td>' +
         '<td style="font-size:0.82rem;color:var(--text-muted);text-align:right">' + (r.mer !== null ? r.mer.toFixed(2) + '%' : '—') + '</td>' +
       '</tr>';
     }).join('');
@@ -1171,6 +1185,16 @@ const SHOW_PAPER_TRADES = false;
     vertical-align: middle;
   }
   .etf-table tr:last-child td { border-bottom: none; }
+
+  .etf-horizon {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    text-align: right;
+    white-space: nowrap;
+  }
+  /* Anything a year out is a different question from a 30-day call. */
+  .etf-horizon-long { color: #f59e0b; font-weight: 600; }
+  [data-theme="light"] .etf-horizon-long { color: #92400e; }
   .etf-table tbody tr:hover { background: var(--accent-soft); }
 
   .etf-ticker {
@@ -1265,10 +1289,12 @@ const SHOW_PAPER_TRADES = false;
 
   @media (max-width: 560px) {
     /* ETF table — hide Name and MER on small screens */
+    /* Hide Name and MER on narrow screens. Horizon stays — without it the
+       remaining rows look directly comparable when they are not. */
     #canvest-etf-table th:nth-child(2),
     #canvest-etf-table td:nth-child(2),
-    #canvest-etf-table th:nth-child(5),
-    #canvest-etf-table td:nth-child(5) { display: none; }
+    #canvest-etf-table th:nth-child(6),
+    #canvest-etf-table td:nth-child(6) { display: none; }
 
     /* Trades table — hide Name and Conf on small screens */
     #canvest-trades-table th:nth-child(2),
