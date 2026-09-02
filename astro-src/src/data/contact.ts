@@ -19,14 +19,14 @@ export type ContactContent = {
 };
 
 export const contact: ContactContent = {
-  metaDescription: 'Reach Onkesh Bansal — Staff/Senior IC engineer building production AI systems, based in Toronto, open to remote US/Canada roles.',
+  metaDescription: 'Reach Onkesh Bansal, a staff-level engineer building production AI systems. Based in Toronto, open to remote roles across the US and Canada.',
   hero: {
     headline: 'Reach out.',
     subline: 'Staff and senior IC roles, AI platform work, and conversations with people building serious production systems.',
   },
   intro: {
     heading: 'How to reach me',
-    body: 'LinkedIn is the fastest channel. I read everything; I reply to messages with enough context to skip the back-and-forth.',
+    body: 'LinkedIn is the fastest way to reach me. I read everything. I reply to messages that carry enough context to skip a round of back-and-forth.',
   },
   email: 'onkesh2022@gmail.com',
   links: [
@@ -41,12 +41,12 @@ export const contact: ContactContent = {
       { label: 'AI platform work',        description: 'LLM orchestration, agent infrastructure, retrieval pipelines, production ML.' },
       { label: 'Consulting & advisory',   description: 'Agent systems, LLM infrastructure, and backend architecture.' },
       { label: 'Talks & writing',         description: 'Agent engineering, context engineering, and production LLM patterns.' },
-      { label: 'Location',               description: 'Based in Toronto. Open to remote (US/Canada) and select hybrid.' },
+      { label: 'Location',               description: 'Based in Toronto. Open to remote roles in the US and Canada, and to select hybrid roles.' },
     ],
   },
   messagingTips: {
     heading: 'Before you message',
-    intro: 'I reply to everything. A note on what the team builds and why you think there\'s a fit goes a long way.',
+    intro: 'I reply to everything. Tell me what your team builds and why you think there is a fit. That saves us both a round of messages.',
     tips: [],
   },
 };

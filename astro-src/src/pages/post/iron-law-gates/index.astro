@@ -4,7 +4,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Iron-Law Gates"
-  description="I audited 100+ PR review comments across two production codebases, found 16 recurring failure categories, and encoded each as a non-skippable gate in an AI-assisted development pipeline."
+  description="I read more than 100 PR review comments across two production codebases, found 16 recurring failure categories, and turned each one into a gate the agent cannot skip."
 >
 
   <article class="post-article">
@@ -20,13 +20,13 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
     <div class="post-body panel">
 
-      <p>The model is a commodity. The process around it isn't. Your AI pipeline will only stop the failures you have explicitly told it to stop — and the only reliable source of "what fails in your codebase" is your own review history.</p>
+      <p>The model is a commodity. The process around it is not. Your AI pipeline will only stop the failures you have explicitly told it to stop. The one reliable source for what fails in your codebase is your own review history.</p>
 
       <p>So I went and got mine.</p>
 
       <h2>The audit</h2>
 
-      <p>Over three months I worked through 100+ PR review comments across two production services I contribute to. I copied every non-trivial reviewer comment into a spreadsheet, tagged the underlying failure, and looked for repetition. I did not care about one-off stylistic preferences. I cared about the things that came back.</p>
+      <p>Over three months I worked through more than 100 PR review comments across two production services I contribute to. I copied every non-trivial comment into a spreadsheet, tagged the underlying failure, and looked for repetition. One-off stylistic preferences did not interest me. I wanted the things that kept coming back.</p>
 
       <p>Sixteen categories survived the cut. They split cleanly by service.</p>
 
@@ -70,9 +70,9 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>A few things worth calling out. The two services have almost no overlap in failure modes. Service A's worst failures are concurrency and entity-state bugs — the things a strongly-typed, transactional, ORM-heavy stack punishes. Service B's worst failures are logic errors and duplication — the things a dynamic, two-language stack punishes. Same engineer. Different traps.</p>
+      <p>Two things are worth calling out. First, the services barely overlap in failure modes. Service A fails on concurrency and entity-state bugs, which is what a strongly typed, transactional, ORM-heavy stack punishes. Service B fails on logic errors and duplication, which is what a dynamic, two-language stack punishes. Same engineer, different traps.</p>
 
-      <p>This is the entire point. A generic AI code reviewer cannot know that <code>.some()</code> vs <code>.every()</code> is the modal failure in this codebase, or that copy-constructor identity drift has shipped to production twice. My reviewers know. Their comments are the ground truth.</p>
+      <p>That is the whole argument. A generic AI code reviewer cannot know that <code>.some()</code> against <code>.every()</code> is the most common failure in this codebase, or that copy-constructor identity drift has shipped to production twice. My reviewers know both. Their comments are the ground truth.</p>
 
       <h2>The insight: four intervention layers</h2>
 
@@ -85,7 +85,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         <li><strong>Safety</strong> — migrations, feature flags, test quality. Wrong blast radius if it ships.</li>
       </ol>
 
-      <p>Each layer fails at a different point in the development arc, which means each layer needs a different gate. Catching scope creep at code review is too late — the work is done. Catching a concurrency bug at planning is too early — there's no code to reason about yet.</p>
+      <p>Each layer fails at a different point in the development arc, so each layer needs its own gate. Catching scope creep at code review is too late, because the work is already done. Catching a concurrency bug at planning is too early, because no code exists to reason about.</p>
 
       <div class="table-wrap">
         <table>
@@ -112,23 +112,23 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p><strong>Gate:</strong> blocks on any UNKNOWN. You cannot proceed to Phase 2 with unresolved questions.</p>
 
-      <p>This kills scope creep before it has a surface to grow on. The "intentionally-removed feature accidentally re-added" failure was the one that taught me Phase 1 needed to exist — the only way to not re-add a removed feature is to know, in writing, that it was removed.</p>
+      <p>This kills scope creep before it has a surface to grow on. One failure taught me that Phase 1 had to exist: a feature we removed on purpose came back by accident. The only way to keep a removed feature out is to know, in writing, that it was removed.</p>
 
       <h3>Phase 2 — Plan</h3>
 
-      <p>Implementation plan with four required sections: <strong>reuse inventory</strong> (what already exists), <strong>data-flow mapping</strong> (where state enters, transforms, lands), <strong>NOT-DO list</strong> (things a reasonable engineer might do that this ticket excludes), and <strong>Intentionally Removed Items</strong> (features deleted in prior tickets that must not return).</p>
+      <p>The implementation plan has four required sections. A <strong>reuse inventory</strong> lists what already exists. A <strong>data-flow map</strong> shows where state enters, transforms, and lands. A <strong>NOT-DO list</strong> names the things a reasonable engineer might do that this ticket excludes. <strong>Intentionally Removed Items</strong> lists features deleted in earlier tickets that must not come back.</p>
 
       <p>User-approved before any code is touched. The reuse inventory is the direct response to four "you duplicated this utility" comments. The NOT-DO list is the direct response to scope creep.</p>
 
       <h3>Phase 2.5 — Stress-test (<code>grill-me</code> / <code>grill-with-docs</code>)</h3>
 
-      <p>Sequential design interview. One question at a time. Adversarial probing of the plan. Auto-routes to <code>grill-with-docs</code> — which pulls the relevant ADRs and internal docs into context — when Phase 1 surfaced sensitive paths: auth, migrations, payments.</p>
+      <p>A sequential design interview, one question at a time, probing the plan adversarially. It routes automatically to <code>grill-with-docs</code> when Phase 1 surfaced a sensitive path such as auth, migrations, or payments. That variant pulls the relevant ADRs and internal docs into context.</p>
 
-      <p>This is where migration-safety and feature-flag failures get caught. The questions write themselves once you know what's been broken before: <em>"What data assumption are you making about column X? How did you validate it? What's the partial-index scope and what happens to rows outside it?"</em></p>
+      <p>This is where migration-safety and feature-flag failures get caught. The questions write themselves once you know what has broken before. <em>What data assumption are you making about column X? How did you validate it? What is the partial-index scope, and what happens to the rows outside it?</em></p>
 
       <h3>Phase 3 — Implement</h3>
 
-      <p>TDD enforced. Per-file dedup check: any time two or more files would contain the same logic, the pipeline extracts a shared module before continuing. This runs because four reviewers, four times, said the same thing.</p>
+      <p>TDD is enforced, and every file gets a dedup check. Whenever two or more files would hold the same logic, the pipeline extracts a shared module before it continues. That check exists because four reviewers said the same thing four times.</p>
 
       <h3>Phase 4 — Self-review</h3>
 
@@ -144,7 +144,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h3>Phase 5 — Completion</h3>
 
-      <p>Evidence-required. Not "tests pass" — the actual command output, captured. Not "lint is clean" — the linter's stdout. <code>dd-reviewer</code> runs a full 13-check pass against the diff and returns go/no-go. Only then does the PR open.</p>
+      <p>Evidence is required. "Tests pass" does not count; the captured command output does. "Lint is clean" does not count; the linter's stdout does. <code>dd-reviewer</code> then runs a full 13-check pass against the diff and returns go or no-go. Only then does the PR open.</p>
 
       <pre><code>[dd-reviewer] 13/13 checks complete
   correctness: pass
@@ -155,12 +155,12 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>The supporting stack</h2>
 
-      <p>Briefly, because it's not the point — the gates are the point.</p>
+      <p>Briefly, because the gates are what matters here.</p>
 
       <ul>
         <li><strong>ast-grep + LSP</strong> for code search. ~70% token reduction versus grep on the same questions, because structural queries return structural answers.</li>
         <li><strong>difft</strong> for structural diffs that sub-agents can actually read.</li>
-        <li><strong>shellcheck</strong> as a PostToolUse hard guard on Bash — the agent cannot run a shell command that shellcheck rejects.</li>
+        <li><strong>shellcheck</strong> as a PostToolUse hard guard on Bash. The agent cannot run a shell command that shellcheck rejects.</li>
         <li><strong>Claude Code sandbox mode</strong> for execution boundaries. Filesystem and network allowlists.</li>
         <li><strong>Slack async observability</strong> so long-running phases don't require babysitting a terminal.</li>
         <li><strong>Custom Bitbucket MCP server</strong>, because no official one existed.</li>
@@ -172,18 +172,18 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>Honest assessment</h2>
 
-      <p>Roughly 10 of my own tickets have gone through the full pipeline end-to-end. Separately, I've used <code>dd-reviewer</code> against 30+ external open-source PRs as a learning loop — running the 13 checks against code I didn't write, to see whether the gates fire on real failures or just on mine.</p>
+      <p>Roughly 10 of my own tickets have gone through the full pipeline end to end. Separately, I have run <code>dd-reviewer</code> against more than 30 external open-source PRs as a learning loop. Running the 13 checks against code I did not write shows whether the gates fire on real failures or only on mine.</p>
 
       <p>The gaps, plainly:</p>
 
       <ul>
-        <li><strong>N = 10 is a pilot.</strong> It's enough to know the gates fire correctly on the failures they were built for. It is not enough to claim a defect-rate reduction. I'm not going to claim one.</li>
+        <li><strong>N = 10 is a pilot.</strong> It is enough to know the gates fire correctly on the failures they were built for. It is not enough to claim a defect-rate reduction, so I am not claiming one.</li>
         <li><strong>Single-user.</strong> Every calibration decision was mine. A second engineer would tune the AUTO/BATCH/MANUAL thresholds differently.</li>
-        <li><strong>Ceremony versus throughput.</strong> Six phases with hard gates is slower than just writing code for a one-line CSS fix. I skip the pipeline for trivial tickets. That's a feature, not a bug — but it means this isn't a universal answer.</li>
+        <li><strong>Ceremony versus throughput.</strong> Six phases with hard gates is slower than writing a one-line CSS fix by hand, so I skip the pipeline for trivial tickets. That is deliberate, and it also means this is not a universal answer.</li>
         <li><strong>The audit is a snapshot.</strong> Three months, two services, one engineer. Reviewer composition changes. Codebases evolve. I'll re-run the audit next quarter.</li>
       </ul>
 
-      <p>I'm not claiming this makes Claude Code "better." It makes <em>my</em> use of Claude Code reliably catch the failures <em>my</em> reviewers have flagged. That's a smaller, more defensible claim, and it's the one I'm willing to defend.</p>
+      <p>I am not claiming this makes Claude Code better. It makes <em>my</em> use of Claude Code catch the failures <em>my</em> reviewers have flagged, reliably. That is a smaller claim, and it is the one I am willing to defend.</p>
 
       <h2>The methodology</h2>
 
@@ -191,16 +191,16 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <ol>
         <li><strong>Pull your last 90 days of PR review comments.</strong> All of them. Not just the BLOCKERs.</li>
-        <li><strong>Tag the underlying failure</strong>, not the surface comment. "You forgot <code>@Transactional</code>" and "this isn't atomic across the batch" are the same failure.</li>
+        <li><strong>Tag the underlying failure</strong> rather than the surface comment. "You forgot <code>@Transactional</code>" and "this isn't atomic across the batch" describe the same failure.</li>
         <li><strong>Count.</strong> Anything with three or more instances is a pattern. Anything with one is a preference.</li>
         <li><strong>Cluster into intervention layers.</strong> Where in the development arc does each pattern first become catchable?</li>
         <li><strong>Build a gate per layer</strong>, not per pattern. Sixteen gates is unworkable. Four or five is operable.</li>
         <li><strong>Make the gates non-skippable.</strong> A gate you can skip when you're tired is not a gate.</li>
       </ol>
 
-      <p>The output won't look like mine. Your reviewers catch different things. Your stack has different traps. That's the point — a pipeline built on someone else's review history is just another generic tool.</p>
+      <p>Your output will not look like mine. Your reviewers catch different things and your stack has different traps. That is exactly why it works: a pipeline built on someone else's review history is just another generic tool.</p>
 
-      <p class="post-cta">Audit your own review history. Build gates against what you actually ship wrong. The model will keep getting better on its own; the process won't.</p>
+      <p class="post-cta">Audit your own review history. Build gates against what you actually ship wrong. The model will keep getting better on its own. The process will not.</p>
 
       <div class="post-footer-links">
         <a href="/post/">← All work</a>
