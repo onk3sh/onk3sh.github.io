@@ -235,14 +235,14 @@ export const projects: Project[] = [
   },
   {
     slug: 'pytest-approx-nested-containers',
-    title: 'pytest \u2014 approx() and nested containers',
+    title: 'pytest: approx() and nested containers',
     date: '2026-08-25',
     type: 'project',
     projectType: 'open-source',
     tags: ['open source', 'Python'],
     summary:
       'Merged into pytest. approx() refused to descend into a nested container and said so clearly, but only when that container matched the type of the one holding it. A dict inside a list slipped past and was compared exactly, so the tolerance was ignored without warning. Reported in 2022 and still reproducing on main.',
-    link: { label: 'pytest-dev/pytest #14934 \u2014 merged', href: 'https://github.com/pytest-dev/pytest/pull/14934' },
+    link: { label: 'pytest-dev/pytest #14934, merged', href: 'https://github.com/pytest-dev/pytest/pull/14934' },
     sections: [
       {
         heading: 'What was wrong',
@@ -277,14 +277,14 @@ export const projects: Project[] = [
   },
   {
     slug: 'fortymm-email-templates',
-    title: 'FortyMM \u2014 transactional email templates',
+    title: 'FortyMM: transactional email templates',
     date: '2025-09-17',
     type: 'project',
     projectType: 'open-source',
     tags: ['open source', 'Ruby on Rails'],
     summary:
       'Merged into FortyMM, an open-source table tennis league platform. I rewrote the Devise mailer templates, adding a plain-text alternative to every HTML mail, email-safe responsive CSS, and wording that sounds like the sport the product is about.',
-    link: { label: 'mightymoose/fortymm-- #341 \u2014 merged', href: 'https://github.com/mightymoose/fortymm--/pull/341' },
+    link: { label: 'mightymoose/fortymm-- #341, merged', href: 'https://github.com/mightymoose/fortymm--/pull/341' },
     sections: [
       {
         heading: 'What changed',
