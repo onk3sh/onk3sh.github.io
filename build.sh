@@ -57,6 +57,13 @@ if [ -d "$DIST/_astro" ]; then
   echo "  synced _astro/"
 fi
 
+# Copy is prose-checked at the root, not in dist/, so legacy post/ pages Astro no
+# longer builds are covered too. set -e stops the script here on a hit, which also
+# stops --push from shipping it.
+echo "→ Checking copy..."
+cd "$ROOT"
+python3 scripts/check-dashes.py
+
 echo "→ Done."
 
 if [ "${1:-}" = "--push" ]; then
