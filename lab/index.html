@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Interactive demos and experiments"><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="canonical" href="https://onk3sh.github.io/lab/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Lab | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/lab/"><meta property="og:title" content="Lab | Onkesh Bansal"><meta property="og:description" content="Interactive demos and experiments"><meta property="og:site_name" content="Onkesh Bansal"><meta property="og:image" content="https://onk3sh.github.io/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Onkesh Bansal — Senior Engineer, AI Systems & Backend Platform"><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Lab | Onkesh Bansal"><meta name="twitter:description" content="Interactive demos and experiments"><meta name="twitter:image" content="https://onk3sh.github.io/og-image.png"><script>
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content="Interactive demos and experiments"><meta name="author" content="Onkesh Bansal"><meta name="generator" content="Astro v6.3.1"><link rel="canonical" href="https://onk3sh.github.io/lab/"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><title>Lab | Onkesh Bansal</title><!-- Open Graph --><meta property="og:type" content="website"><meta property="og:url" content="https://onk3sh.github.io/lab/"><meta property="og:title" content="Lab | Onkesh Bansal"><meta property="og:description" content="Interactive demos and experiments"><meta property="og:site_name" content="Onkesh Bansal"><meta property="og:image" content="https://onk3sh.github.io/og-image.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Onkesh Bansal, Senior Engineer in AI Systems and Backend Platform"><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Lab | Onkesh Bansal"><meta name="twitter:description" content="Interactive demos and experiments"><meta name="twitter:image" content="https://onk3sh.github.io/og-image.png"><script>
       (function () {
         const t = localStorage.getItem('theme');
         if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
       })();
-    </script><link rel="stylesheet" href="/_astro/BaseLayout.CPwukmzw.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class href="/post/">Work</a> <a class href="/writing/">Writing</a> <a class href="/open-source/">Open Source</a> <a class href="/stack/">Stack</a> <a class="active" href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">  <section class="hero"> <h1>Lab</h1> <p>Interactive demos of the systems I'm building.</p> </section>  <section class="section"> <h2>Model Cascade — Cost and Quality</h2> <p class="section-sub">
+    </script><link rel="stylesheet" href="/_astro/BaseLayout.CPwukmzw.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class href="/post/">Work</a> <a class href="/writing/">Writing</a> <a class href="/open-source/">Open Source</a> <a class href="/stack/">Skills</a> <a class="active" href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">  <section class="hero"> <h1>Lab</h1> <p>Interactive demos of the systems I'm building.</p> </section>  <section class="section"> <h2>Model Cascade: Cost and Quality</h2> <p class="section-sub">
 Run the cheap model first, escalate to the frontier model when a verifier objects.
       Put your own numbers in and see where the cascade stops paying for itself.
 </p> <div class="panel casc-panel"> <div class="casc-inputs" id="casc-inputs"></div> <p class="casc-note">
@@ -12,11 +12,11 @@ Starting values are illustrative, not quoted prices. Cost is per task, so nothin
 </p> <div class="casc-results"> <table class="casc-table"> <thead> <tr> <th>Strategy</th> <th title="Share of tasks the pipeline gets right">Quality</th> <th title="Average cost of one task, including the verifier">$ / task</th> <th title="What you pay for each task that actually comes out right">$ / success</th> <th title="Cost across the month at your task volume">Monthly</th> </tr> </thead> <tbody id="casc-tbody"></tbody> </table> </div> <div class="casc-verdict" id="casc-verdict"></div> <div class="casc-chart-wrap"> <h3 class="casc-chart-title">Cost against quality, as the verifier gets more aggressive</h3> <p class="casc-chart-sub">
 A verifier cannot catch more wrong answers without also flagging more right ones.
           The curve sweeps that trade-off through the operating point you entered.
-</p> <div id="casc-chart" class="casc-chart"></div> <div class="casc-legend"> <span><i class="casc-dot casc-dot-cascade"></i>cascade</span> <span><i class="casc-dot casc-dot-you"></i>your settings</span> <span><i class="casc-dot casc-dot-cheap"></i>cheap only</span> <span><i class="casc-dot casc-dot-exp"></i>frontier only</span> </div> </div> </div> </section>  <section class="section"> <h2>CanvestAI — Model Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2> <p class="section-sub">
+</p> <div id="casc-chart" class="casc-chart"></div> <div class="casc-legend"> <span><i class="casc-dot casc-dot-cascade"></i>cascade</span> <span><i class="casc-dot casc-dot-you"></i>your settings</span> <span><i class="casc-dot casc-dot-cheap"></i>cheap only</span> <span><i class="casc-dot casc-dot-exp"></i>frontier only</span> </div> </div> </div> </section>  <section class="section"> <h2>CanvestAI: Model Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2> <p class="section-sub">
 Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
-      Horizons differ by sector and are shown per row — a signal looking a year out
+      Horizons differ by sector and are shown per row. A signal looking a year out
       is not the same call as a 30-day one.
-</p> <div class="panel canvest-panel"> <div id="canvest-risk-bar" class="risk-bar" style="display:none"> <span class="risk-bar-label">Systemic Risk</span> <span id="canvest-risk-level" class="risk-level-badge"></span> </div> <!-- Tabs — only worth showing when there is more than one -->  <!-- ETFs tab --> <div id="tab-etfs"> <div class="canvest-filter-row"> <div class="filter-chips" id="etf-bias-chips"> <button class="chip active" data-etf-bias="all">All</button> <button class="chip" data-etf-bias="bullish">Bullish</button> <button class="chip" data-etf-bias="neutral">Neutral</button> <button class="chip" data-etf-bias="bearish">Bearish</button> </div> <span class="etf-count" id="etf-list-count"></span> </div> <div class="mer-filter-row"> <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label> <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider"> </div> <div class="etf-table-wrap"> <table class="etf-table" id="canvest-etf-table"> <thead> <tr> <th>Ticker</th> <th>Name</th> <th>Bias</th> <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th> <th title="How far out this sector's signal looks. Rows with different horizons are not directly comparable.">Horizon</th> <th title="Management Expense Ratio">MER %</th> </tr> </thead> <tbody id="canvest-etf-tbody"></tbody> </table> </div> </div> <!-- Trades tab -->  <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+</p> <div class="panel canvest-panel"> <div id="canvest-risk-bar" class="risk-bar" style="display:none"> <span class="risk-bar-label">Systemic Risk</span> <span id="canvest-risk-level" class="risk-level-badge"></span> </div> <!-- Tabs, only worth showing when there is more than one -->  <!-- ETFs tab --> <div id="tab-etfs"> <div class="canvest-filter-row"> <div class="filter-chips" id="etf-bias-chips"> <button class="chip active" data-etf-bias="all">All</button> <button class="chip" data-etf-bias="bullish">Bullish</button> <button class="chip" data-etf-bias="neutral">Neutral</button> <button class="chip" data-etf-bias="bearish">Bearish</button> </div> <span class="etf-count" id="etf-list-count"></span> </div> <div class="mer-filter-row"> <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label> <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider"> </div> <div class="etf-table-wrap"> <table class="etf-table" id="canvest-etf-table"> <thead> <tr> <th>Ticker</th> <th>Name</th> <th>Bias</th> <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th> <th title="How far out this sector's signal looks. Rows with different horizons are not directly comparable.">Horizon</th> <th title="Management Expense Ratio">MER %</th> </tr> </thead> <tbody id="canvest-etf-tbody"></tbody> </table> </div> </div> <!-- Trades tab -->  <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
       (function () {
         var btn = document.getElementById('theme-toggle');
         function sync() {
@@ -36,7 +36,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
           sync();
         });
       })();
-    </script> </body> </html> <script type="application/json" id="__casc-fields__">[{"key":"volume","label":"Tasks per month","hint":"How many times the pipeline runs.","unit":"count","value":10000,"step":500},{"key":"cheapCost","label":"Cheap model — cost per task","hint":"Averaged over a typical task, input and output together.","unit":"usd","value":0.004,"step":0.001},{"key":"expCost","label":"Frontier model — cost per task","hint":"The same task run on the expensive model.","unit":"usd","value":0.06,"step":0.005},{"key":"verifierCost","label":"Verifier — cost per task","hint":"Runs on every task. Zero if the check is a test suite or a heuristic.","unit":"usd","value":0.001,"step":0.001},{"key":"pCheap","label":"Cheap model solves the task","hint":"Share of tasks it gets right on its own.","unit":"pct","value":0.72,"step":0.01},{"key":"pExp","label":"Frontier model solves the task","hint":"Not 100%. Escalating is not the same as being right.","unit":"pct","value":0.94,"step":0.01},{"key":"catchRate","label":"Verifier catches a wrong answer","hint":"Of the cheap answers that are wrong, the share it escalates.","unit":"pct","value":0.8,"step":0.01},{"key":"falseAlarm","label":"Verifier escalates a right answer","hint":"Wasted spend — the frontier model redoes work that was already correct.","unit":"pct","value":0.1,"step":0.01}]</script> <script>
+    </script> </body> </html> <script type="application/json" id="__casc-fields__">[{"key":"volume","label":"Tasks per month","hint":"How many times the pipeline runs.","unit":"count","value":10000,"step":500},{"key":"cheapCost","label":"Cheap model, cost per task","hint":"Averaged over a typical task, input and output together.","unit":"usd","value":0.004,"step":0.001},{"key":"expCost","label":"Frontier model, cost per task","hint":"The same task run on the expensive model.","unit":"usd","value":0.06,"step":0.005},{"key":"verifierCost","label":"Verifier, cost per task","hint":"Runs on every task. Zero if the check is a test suite or a heuristic.","unit":"usd","value":0.001,"step":0.001},{"key":"pCheap","label":"Cheap model solves the task","hint":"Share of tasks it gets right on its own.","unit":"pct","value":0.72,"step":0.01},{"key":"pExp","label":"Frontier model solves the task","hint":"Not 100%. Escalating is not the same as being right.","unit":"pct","value":0.94,"step":0.01},{"key":"catchRate","label":"Verifier catches a wrong answer","hint":"Of the cheap answers that are wrong, the share it escalates.","unit":"pct","value":0.8,"step":0.01},{"key":"falseAlarm","label":"Verifier escalates a right answer","hint":"Wasted spend. The frontier model redoes work that was already correct.","unit":"pct","value":0.1,"step":0.01}]</script> <script>
 (function () {
   var host = document.getElementById('casc-inputs');
   if (!host) return;
@@ -47,12 +47,12 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
 
   /* ── formatting ── */
   function money(x) {
-    if (!isFinite(x)) return '—';
+    if (!isFinite(x)) return 'n/a';
     if (x >= 1000) return '$' + Math.round(x).toLocaleString();
     if (x >= 1) return '$' + x.toFixed(2);
     return '$' + x.toFixed(4);
   }
-  function pct(x) { return isFinite(x) ? (x * 100).toFixed(1) + '%' : '—'; }
+  function pct(x) { return isFinite(x) ? (x * 100).toFixed(1) + '%' : 'n/a'; }
   function clamp(x, lo, hi) { return Math.min(hi, Math.max(lo, x)); }
 
   /* ── the model ──
@@ -183,7 +183,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
 
     function dot(p, cls, label) {
       return '<circle cx="' + X(p.quality).toFixed(1) + '" cy="' + Y(p.perTask).toFixed(1) +
-        '" r="5" class="' + cls + '"><title>' + label + ' — ' + pct(p.quality) +
+        '" r="5" class="' + cls + '"><title>' + label + ': ' + pct(p.quality) +
         ' quality at ' + money(p.perTask) + ' per task</title></circle>';
     }
     s += dot(cheap, 'casc-pt casc-pt-cheap', 'Cheap only');
@@ -227,7 +227,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
 
     if (v.expCost <= 0) {
       tone = 'warn';
-      msg = 'Give the frontier model a cost per task — without one there is nothing ' +
+      msg = 'Give the frontier model a cost per task. Without one there is nothing ' +
         'for the cascade to save against.';
     } else if (be <= 0) {
       tone = 'bad';
@@ -239,7 +239,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
         ' break-even, so the cascade costs ' +
         pct(casc.perTask / v.expCost - 1) + ' more per task than simply always ' +
         'calling the frontier model' +
-        (gapVisible ? ' — and it answers correctly less often.' : ', for no gain in quality.');
+        (gapVisible ? ', and it answers correctly less often.' : ', for no gain in quality.');
     } else {
       tone = cascSucc <= frontSucc ? 'good' : 'warn';
       msg = 'The cascade escalates ' + pct(casc.esc) + ' of tasks and costs ' +
@@ -279,7 +279,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
 
   /* The Paper Trades panel is gated at build time (SHOW_PAPER_TRADES in the
      frontmatter). This script is is:inline, so Astro emits it verbatim and it
-     cannot read that constant — the panel's presence in the DOM is the flag. */
+     cannot read that constant. The panel's presence in the DOM is the flag. */
   var TRADES_ON = !!document.getElementById('tab-trades');
 
   /* ── tabs ── */
@@ -335,7 +335,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
   /* Horizons in the export run from 30 days to 2555. Printing raw day counts
    * buries that spread, so scale the unit and let the outliers read as outliers. */
   function fmtHorizon(d) {
-    if (d == null || !isFinite(d)) return '—';
+    if (d == null || !isFinite(d)) return 'n/a';
     if (d < 90) return d + 'd';
     if (d < 365) return Math.round(d / 30.44) + 'mo';
     var y = d / 365.25;
@@ -359,7 +359,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
                 : (meta.mer != null ? meta.mer : null);
         if (mer !== null && mer > maxMer) return;
         seen[clean] = true;
-        rows.push({ ticker: clean, name: meta.name || '—', bias: s.bias, confidence: s.confidence, mer: mer, horizon: s.horizon_days });
+        rows.push({ ticker: clean, name: meta.name || 'n/a', bias: s.bias, confidence: s.confidence, mer: mer, horizon: s.horizon_days });
       });
     });
     rows.sort(function(a, b) { return b.confidence - a.confidence; });
@@ -382,7 +382,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
           '<span style="font-size:0.82rem;color:var(--text-muted)">' + fmt1(r.confidence) + '%</span>' +
         '</div></td>' +
         '<td class="etf-horizon' + (r.horizon >= 365 ? ' etf-horizon-long' : '') + '">' + fmtHorizon(r.horizon) + '</td>' +
-        '<td style="font-size:0.82rem;color:var(--text-muted);text-align:right">' + (r.mer !== null ? r.mer.toFixed(2) + '%' : '—') + '</td>' +
+        '<td style="font-size:0.82rem;color:var(--text-muted);text-align:right">' + (r.mer !== null ? r.mer.toFixed(2) + '%' : 'n/a') + '</td>' +
       '</tr>';
     }).join('');
   }
@@ -413,12 +413,12 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
     tbody.innerHTML = rows.map(function(t) {
       var pnlColor = t.pnl_pct >= 0 ? PNL_POS : PNL_NEG;
       var pnlStr = (t.pnl_pct >= 0 ? '+' : '') + fmt1(t.pnl_pct) + '%';
-      var excess = t.excess_return != null ? ((t.excess_return >= 0 ? '+' : '') + fmt1(t.excess_return) + '%') : '—';
+      var excess = t.excess_return != null ? ((t.excess_return >= 0 ? '+' : '') + fmt1(t.excess_return) + '%') : 'n/a';
       var excessColor = t.excess_return != null ? (t.excess_return >= 0 ? PNL_POS : PNL_NEG) : 'var(--text-muted)';
-      var entryDate = t.entry_date ? parseDay(t.entry_date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : '—';
+      var entryDate = t.entry_date ? parseDay(t.entry_date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : 'n/a';
       return '<tr>' +
         '<td class="etf-ticker">' + t.etf + '</td>' +
-        '<td style="font-size:0.82rem;color:var(--text-muted)">' + (US_ETF_NAMES[t.etf] || '—') + '</td>' +
+        '<td style="font-size:0.82rem;color:var(--text-muted)">' + (US_ETF_NAMES[t.etf] || 'n/a') + '</td>' +
         '<td style="font-size:0.82rem;color:var(--text-muted)">' + entryDate + '</td>' +
         '<td style="font-weight:700;font-size:0.82rem;color:' + pnlColor + '">' + pnlStr + '</td>' +
         '<td style="font-size:0.82rem;color:' + excessColor + '">' + excess + '</td>' +
@@ -456,7 +456,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
         if (disc) disc.textContent = 'Not financial advice. Generated by CanvestAI \u00b7 updated ' + d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' }) + ' \u00b7 runs on demand.';
       }
 
-      /* paper trades \u2014 the export nests results per risk tier */
+      /* paper trades: the export nests results per risk tier */
       var pt = data.paper_trading;
       if (pt && TRADES_ON) {
         var tier = pt.standard_tier || pt;
@@ -783,15 +783,15 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
 
 
   @media (max-width: 560px) {
-    /* ETF table — hide Name and MER on small screens */
-    /* Hide Name and MER on narrow screens. Horizon stays — without it the
+    /* ETF table: hide Name and MER on small screens */
+    /* Hide Name and MER on narrow screens. Horizon stays, because without it the
        remaining rows look directly comparable when they are not. */
     #canvest-etf-table th:nth-child(2),
     #canvest-etf-table td:nth-child(2),
     #canvest-etf-table th:nth-child(6),
     #canvest-etf-table td:nth-child(6) { display: none; }
 
-    /* Trades table — hide Name and Conf on small screens */
+    /* Trades table: hide Name and Conf on small screens */
     #canvest-trades-table th:nth-child(2),
     #canvest-trades-table td:nth-child(2),
     #canvest-trades-table th:nth-child(6),

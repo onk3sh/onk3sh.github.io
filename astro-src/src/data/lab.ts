@@ -19,7 +19,7 @@ export type CascadeField = {
   step: number;
 };
 
-/* Illustrative starting points, not quoted prices — every field is editable,
+/* Illustrative starting points, not quoted prices. Every field is editable,
  * and the point of the panel is that the visitor puts their own numbers in.
  * Costs are per task rather than per token so the model does not depend on any
  * vendor's price sheet, which would go stale here the way live data does. */
@@ -34,7 +34,7 @@ export const cascadeFields: CascadeField[] = [
   },
   {
     key: 'cheapCost',
-    label: 'Cheap model — cost per task',
+    label: 'Cheap model, cost per task',
     hint: 'Averaged over a typical task, input and output together.',
     unit: 'usd',
     value: 0.004,
@@ -42,7 +42,7 @@ export const cascadeFields: CascadeField[] = [
   },
   {
     key: 'expCost',
-    label: 'Frontier model — cost per task',
+    label: 'Frontier model, cost per task',
     hint: 'The same task run on the expensive model.',
     unit: 'usd',
     value: 0.06,
@@ -50,7 +50,7 @@ export const cascadeFields: CascadeField[] = [
   },
   {
     key: 'verifierCost',
-    label: 'Verifier — cost per task',
+    label: 'Verifier, cost per task',
     hint: 'Runs on every task. Zero if the check is a test suite or a heuristic.',
     unit: 'usd',
     value: 0.001,
@@ -83,7 +83,7 @@ export const cascadeFields: CascadeField[] = [
   {
     key: 'falseAlarm',
     label: 'Verifier escalates a right answer',
-    hint: 'Wasted spend — the frontier model redoes work that was already correct.',
+    hint: 'Wasted spend. The frontier model redoes work that was already correct.',
     unit: 'pct',
     value: 0.1,
     step: 0.01,

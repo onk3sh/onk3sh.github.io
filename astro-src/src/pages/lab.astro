@@ -17,7 +17,7 @@ const SHOW_PAPER_TRADES = false;
 
   <!-- ── Model Cascade Simulator ── -->
   <section class="section">
-    <h2>Model Cascade — Cost and Quality</h2>
+    <h2>Model Cascade: Cost and Quality</h2>
     <p class="section-sub">
       Run the cheap model first, escalate to the frontier model when a verifier objects.
       Put your own numbers in and see where the cascade stops paying for itself.
@@ -68,10 +68,10 @@ const SHOW_PAPER_TRADES = false;
 
   <!-- ── CanvestAI Dashboard ── -->
   <section class="section">
-    <h2>CanvestAI — Model Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2>
+    <h2>CanvestAI: Model Signals <a href="/post/canvestai/" class="panel-link">↗ read the write-up</a></h2>
     <p class="section-sub">
       Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
-      Horizons differ by sector and are shown per row — a signal looking a year out
+      Horizons differ by sector and are shown per row. A signal looking a year out
       is not the same call as a 30-day one.
     </p>
     <div class="panel canvest-panel">
@@ -80,7 +80,7 @@ const SHOW_PAPER_TRADES = false;
         <span id="canvest-risk-level" class="risk-level-badge"></span>
       </div>
 
-      <!-- Tabs — only worth showing when there is more than one -->
+      <!-- Tabs, only worth showing when there is more than one -->
       {SHOW_PAPER_TRADES && (
         <div class="canvest-tabs">
           <button class="canvest-tab active" data-tab="etfs">ETFs</button>
@@ -168,12 +168,12 @@ const SHOW_PAPER_TRADES = false;
 
   /* ── formatting ── */
   function money(x) {
-    if (!isFinite(x)) return '—';
+    if (!isFinite(x)) return 'n/a';
     if (x >= 1000) return '$' + Math.round(x).toLocaleString();
     if (x >= 1) return '$' + x.toFixed(2);
     return '$' + x.toFixed(4);
   }
-  function pct(x) { return isFinite(x) ? (x * 100).toFixed(1) + '%' : '—'; }
+  function pct(x) { return isFinite(x) ? (x * 100).toFixed(1) + '%' : 'n/a'; }
   function clamp(x, lo, hi) { return Math.min(hi, Math.max(lo, x)); }
 
   /* ── the model ──
@@ -304,7 +304,7 @@ const SHOW_PAPER_TRADES = false;
 
     function dot(p, cls, label) {
       return '<circle cx="' + X(p.quality).toFixed(1) + '" cy="' + Y(p.perTask).toFixed(1) +
-        '" r="5" class="' + cls + '"><title>' + label + ' — ' + pct(p.quality) +
+        '" r="5" class="' + cls + '"><title>' + label + ': ' + pct(p.quality) +
         ' quality at ' + money(p.perTask) + ' per task</title></circle>';
     }
     s += dot(cheap, 'casc-pt casc-pt-cheap', 'Cheap only');
@@ -348,7 +348,7 @@ const SHOW_PAPER_TRADES = false;
 
     if (v.expCost <= 0) {
       tone = 'warn';
-      msg = 'Give the frontier model a cost per task — without one there is nothing ' +
+      msg = 'Give the frontier model a cost per task. Without one there is nothing ' +
         'for the cascade to save against.';
     } else if (be <= 0) {
       tone = 'bad';
@@ -360,7 +360,7 @@ const SHOW_PAPER_TRADES = false;
         ' break-even, so the cascade costs ' +
         pct(casc.perTask / v.expCost - 1) + ' more per task than simply always ' +
         'calling the frontier model' +
-        (gapVisible ? ' — and it answers correctly less often.' : ', for no gain in quality.');
+        (gapVisible ? ', and it answers correctly less often.' : ', for no gain in quality.');
     } else {
       tone = cascSucc <= frontSucc ? 'good' : 'warn';
       msg = 'The cascade escalates ' + pct(casc.esc) + ' of tasks and costs ' +
@@ -402,7 +402,7 @@ const SHOW_PAPER_TRADES = false;
 
   /* The Paper Trades panel is gated at build time (SHOW_PAPER_TRADES in the
      frontmatter). This script is is:inline, so Astro emits it verbatim and it
-     cannot read that constant — the panel's presence in the DOM is the flag. */
+     cannot read that constant. The panel's presence in the DOM is the flag. */
   var TRADES_ON = !!document.getElementById('tab-trades');
 
   /* ── tabs ── */
@@ -458,7 +458,7 @@ const SHOW_PAPER_TRADES = false;
   /* Horizons in the export run from 30 days to 2555. Printing raw day counts
    * buries that spread, so scale the unit and let the outliers read as outliers. */
   function fmtHorizon(d) {
-    if (d == null || !isFinite(d)) return '—';
+    if (d == null || !isFinite(d)) return 'n/a';
     if (d < 90) return d + 'd';
     if (d < 365) return Math.round(d / 30.44) + 'mo';
     var y = d / 365.25;
@@ -482,7 +482,7 @@ const SHOW_PAPER_TRADES = false;
                 : (meta.mer != null ? meta.mer : null);
         if (mer !== null && mer > maxMer) return;
         seen[clean] = true;
-        rows.push({ ticker: clean, name: meta.name || '—', bias: s.bias, confidence: s.confidence, mer: mer, horizon: s.horizon_days });
+        rows.push({ ticker: clean, name: meta.name || 'n/a', bias: s.bias, confidence: s.confidence, mer: mer, horizon: s.horizon_days });
       });
     });
     rows.sort(function(a, b) { return b.confidence - a.confidence; });
@@ -505,7 +505,7 @@ const SHOW_PAPER_TRADES = false;
           '<span style="font-size:0.82rem;color:var(--text-muted)">' + fmt1(r.confidence) + '%</span>' +
         '</div></td>' +
         '<td class="etf-horizon' + (r.horizon >= 365 ? ' etf-horizon-long' : '') + '">' + fmtHorizon(r.horizon) + '</td>' +
-        '<td style="font-size:0.82rem;color:var(--text-muted);text-align:right">' + (r.mer !== null ? r.mer.toFixed(2) + '%' : '—') + '</td>' +
+        '<td style="font-size:0.82rem;color:var(--text-muted);text-align:right">' + (r.mer !== null ? r.mer.toFixed(2) + '%' : 'n/a') + '</td>' +
       '</tr>';
     }).join('');
   }
@@ -536,12 +536,12 @@ const SHOW_PAPER_TRADES = false;
     tbody.innerHTML = rows.map(function(t) {
       var pnlColor = t.pnl_pct >= 0 ? PNL_POS : PNL_NEG;
       var pnlStr = (t.pnl_pct >= 0 ? '+' : '') + fmt1(t.pnl_pct) + '%';
-      var excess = t.excess_return != null ? ((t.excess_return >= 0 ? '+' : '') + fmt1(t.excess_return) + '%') : '—';
+      var excess = t.excess_return != null ? ((t.excess_return >= 0 ? '+' : '') + fmt1(t.excess_return) + '%') : 'n/a';
       var excessColor = t.excess_return != null ? (t.excess_return >= 0 ? PNL_POS : PNL_NEG) : 'var(--text-muted)';
-      var entryDate = t.entry_date ? parseDay(t.entry_date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : '—';
+      var entryDate = t.entry_date ? parseDay(t.entry_date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : 'n/a';
       return '<tr>' +
         '<td class="etf-ticker">' + t.etf + '</td>' +
-        '<td style="font-size:0.82rem;color:var(--text-muted)">' + (US_ETF_NAMES[t.etf] || '—') + '</td>' +
+        '<td style="font-size:0.82rem;color:var(--text-muted)">' + (US_ETF_NAMES[t.etf] || 'n/a') + '</td>' +
         '<td style="font-size:0.82rem;color:var(--text-muted)">' + entryDate + '</td>' +
         '<td style="font-weight:700;font-size:0.82rem;color:' + pnlColor + '">' + pnlStr + '</td>' +
         '<td style="font-size:0.82rem;color:' + excessColor + '">' + excess + '</td>' +
@@ -579,7 +579,7 @@ const SHOW_PAPER_TRADES = false;
         if (disc) disc.textContent = 'Not financial advice. Generated by CanvestAI \u00b7 updated ' + d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' }) + ' \u00b7 runs on demand.';
       }
 
-      /* paper trades \u2014 the export nests results per risk tier */
+      /* paper trades: the export nests results per risk tier */
       var pt = data.paper_trading;
       if (pt && TRADES_ON) {
         var tier = pt.standard_tier || pt;
@@ -908,15 +908,15 @@ const SHOW_PAPER_TRADES = false;
 
 
   @media (max-width: 560px) {
-    /* ETF table — hide Name and MER on small screens */
-    /* Hide Name and MER on narrow screens. Horizon stays — without it the
+    /* ETF table: hide Name and MER on small screens */
+    /* Hide Name and MER on narrow screens. Horizon stays, because without it the
        remaining rows look directly comparable when they are not. */
     #canvest-etf-table th:nth-child(2),
     #canvest-etf-table td:nth-child(2),
     #canvest-etf-table th:nth-child(6),
     #canvest-etf-table td:nth-child(6) { display: none; }
 
-    /* Trades table — hide Name and Conf on small screens */
+    /* Trades table: hide Name and Conf on small screens */
     #canvest-trades-table th:nth-child(2),
     #canvest-trades-table td:nth-child(2),
     #canvest-trades-table th:nth-child(6),
