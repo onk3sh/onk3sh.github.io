@@ -58,7 +58,7 @@ export const projects: Project[] = [
     projectType: 'work',
     tags: ['work', 'AI Systems'],
     summary:
-      'A six-phase development pipeline for AI coding agents, with a gate between every phase. Each gate answers a failure that kept recurring in my own PR reviews. It carries a three-tier audited memory layer, a custom Bitbucket MCP server, ast-grep and LSP search that cuts tokens by 70%, and a reviewer that returns its own go or no-go verdict. I use it on my own engineering work.',
+      'A six-phase development pipeline for AI coding agents, with a gate between every phase. Each gate answers a failure that kept recurring in my own PR reviews. It carries a three-tier audited memory layer and a custom Bitbucket MCP server. Search runs on ast-grep and LSP, which cuts tokens by 70%. A reviewer returns its own go or no-go verdict. I use it on my own engineering work.',
     featured: true,
     sections: [
       {
@@ -192,7 +192,7 @@ export const projects: Project[] = [
           'The CanvestAI orchestrator answers a question in stages. It fans out to four discipline agents in parallel: fundamental, technical, astro, and research. It then joins their verdicts and deliberates over them. It ranks ETFs in code, makes a recommendation, challenges that recommendation, and composes a reply. The spine is a LangGraph supervisor, and on paper it is a normal multi-agent chatbot.',
           'The decision that shaped it had nothing to do with model routing. One rule did the work: no graph node may import an agent. Every call goes through `dispatch(name, task)`, a single function on an A2A client. Nodes know agent names. They never see agent modules.',
           'That is a hub topology, and for the MVP it is only half true. The agents run in the same Python process as the graph, because the box has 16 GB of RAM and one server per agent would not fit. The seam is real even though the network is not. Full A2A means the SDK, one server per agent, and agent cards. Getting there is a rewrite of one module. No node changes.',
-          'That shortcut is already half-retired. Planetary positions, aspects, and dasha periods used to be computed inside the repo. They now live in a separate service reached over real A2A: a JSON-RPC 2.0 `message/send` carrying a named op and its parameters, pointed at `ASTRO_AGENT_URL`. One module in CanvestAI speaks that protocol. Everything upstream of it changed a single import line. The client functions kept the same names, signatures, and return types as the local functions they replaced, so dates still come back as `datetime.date` instead of ISO strings.',
+          'That shortcut is already half-retired. Planetary positions, aspects, and dasha periods used to be computed inside the repo. They now live in a separate service reached over real A2A: a JSON-RPC 2.0 `message/send` carrying a named op and its parameters, pointed at `ASTRO_AGENT_URL`. One module in CanvestAI speaks that protocol. Everything upstream of it changed a single import line. The client functions kept the same names, signatures, and return types as the local functions they replaced. Dates still come back as `datetime.date`, not as ISO strings.',
         ],
       },
       {
@@ -225,7 +225,7 @@ export const projects: Project[] = [
         heading: 'What the seam paid back',
         bullets: [
           'Agents moved from in-process to a separate service without touching a single graph node. The astro migration changed one import line at each call site.',
-          'A broken agent degrades one lens with a recorded reason instead of failing the turn, because there is exactly one place that knows how to dispatch and how to fail.',
+          'A broken agent degrades one lens with a recorded reason instead of failing the turn. Exactly one place knows how to dispatch and how to fail.',
           'Cost is attributable per agent, which makes routing decisions arguable from data rather than intuition.',
           'The in-process shortcut stayed honest. It is confined to one module, and the 16 GB constraint that forced it is written down next to it.',
           'The failure modes above were fixable in one file each. That is the actual return on refusing to let nodes import agents.',
@@ -335,7 +335,7 @@ export const productionWork: ProductionProject[] = [
         paragraphs: [
           'Media Activation publishes line item placements to external systems, starting with CM360. The internal media agency team had no way to see what changed in the delivery view without opening CM360 directly, so every discrepancy became a support request. More than 100 users were affected.',
           'The existing changelog was a plain append log. It had no query management, no categorization, and no structured output the UI could consume. Extending it was risky, because the old system had accumulated complexity, so I built a new one. It is 80% net-new and shares only the ActiveRecord integration layer and the table schema. Reusing the schema avoided a data migration, and owning the logic gave full control over query management and event structure. The tradeoff is some duplication with the old system that will need consolidating later.',
-          'The core is a before-and-after snapshot. Before a save, the system captures a filtered hashmap of the tracked fields. After the save, a change calculator compares old and new values key by key and produces a structured diff. It includes only tracked fields, which keeps the JSONB payload lean. The diff then flows into a categorization layer and is formatted server-side into the structure the UI needs, so the diff logic lives in one place and event grouping stays consistent. Virtual list pagination keeps long histories from slowing the render.',
+          'The core is a before-and-after snapshot. Before a save, the system captures a filtered hashmap of the tracked fields. After the save, a change calculator compares old and new values key by key and produces a structured diff. It includes only tracked fields, which keeps the JSONB payload lean. The diff then flows into a categorization layer, and the server formats it into the structure the UI needs. The diff logic lives in one place, so event grouping stays consistent. Virtual list pagination keeps long histories from slowing the render.',
           'The delivery tab sits on an open-source client-side state chart library that couples the UI tightly to the backend. A full refactor would have risked regressions across every existing delivery flow, so I worked alongside the library and kept contact with its surface to a minimum.',
           'Since launch it has recorded 500 events a day and more than 5 million rows in production, and it removed the CM360 round-trip for over 100 internal agency users.',
         ],
