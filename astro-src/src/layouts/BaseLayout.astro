@@ -6,11 +6,11 @@ interface Props {
   description?: string;
 }
 
-const { title, description = 'Onkesh Bansal — Senior engineer building production AI systems. Autonomous workflows, persistent memory, and LLM tooling. Toronto, open to remote US/Canada.' } = Astro.props;
+const { title, description = 'Onkesh Bansal is a senior engineer building production AI systems: autonomous workflows, persistent memory, and LLM tooling. Toronto, open to remote US/Canada.' } = Astro.props;
 const path = Astro.url.pathname;
 const canonicalURL = new URL(path, 'https://onk3sh.github.io').href;
 const ogImageURL = new URL('/og-image.png', 'https://onk3sh.github.io').href;
-const pageTitle = path === '/' ? `Onkesh Bansal | Senior Engineer — AI Systems & Backend Platform` : `${title} | Onkesh Bansal`;
+const pageTitle = path === '/' ? `Onkesh Bansal | Senior Engineer, AI Systems & Backend Platform` : `${title} | Onkesh Bansal`;
 ---
 
 <!doctype html>
@@ -34,7 +34,7 @@ const pageTitle = path === '/' ? `Onkesh Bansal | Senior Engineer — AI Systems
     <meta property="og:image" content={ogImageURL} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Onkesh Bansal — Senior Engineer, AI Systems & Backend Platform" />
+    <meta property="og:image:alt" content="Onkesh Bansal, Senior Engineer in AI Systems and Backend Platform" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
