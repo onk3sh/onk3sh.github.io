@@ -20,11 +20,11 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
     <div class="post-body panel">
 
-      <p>The hypothesis I started with: ast-grep with pre-written rules and MCP error semantics produces better search accuracy at lower token cost than ripgrep or the built-in Grep tool. It's a reasonable hypothesis. It's also wrong on the token cost claim, and wrong on accuracy except for one specific query class.</p>
+      <p>I started with a hypothesis. ast-grep, given pre-written rules and MCP error semantics, should beat ripgrep and the built-in Grep tool on both search accuracy and token cost. It is a reasonable hypothesis. It is also wrong on token cost, and wrong on accuracy for every query class but one.</p>
 
-      <p>I ran a controlled benchmark across 331 Claude Code sessions covering four production codebases — two Java services (Spring Boot and Quarkus), a Rails service, and a React/TSX frontend. 97 sessions had active search activity (hit-rate and cost-per-found-block figures). 325 had usage data (token cost and model routing figures). Here is what I found.</p>
+      <p>I ran a controlled benchmark across 331 Claude Code sessions and four production codebases: two Java services on Spring Boot and Quarkus, a Rails service, and a React/TSX frontend. Of those, 97 sessions had active search activity, which is where the hit-rate and cost-per-found-block figures come from. Another 325 had usage data behind the token cost and model routing figures. Here is what I found.</p>
 
-      <p>The most actionable finding has nothing to do with rg vs ast-grep: <strong>Opus costs 19× more per session than Haiku.</strong> Model routing is the dominant cost lever. Every search-tool optimization in this article operates inside a rounding error by comparison. That number is in Table 12 — read it first if you only have time for one table.</p>
+      <p>The most actionable finding has nothing to do with rg or ast-grep. <strong>Opus costs 19× more per session than Haiku.</strong> Model routing is the dominant cost lever, and every search-tool optimization in this article sits inside a rounding error next to it. That number is in Table 12. Read it first if you only have time for one table.</p>
 
       <h2>Setup</h2>
 
@@ -68,15 +68,15 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>The one case where ast-grep is mandatory</h2>
 
-      <p>The React/TSX structural pattern cell is not close. rg returns zero on every structural query against a JSX/TSX codebase. Not low hit rate — zero. The reason is that JSX component structure, prop shapes, and hook usage patterns require CST-aware matching. A regex over text cannot find "all components that use this hook" reliably when the hook call may be nested, renamed, or composed.</p>
+      <p>The React/TSX structural pattern cell is not close. rg returns zero on every structural query against a JSX/TSX codebase. Not a low hit rate. Zero. JSX component structure, prop shapes, and hook usage patterns all need CST-aware matching. A regex over text cannot reliably find every component that uses a given hook when the hook call may be nested, renamed, or composed.</p>
 
       <p>Two things make ast-grep work here and fail elsewhere:</p>
 
-      <p><strong>1. CST dump before rule authoring.</strong> The hidden node problem: JSX component trees have intermediate wrapper nodes that are not visible from reading the source. A <code>has</code> check fails silently if the target node is nested deeper than expected. Running <code>dump_syntax_tree(format: cst)</code> on a minimal example before writing the rule reveals the actual tree shape. Without it, rules return zero — which looks identical to "not found."</p>
+      <p><strong>1. Dump the CST before you write the rule.</strong> JSX component trees carry intermediate wrapper nodes you cannot see by reading the source. A <code>has</code> check then fails quietly whenever the target node sits deeper than expected. Running <code>dump_syntax_tree(format: cst)</code> on a minimal example first shows the real tree shape. Skip that step and your rules return zero, which looks exactly like "not found."</p>
 
-      <p><strong>2. Language flag must match file extension.</strong> Specifying <code>language: tsx</code> on a codebase that is 98% <code>.jsx</code> produces mass-zero results with no parse errors, no warnings. Always verify the file extension distribution first. <code>tsx</code> and <code>jsx</code> are not interchangeable flags.</p>
+      <p><strong>2. The language flag must match the file extension.</strong> Setting <code>language: tsx</code> on a codebase that is 98% <code>.jsx</code> returns zero across the board, with no parse errors and no warnings. Check the file extension distribution first. <code>tsx</code> and <code>jsx</code> are not interchangeable.</p>
 
-      <p>And <code>stopBy: end</code> is mandatory at every <code>has</code> level above the target. Without it, ast-grep only checks direct children and misses deeply-nested nodes silently.</p>
+      <p><code>stopBy: end</code> is also mandatory at every <code>has</code> level above the target. Without it, ast-grep checks only direct children and misses deeply nested nodes without saying so.</p>
 
       <h2>Table 2 — Latency (CLI vs MCP, wall-clock median ms)</h2>
 
@@ -94,7 +94,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>MCP wins on every repo. 2–5× faster wall-clock, all sub-second. <strong>Latency is the real MCP advantage</strong> — not token cost, not error semantics. The Rails service CLI call at 2.5 seconds is high enough to be session-perceptible; MCP brings it under one second. Use MCP if you care about wall-clock speed. Use Grep or Bash if you care about token cost.</p>
+      <p>MCP wins on every repo, running 2–5× faster on wall-clock and staying under a second throughout. <strong>Latency is the real MCP advantage</strong>, ahead of both token cost and error semantics. The Rails service CLI call takes 2.5 seconds, which is slow enough to feel during a session, and MCP brings it under one second. Use MCP when wall-clock speed matters. Use Grep or Bash when token cost matters.</p>
 
       <h2>Token cost: MCP is not cheaper</h2>
 
@@ -171,7 +171,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p><strong>MCP never crosses over.</strong> At every session size measured — median (5 calls), p75 (11), p90 (27), p99 (79) — MCP costs more tokens than Grep or Bash. The 1,576-token load tax at session start is never amortized. The MCP round-trip is cheaper per call than Grep (284 vs 324), but not cheap enough to offset the fixed cost. If you are optimizing for token cost, Grep or Bash+rg is the right tool. If you are optimizing for latency or structured error semantics, MCP is the right tool. These are different optimization targets.</p>
+      <p><strong>MCP never crosses over.</strong> At every session size measured, MCP costs more tokens than Grep or Bash: median at 5 calls, p75 at 11, p90 at 27, and p99 at 79. The 1,576-token load tax at session start never amortizes. The MCP round-trip does beat Grep per call, 284 tokens against 324, but not by enough to cover that fixed cost. Optimize for token cost and Grep or Bash with rg is the right tool. Optimize for latency or structured error semantics and MCP is. They are different targets.</p>
 
       <h2>Table 7 — Cost-per-found-block</h2>
 
@@ -199,7 +199,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>rg wins 9/12 cells. The ∞ values represent 0% hit rate — the tool cannot find the answer at any cost. ast-grep shows ∞ on two Java cells where it returned zero hits across all rounds. rg shows ∞ on JSX structural — the one confirmed ast-grep use case.</p>
+      <p>rg wins 9 of 12 cells. An ∞ value means a 0% hit rate, so the tool cannot find the answer at any cost. ast-grep shows ∞ on two Java cells where it returned zero hits across every round. rg shows ∞ on JSX structural, the one confirmed ast-grep use case.</p>
 
       <h2>Table 8 — Zero-result and rabbit-hole behaviour</h2>
 
@@ -216,7 +216,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>MCP's structured error semantics do reduce the zero-result reissue rate — when a zero result comes back with a structured error, the model recovers more cleanly than when a zero result is an empty string. But the net effect is 4–6 percentage points (MCP: 20.5% effective reissue vs Grep: 18.7%). Small. The zero-result problem is mostly a query-class routing problem, not a tool interface problem. Do not choose MCP for this reason.</p>
+      <p>MCP's structured error semantics do reduce the zero-result reissue rate. A zero result that arrives with a structured error lets the model recover more cleanly than an empty string does. The net effect is 4 to 6 percentage points: 20.5% effective reissue for MCP against 18.7% for Grep. That is small. The zero-result problem is mostly about routing by query class, and the tool interface barely moves it. Do not choose MCP for this reason.</p>
 
       <h2>Model routing: the number that dwarfs all of this</h2>
 
@@ -237,7 +237,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>Opus searches roughly twice per session compared to Sonnet. Haiku does zero searches — it acts exclusively on paths supplied by the orchestrator (Read, Edit, Write, known Bash commands). Haiku is not a search agent; it is a file-operation agent. Routing file ops to Haiku saves money without touching the search layer at all.</p>
+      <p>Opus searches roughly twice as often per session as Sonnet. Haiku searches not at all. It works only on paths the orchestrator supplies, through Read, Edit, Write, and known Bash commands. Haiku is a file-operation agent rather than a search agent, so routing file operations to it saves money without touching the search layer.</p>
 
       <h3>Table 10 — Scope discipline by model</h3>
 
@@ -253,7 +253,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>Scoping discipline is equal — both models scope ~90% of calls. The difference is result size: Opus pulls ~36% larger responses and ~50% more files per call. Opus isn't less disciplined, it's more thorough on the same call.</p>
+      <p>Scoping discipline is equal, with both models scoping about 90% of calls. The difference is result size. Opus pulls responses about 36% larger and reads about 50% more files per call. It is being more thorough on the same call, not less disciplined.</p>
 
       <h3>Table 12 — Real per-session cost by model</h3>
 
@@ -272,15 +272,15 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>Opus costs 19× more per session than Haiku. Sonnet costs 2.9×. The entire MCP load tax (1,576 tokens) represents 0.27% of an Opus session's token budget. Optimizing rg vs ast-grep vs MCP while defaulting to Opus for search-heavy tasks is rearranging deck chairs.</p>
+      <p>Opus costs 19× more per session than Haiku, and Sonnet costs 2.9×. The entire MCP load tax of 1,576 tokens is 0.27% of an Opus session's token budget. Tuning rg against ast-grep against MCP while defaulting to Opus for search-heavy tasks is rearranging deck chairs.</p>
 
-      <p>The practical implication: search-heavy reasoning belongs on Sonnet. Haiku handles all file operations on known paths with zero search overhead. Opus is reserved for architecture, security review, and high-stakes decisions where its reasoning quality justifies the cost.</p>
+      <p>The practical implication is a routing rule. Search-heavy reasoning belongs on Sonnet. Haiku handles file operations on known paths at zero search overhead. Opus is reserved for architecture, security review, and high-stakes decisions where its reasoning quality earns the cost.</p>
 
       <h2>LSP: where it fits</h2>
 
-      <p>Neither rg nor ast-grep handles semantic resolution — inheritance chains, type inference, go-to-definition across file boundaries. That's LSP territory.</p>
+      <p>Neither rg nor ast-grep handles semantic resolution: inheritance chains, type inference, or go-to-definition across file boundaries. That is LSP territory.</p>
 
-      <p>The routing rule: use LSP for <code>goToImplementation</code>, <code>hover</code>, and type resolution. One caveat: LSP with a persistent warm index (like jdtls for Java) is viable in agent flow once the index is warm. LSP without a persistent cache — common for TypeScript — is cold on every session and too slow to use inline. For TypeScript semantic resolution, ast-grep with a structural rule is the practical alternative.</p>
+      <p>The routing rule is to use LSP for <code>goToImplementation</code>, <code>hover</code>, and type resolution. One caveat applies. LSP works in agent flow once its index is warm and persistent, as jdtls is for Java. Without a persistent cache, which is the common case for TypeScript, LSP starts cold every session and runs too slowly to use inline. For TypeScript semantic resolution, a structural ast-grep rule is the practical alternative.</p>
 
       <h2>Decision matrix</h2>
 
@@ -305,13 +305,13 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>What the benchmark actually says</h2>
 
-      <p>The original hypothesis — ast-grep + MCP + rules is the high-accuracy, low-token path — is wrong on tokens and only partially right on accuracy. rg wins hit rate and cost-per-found-block in 10–11 of 12 cells across four codebases. ast-grep wins one cell decisively: JSX/TSX structural patterns, where rg returns zero.</p>
+      <p>The original hypothesis held that ast-grep with MCP and rules would be the high-accuracy, low-token path. It is wrong on tokens and only partly right on accuracy. rg wins hit rate and cost-per-found-block in 10 or 11 of 12 cells across four codebases. ast-grep wins one cell decisively: JSX/TSX structural patterns, where rg returns zero.</p>
 
-      <p>MCP is worth using for latency (2–5× faster wall-clock) and for structured error semantics on zero results (4–6pp reduction in rabbit-hole rate). It is not worth using to save tokens — it costs more at every session size measured.</p>
+      <p>MCP is worth using for latency, at 2–5× faster wall-clock, and for structured error semantics on zero results, worth a 4 to 6 point cut in the rabbit-hole rate. It is not worth using to save tokens, because it costs more at every session size measured.</p>
 
       <p>The largest cost lever in this entire dataset is model selection. Opus costs 19× more per session than Haiku. Routing search-heavy work to Sonnet and file operations to Haiku has more token impact than any search tool choice.</p>
 
-      <p>The practical conclusion is not "use rg" or "use ast-grep." It is: route by query class, verify language flags before writing ast-grep rules, dump the CST before writing any structural rule, and treat zero results from either tool as a routing signal rather than a definitive answer.</p>
+      <p>The practical conclusion is neither "use rg" nor "use ast-grep." Route by query class. Verify language flags before writing ast-grep rules. Dump the CST before writing any structural rule. And read a zero result from either tool as a routing signal rather than a definitive answer.</p>
 
       <p class="post-cta">
         The search routing logic, CST dump workflow, and model dispatch rules are part of the

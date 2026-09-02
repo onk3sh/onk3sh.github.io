@@ -20,23 +20,23 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
     <div class="post-body panel">
 
-      <p>The default Claude Code memory story is: write a CLAUDE.md, keep it updated, hope for the best. It works until it doesn't. The file gets stale, contradictions accumulate, the agent starts reasoning from outdated context and you don't notice until something goes wrong in a PR review.</p>
+      <p>The default Claude Code memory story is: write a CLAUDE.md, keep it updated, hope for the best. It works until it doesn't. The file goes stale. Contradictions pile up. The agent starts reasoning from outdated context, and you do not notice until something goes wrong in a PR review.</p>
 
       <p>I wanted something auditable. Three independent tiers, each with a different durability horizon, each audited by its own linter on a defined schedule. Here's what I built and why each tier exists.</p>
 
       <h2>The problem with single-tier memory</h2>
 
-      <p>A single memory file has two failure modes that pull in opposite directions. If you prune aggressively, you lose context that would have prevented a mistake three weeks later. If you keep everything, the file grows until it's too long to be useful as context — the agent loads it, but the relevant entry is buried under a hundred stale observations.</p>
+      <p>A single memory file has two failure modes that pull in opposite directions. If you prune aggressively, you lose context that would have prevented a mistake three weeks later. If you keep everything, the file grows too long to be useful as context. The agent still loads it, but the entry you need is buried under a hundred stale observations.</p>
 
       <p>The insight from Andrej Karpathy's LLM wiki pattern is that memory needs a garbage collection cycle, not just an append log. Entries should have a decay mechanism. Contradictions should be detected and resolved. The memory should be a curated knowledge base, not a journal.</p>
 
-      <p>That solves the noise problem. But it doesn't solve the durability problem — some things you want to remember for years (architectural decisions, domain knowledge), some for days (current task context, in-progress decisions), and some just for the session (scratch notes, intermediate reasoning). Putting all three in one file is the wrong abstraction.</p>
+      <p>That solves the noise problem. It does not solve the durability problem. Some things you want to keep for years, such as architectural decisions and domain knowledge. Some you need for days, such as current task context. Some matter only for the session, such as scratch notes and intermediate reasoning. Putting all three in one file is the wrong abstraction.</p>
 
       <h2>Tier 1: LLM Wiki (session-to-session knowledge)</h2>
 
       <p>The LLM Wiki is the Karpathy pattern implemented: a curated markdown knowledge base in <code>~/.claude/</code> that the agent reads at session start. Entries follow a strict format — observation, evidence, confidence, last-validated date. No entry survives without evidence. No entry survives indefinitely without revalidation.</p>
 
-      <p>The weekly GC cycle is enforced by <code>lint-memory</code>, an auditor that runs independently of the agent. It checks for entries older than the TTL without a revalidation date, flags contradictions between entries, and removes observations that are now derivable from the codebase directly (the codebase is the source of truth; the wiki should only store what can't be read from code).</p>
+      <p>The weekly GC cycle is enforced by <code>lint-memory</code>, an auditor that runs independently of the agent. It flags entries older than the TTL that carry no revalidation date, and it flags contradictions between entries. It also removes any observation you could read straight from the codebase. The codebase is the source of truth, so the wiki should only store what the code cannot tell you.</p>
 
       <p>The result is a wiki that stays small. My current wiki is 47 entries covering the two production codebases I work in daily. It fits comfortably in a single context window. The agent reads it in full on every session start.</p>
 
@@ -44,35 +44,35 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>The Obsidian vault is the second brain — architectural decisions, design rationale, meeting notes, things I want to remember across months, not sessions. The agent has read/write access to a dedicated <code>Claude/</code> folder via the Obsidian CLI.</p>
 
-      <p>This tier exists because some context is genuinely long-lived and too detailed for the wiki. A decision about why a service uses eventual consistency instead of strong consistency — the reasoning, the alternatives considered, the tradeoffs accepted — is the kind of thing you want searchable six months later when someone asks why the design looks the way it does. The wiki would prune it. A flat file would bury it. Obsidian keeps it searchable.</p>
+      <p>This tier exists because some context is genuinely long-lived and too detailed for the wiki. Take a decision to use eventual consistency instead of strong consistency. The reasoning, the alternatives weighed, and the tradeoffs accepted all matter six months later, when someone asks why the design looks the way it does. The wiki would prune it. A flat file would bury it. Obsidian keeps it searchable.</p>
 
-      <p>The agent writes to the vault at the end of significant tasks — architectural decisions, non-obvious debugging paths, anything that would save future-me thirty minutes of reconstruction. It reads from the vault when context tags suggest a relevant note exists.</p>
+      <p>The agent writes to the vault at the end of a significant task. It records architectural decisions, non-obvious debugging paths, and anything that would save me thirty minutes of reconstruction later. It reads from the vault when the context tags suggest a relevant note exists.</p>
 
       <h2>Tier 3: JSONL session knowledge graph (intra-session state)</h2>
 
-      <p>The third tier is a JSONL knowledge graph that persists within and across a working session. It's not designed for long-term retention — it's designed to give the agent structured access to what it learned earlier in the same working context, without relying on the conversation window staying in scope.</p>
+      <p>The third tier is a JSONL knowledge graph that persists within and across a working session. It is not built for long-term retention. It gives the agent structured access to what it learned earlier in the same working context, without depending on the conversation window staying in scope.</p>
 
-      <p>The graph records entities and relationships: files modified, functions touched, design decisions made, blockers encountered and resolved. The agent queries it before starting a new subtask to check whether relevant context already exists. This eliminates a class of redundant re-investigation — the agent doesn't re-read files it already summarized, doesn't re-derive decisions it already made.</p>
+      <p>The graph records entities and relationships: files modified, functions touched, design decisions made, blockers encountered and resolved. The agent queries it before starting a new subtask to check whether relevant context already exists. That removes a whole class of redundant re-investigation. The agent does not re-read files it already summarized, and does not re-derive decisions it already made.</p>
 
-      <p>The session graph is audited by <code>system-gc</code>, which runs at session end and compacts entries that are now redundant (superseded by a later observation, or covered by a wiki entry that was updated). It also extracts durable observations and promotes them to the wiki with a confidence flag, so session learning flows upward into long-term memory when it should.</p>
+      <p><code>system-gc</code> audits the session graph. It runs at session end and compacts any entry that has gone redundant, either superseded by a later observation or covered by an updated wiki entry. It also promotes durable observations up to the wiki with a confidence flag, so what the agent learns in a session reaches long-term memory.</p>
 
       <h2>Three auditors, not one</h2>
 
-      <p>Each tier has its own auditor: <code>lint-memory</code> for the wiki, <code>lint-skills</code> for the skill library, <code>system-gc</code> for the session graph. Running three independent auditors matters for a specific reason: a single auditor has no external reference. It can only check internal consistency. Three auditors can cross-check — <code>lint-memory</code> can flag wiki entries that contradict what <code>lint-skills</code> knows about a tool's actual behavior.</p>
+      <p>Each tier has its own auditor: <code>lint-memory</code> for the wiki, <code>lint-skills</code> for the skill library, <code>system-gc</code> for the session graph. Three independent auditors matter for one reason. A single auditor has no external reference, so it can only check internal consistency. Three can cross-check each other. <code>lint-memory</code> can flag a wiki entry that contradicts what <code>lint-skills</code> knows about how a tool actually behaves.</p>
 
       <p>The auditors run on separate schedules. <code>lint-memory</code> runs weekly (the wiki changes slowly). <code>system-gc</code> runs at session end (the graph changes every session). <code>lint-skills</code> runs when a skill is updated (triggered by the PostToolUse hook on skill file writes).</p>
 
       <h2>What this looks like in practice</h2>
 
-      <p>A typical session start: the agent loads the wiki (47 entries, full read), checks the session graph for in-progress context (usually empty at session start, populated on resume), and queries Obsidian if the task description references a known domain area. Total overhead: under 3K tokens on a cold session start. On a resume, the session graph provides the agent with a structured summary of where it left off — no re-reading of conversation history, no manual "here's what we were doing."</p>
+      <p>A typical session starts three ways at once. The agent reads all 47 wiki entries, checks the session graph for in-progress context, and queries Obsidian if the task description mentions a known domain area. The graph is usually empty on a cold start and populated on a resume. Total overhead is under 3K tokens on a cold start. On a resume, the graph hands the agent a structured summary of where it left off, so there is no re-reading of conversation history and no manual "here's what we were doing."</p>
 
-      <p>The thing that surprised me: the auditing discipline matters more than the architecture. A three-tier system without GC degrades to noise faster than a single-file system, because you have three places accumulating stale entries instead of one. The value of the design is the scheduled cleanup, not the structure itself.</p>
+      <p>What surprised me is that the auditing discipline matters more than the architecture. A three-tier system without garbage collection turns to noise faster than a single file does, because three places accumulate stale entries instead of one. The scheduled cleanup is what carries the value here, more than the structure.</p>
 
       <h2>What's missing</h2>
 
-      <p>Two things I haven't solved. First: cross-session graph continuity. The session graph resets between disconnected sessions — if I close a task and come back a week later, the graph is cold even if the wiki has the relevant context. A persistent graph with TTL-based decay would fix this, but I haven't built it yet.</p>
+      <p>Two things I haven't solved. First: cross-session graph continuity. The session graph resets between disconnected sessions. If I close a task and come back a week later, the graph is cold even though the wiki still holds the relevant context. A persistent graph with TTL-based decay would fix that, but I have not built it yet.</p>
 
-      <p>Second: confidence propagation. When the wiki is updated based on a session observation, the promoted entry gets a confidence flag, but that flag doesn't propagate if a later session contradicts it. The wiki can hold two conflicting entries at different confidence levels without surfacing the conflict to the agent at read time. <code>lint-memory</code> catches this on the weekly cycle, but not inline.</p>
+      <p>Second: confidence propagation. When a session observation updates the wiki, the promoted entry gets a confidence flag. That flag does not propagate if a later session contradicts it. The wiki can hold two conflicting entries at different confidence levels without surfacing the conflict to the agent at read time. <code>lint-memory</code> catches this on the weekly cycle, but not inline.</p>
 
       <p class="post-cta">
         The memory layer is part of the
