@@ -234,6 +234,44 @@ export const projects: Project[] = [
     ],
   },
   {
+    slug: 'more-itertools-numeric-range',
+    title: 'more-itertools: numeric_range and float steps',
+    date: '2026-09-02',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'Python'],
+    summary:
+      'Merged into more-itertools. numeric_range builds each item by multiplying the step, but it derived len(), the in operator, and index() by dividing by the step. With float steps the two methods disagree, so a range reported a length that did not match what it yielded, and it denied membership to its own items. I reported the issue and sent the fix.',
+    link: { label: 'more-itertools/more-itertools #1248, merged', href: 'https://github.com/more-itertools/more-itertools/pull/1248' },
+    sections: [
+      {
+        heading: 'What was wrong',
+        paragraphs: [
+          'A numeric_range produces item n as start + n * step. Iteration and indexing both use that formula. The length, the membership test, and index() instead divided the span by the step. Float multiplication and float division do not accumulate the same rounding error, so the two answers drift apart.',
+          'The drift went in both directions. numeric_range(-8.732, -13.532, -2.4) yields two items and reported a length of three, where the extra item was the excluded stop value. A second range yielded nine items and reported eight, so iteration produced an item that indexing could not reach.',
+          'Membership failed on the range own items. For numeric_range(0.0, 1.0, 0.1), the value at index 3 is 0.30000000000000004, and asking whether that value was in the range returned False. Five of the ten items failed the same test.',
+        ],
+      },
+      {
+        heading: 'The change',
+        paragraphs: [
+          'Settle every derived answer against the items themselves rather than against the quotient. The length still divides to get a starting count, then trims or extends that count until it agrees with the values the range produces.',
+          'index() uses the quotient only to locate a candidate position, then confirms it by comparing against the item at that position. It no longer tests whether the remainder is zero. The in operator defers to index(), and count() already defers to the in operator, so the four cannot drift apart again.',
+          'Exact types pay nothing for this. Decimal, Fraction, int, and datetime with timedelta produce a zero remainder for their own items, so they resolve on the first candidate and take the same number of operations as before. The adjustment loops never run for them.',
+        ],
+      },
+      {
+        heading: 'Tests',
+        bullets: [
+          'Both directions of the length error are pinned, including the under-count case. That one is harder to construct, because it needs a step whose accumulated product drifts below the divided estimate.',
+          'A membership test covers the case where a range denied its own items.',
+          'I confirmed the new tests fail without the change: the membership test fails on the in operator, and the length test fails with 2 != 3.',
+          'The full suite is 905 tests and all pass. Coverage on more.py is 100%, and ruff format, ruff check, and stubtest are all clean.',
+        ],
+      },
+    ],
+  },
+  {
     slug: 'pytest-approx-nested-containers',
     title: 'pytest: approx() and nested containers',
     date: '2026-08-25',
