@@ -1,73 +1,297 @@
 {
   "categories": [
-    {"id": "ai",       "label": "AI Systems",                "color": "#f472b6"},
-    {"id": "backend",  "label": "Production Backend Platform","color": "#7dd3fc"},
-    {"id": "data",     "label": "Data & Storage",            "color": "#a78bfa"},
-    {"id": "infra",    "label": "Infra & Delivery",          "color": "#f59e0b"}
+    {
+      "id": "ai",
+      "label": "AI Systems",
+      "color": "#f472b6"
+    },
+    {
+      "id": "backend",
+      "label": "Production Backend Platform",
+      "color": "#7dd3fc"
+    },
+    {
+      "id": "data",
+      "label": "Data & Storage",
+      "color": "#a78bfa"
+    },
+    {
+      "id": "infra",
+      "label": "Infra & Delivery",
+      "color": "#f59e0b"
+    }
   ],
   "skills": [
-    {"name": "LLM Application & Agent Systems", "category": "ai",      "tier": "production", "since": 2024, "summary": "Tool use, custom MCP servers, multi-step agentic workflows, sub-agent orchestration, prompt and context engineering, memory architecture, human-in-loop checkpoints."},
-    {"name": "Python",                          "category": "ai",      "tier": "production", "since": 2019, "summary": "Primary language for AI tooling and data pipelines — CanvestAI scoring engine, agent scripting, and data processing."},
-    {"name": "LLM Evaluation",                  "category": "ai",      "tier": "working",    "since": 2024, "summary": "Benchmark design, hypothesis validation, human-in-loop output scoring using structured eval pipelines."},
-    {"name": "pgvector / RAG",                  "category": "ai",      "tier": "working",    "since": 2025, "summary": "Evaluating pgvector for production MCP integration layer to support org-level chat agent communication."},
-    {"name": "Java",                            "category": "backend", "tier": "production", "since": 2019, "summary": "Production backend services on ad-tech and desktop-software platforms — core platform services and REST APIs."},
-    {"name": "Spring Boot",                     "category": "backend", "tier": "production", "since": 2019, "summary": "REST API and service layer across full-stack production applications."},
-    {"name": "Ruby on Rails",                   "category": "backend", "tier": "production", "since": 2019, "summary": "Full-stack Rails development — daily production use across a core ad-tech platform."},
-    {"name": "TypeScript",                      "category": "backend", "tier": "production", "since": 2021, "summary": "Type-safe frontend and Node.js work — including this portfolio and internal tooling."},
-    {"name": "Async / Event-Driven Patterns",   "category": "backend", "tier": "working",    "since": 2022, "summary": "Async operations and background processing in production backend services."},
-    {"name": "gRPC / Protobuf",                 "category": "backend", "tier": "familiar",   "since": 2024, "summary": "Protocol Buffers and gRPC service definitions — side project experience, familiar with the RPC layer."},
-    {"name": "PostgreSQL",                      "category": "data",    "tier": "production", "since": 2019, "summary": "Relational data modeling for production systems — query optimization, indexing, schema design."},
-    {"name": "Redis",                           "category": "data",    "tier": "production", "since": 2021, "summary": "Caching and low-latency state for high-throughput services — cache invalidation, rate limiting."},
-    {"name": "Observability (Datadog, OTel)",   "category": "infra",   "tier": "production", "since": 2022, "summary": "Custom metrics, distributed tracing, and instrumentation — OpenTelemetry traces from production backend services into Datadog."},
-    {"name": "AWS (S3, EC2, RDS, SQS, Lambda)", "category": "infra",   "tier": "production", "since": 2020, "summary": "Core AWS services across production deployments — storage, compute, managed databases, queues, and serverless."},
-    {"name": "Docker",                          "category": "infra",   "tier": "production", "since": 2019, "summary": "Containerised builds and deployment pipelines."},
-    {"name": "Kubernetes (EKS)",                "category": "infra",   "tier": "working",    "since": 2021, "summary": "Pod operations, log inspection, kubectl across staging and EKS production environments."},
-    {"name": "GitHub Actions",                  "category": "infra",   "tier": "production", "since": 2022, "summary": "CI/CD pipelines for automated testing and deployment."}
+    {
+      "id": "llm",
+      "name": "LLM Application & Agent Systems",
+      "category": "ai",
+      "tier": "production",
+      "since": 2024,
+      "summary": "Tool use, custom MCP servers, multi-step agentic workflows, sub-agent orchestration, prompt and context engineering, memory architecture, human-in-loop checkpoints."
+    },
+    {
+      "id": "python",
+      "name": "Python",
+      "category": "ai",
+      "tier": "production",
+      "since": 2019,
+      "summary": "Primary language for AI tooling and data pipelines. I use it for the CanvestAI scoring engine, agent scripting, and data processing."
+    },
+    {
+      "id": "llm-eval",
+      "name": "LLM Evaluation",
+      "category": "ai",
+      "tier": "working",
+      "since": 2024,
+      "summary": "Benchmark design, hypothesis validation, human-in-loop output scoring using structured eval pipelines."
+    },
+    {
+      "id": "pgvector",
+      "name": "pgvector / RAG",
+      "category": "ai",
+      "tier": "working",
+      "since": 2025,
+      "summary": "Evaluating pgvector for production MCP integration layer to support org-level chat agent communication."
+    },
+    {
+      "id": "java",
+      "name": "Java",
+      "category": "backend",
+      "tier": "production",
+      "since": 2019,
+      "summary": "Production backend services on ad-tech and desktop-software platforms. I build core platform services and REST APIs with it."
+    },
+    {
+      "id": "springboot",
+      "name": "Spring Boot",
+      "category": "backend",
+      "tier": "production",
+      "since": 2019,
+      "summary": "REST API and service layer across full-stack production applications."
+    },
+    {
+      "id": "rails",
+      "name": "Ruby on Rails",
+      "category": "backend",
+      "tier": "production",
+      "since": 2019,
+      "summary": "Full-stack Rails development in daily production use across a core ad-tech platform."
+    },
+    {
+      "id": "typescript",
+      "name": "TypeScript",
+      "category": "backend",
+      "tier": "production",
+      "since": 2021,
+      "summary": "Type-safe frontend and Node.js work, including this portfolio and internal tooling."
+    },
+    {
+      "id": "async",
+      "name": "Async / Event-Driven Patterns",
+      "category": "backend",
+      "tier": "working",
+      "since": 2022,
+      "summary": "Async operations and background processing in production backend services."
+    },
+    {
+      "id": "grpc",
+      "name": "gRPC / Protobuf",
+      "category": "backend",
+      "tier": "familiar",
+      "since": 2024,
+      "summary": "Protocol Buffers and gRPC service definitions from side project work. I know the RPC layer but have not run it in production."
+    },
+    {
+      "id": "postgres",
+      "name": "PostgreSQL",
+      "category": "data",
+      "tier": "production",
+      "since": 2019,
+      "summary": "Relational data modeling for production systems. Query optimization, indexing, and schema design."
+    },
+    {
+      "id": "redis",
+      "name": "Redis",
+      "category": "data",
+      "tier": "production",
+      "since": 2021,
+      "summary": "Caching and low-latency state for high-throughput services. Cache invalidation and rate limiting."
+    },
+    {
+      "id": "observability",
+      "name": "Observability (Datadog, OTel)",
+      "category": "infra",
+      "tier": "production",
+      "since": 2022,
+      "summary": "Custom metrics, distributed tracing, and instrumentation. OpenTelemetry traces run from production backend services into Datadog."
+    },
+    {
+      "id": "aws",
+      "name": "AWS (S3, EC2, RDS, SQS, Lambda)",
+      "category": "infra",
+      "tier": "production",
+      "since": 2020,
+      "summary": "Core AWS services across production deployments: storage, compute, managed databases, queues, and serverless."
+    },
+    {
+      "id": "docker",
+      "name": "Docker",
+      "category": "infra",
+      "tier": "production",
+      "since": 2019,
+      "summary": "Containerised builds and deployment pipelines."
+    },
+    {
+      "id": "kubernetes",
+      "name": "Kubernetes (EKS)",
+      "category": "infra",
+      "tier": "working",
+      "since": 2021,
+      "summary": "Pod operations, log inspection, kubectl across staging and EKS production environments."
+    },
+    {
+      "id": "github-actions",
+      "name": "GitHub Actions",
+      "category": "infra",
+      "tier": "production",
+      "since": 2022,
+      "summary": "CI/CD pipelines for automated testing and deployment."
+    }
   ],
   "graph": {
     "nodes": [
-      {"id": "harness",    "label": "Agent Dev Harness",   "type": "project", "group": "ai",      "detail": "Autonomous ticket-to-PR workflow with persistent session memory and a self-improving code review agent built on a coding agent."},
-      {"id": "canvestai",  "label": "CanvestAI",           "type": "project", "group": "ai",      "detail": "Conversational ETF analysis and portfolio rebalancing for Canadian investors — live market data, risk-matched scoring, LLM-powered recommendations."},
-      {"id": "adtech",      "label": "Ad-Tech Platform",      "type": "project", "group": "backend", "detail": "Full-stack engineering across a production ad-tech platform — Ruby on Rails and Java Spring Boot services, frontend systems, internal tooling."},
-      {"id": "rails",      "label": "Ruby on Rails",       "type": "tech",    "group": "backend", "detail": "Daily production use — full-stack Rails development across a core ad-tech platform."},
-      {"id": "llm",        "label": "LLM Agent Systems",   "type": "tech",    "group": "ai",      "detail": "Tool use, MCP servers, agentic workflows, memory architecture — provider-agnostic LLM application engineering."},
-      {"id": "python",     "label": "Python",              "type": "tech",    "group": "ai",      "detail": "Primary language for AI tooling and data pipelines."},
-      {"id": "java",       "label": "Java",                "type": "tech",    "group": "backend", "detail": "Production backend services on ad-tech and desktop-software platforms."},
-      {"id": "springboot", "label": "Spring Boot",         "type": "tech",    "group": "backend", "detail": "REST API and service layer for full-stack applications."},
-      {"id": "postgres",   "label": "PostgreSQL",          "type": "tech",    "group": "data",    "detail": "Relational database for production data modeling — query optimization, indexing, schema design."},
-      {"id": "redis",      "label": "Redis",               "type": "tech",    "group": "data",    "detail": "Caching and low-latency state for high-throughput services."},
-      {"id": "datadog",    "label": "Observability",       "type": "tech",    "group": "infra",   "detail": "Custom metrics, distributed tracing via OpenTelemetry into Datadog."}
+      {
+        "id": "harness",
+        "label": "Agent Dev Harness",
+        "type": "project",
+        "group": "ai",
+        "detail": "Autonomous ticket-to-PR workflow with persistent session memory and a self-improving code review agent built on a coding agent."
+      },
+      {
+        "id": "canvestai",
+        "label": "CanvestAI",
+        "type": "project",
+        "group": "ai",
+        "detail": "Conversational ETF analysis and portfolio rebalancing for Canadian investors. It runs on live market data, risk-matched scoring, and recommendations from a language model."
+      },
+      {
+        "id": "adtech",
+        "label": "Ad-Tech Platform",
+        "type": "project",
+        "group": "backend",
+        "detail": "Full-stack engineering across a production ad-tech platform. Ruby on Rails and Java Spring Boot services, frontend systems, and internal tooling."
+      }
     ],
     "links": [
-      {"source": "harness",   "target": "llm"},
-      {"source": "harness",   "target": "python"},
-      {"source": "canvestai", "target": "llm"},
-      {"source": "canvestai", "target": "python"},
-      {"source": "canvestai", "target": "postgres"},
-      {"source": "adtech",     "target": "rails"},
-      {"source": "adtech",     "target": "java"},
-      {"source": "adtech",     "target": "springboot"},
-      {"source": "adtech",     "target": "postgres"},
-      {"source": "adtech",     "target": "datadog"},
-      {"source": "springboot","target": "java"},
-      {"source": "redis",     "target": "postgres"}
-    ]
-  },
-  "timeline": {
-    "years": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026],
-    "tracks": [
-      {"label": "Ruby on Rails",       "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "Java",                "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "Spring Boot",         "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "Python",              "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "TypeScript",          "active": [2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "LLM Agent Systems",   "active": [2024, 2025, 2026]},
-      {"label": "PostgreSQL",          "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "Redis",               "active": [2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "Observability",       "active": [2022, 2023, 2024, 2025, 2026]},
-      {"label": "Docker",              "active": [2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "AWS",                 "active": [2020, 2021, 2022, 2023, 2024, 2025, 2026]},
-      {"label": "GitHub Actions",      "active": [2022, 2023, 2024, 2025, 2026]}
+      {
+        "source": "harness",
+        "target": "llm"
+      },
+      {
+        "source": "harness",
+        "target": "python"
+      },
+      {
+        "source": "harness",
+        "target": "llm-eval"
+      },
+      {
+        "source": "harness",
+        "target": "github-actions"
+      },
+      {
+        "source": "canvestai",
+        "target": "llm"
+      },
+      {
+        "source": "canvestai",
+        "target": "python"
+      },
+      {
+        "source": "canvestai",
+        "target": "postgres"
+      },
+      {
+        "source": "canvestai",
+        "target": "pgvector"
+      },
+      {
+        "source": "canvestai",
+        "target": "llm-eval"
+      },
+      {
+        "source": "canvestai",
+        "target": "docker"
+      },
+      {
+        "source": "adtech",
+        "target": "rails"
+      },
+      {
+        "source": "adtech",
+        "target": "java"
+      },
+      {
+        "source": "adtech",
+        "target": "springboot"
+      },
+      {
+        "source": "adtech",
+        "target": "typescript"
+      },
+      {
+        "source": "adtech",
+        "target": "postgres"
+      },
+      {
+        "source": "adtech",
+        "target": "redis"
+      },
+      {
+        "source": "adtech",
+        "target": "observability"
+      },
+      {
+        "source": "adtech",
+        "target": "aws"
+      },
+      {
+        "source": "adtech",
+        "target": "kubernetes"
+      },
+      {
+        "source": "adtech",
+        "target": "async"
+      },
+      {
+        "source": "adtech",
+        "target": "grpc"
+      },
+      {
+        "source": "springboot",
+        "target": "java"
+      },
+      {
+        "source": "redis",
+        "target": "postgres"
+      },
+      {
+        "source": "pgvector",
+        "target": "postgres"
+      },
+      {
+        "source": "kubernetes",
+        "target": "docker"
+      },
+      {
+        "source": "github-actions",
+        "target": "docker"
+      },
+      {
+        "source": "observability",
+        "target": "aws"
+      }
     ]
   }
 }

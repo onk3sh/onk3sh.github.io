@@ -24,11 +24,16 @@ Code is exempt. Inside <pre>, <code>, <script> and <style> a dash can be part of
 a command, an identifier, or a data value, and rewriting it would be wrong.
 Those regions are blanked before the scan, line numbering preserved.
 
+HTML alone is not the whole surface. The stack page fetches stack-map.json at
+runtime and writes its summaries into the page, so that copy never appears in
+any built file. The prose fields of that file are checked too. See JSON_PROSE.
+
 Usage:
     scripts/check-dashes.py            # scan the published root, exit 1 on a hit
     scripts/check-dashes.py DIR ...    # scan specific directories or files
 """
 
+import json
 import pathlib
 import re
 import sys
@@ -93,6 +98,43 @@ def pages(targets: list[pathlib.Path]) -> list[pathlib.Path]:
     return found
 
 
+# Data files whose string values are copy the browser renders. The HTML scan
+# cannot see these: the stack page fetches this JSON at runtime and writes the
+# summaries into the page, so 14 em dashes lived here while every built page
+# reported clean. Only prose fields are checked, so ids and labels that need a
+# hyphen are unaffected.
+JSON_PROSE = {
+    "astro-src/public/data/stack-map.json": ("summary", "detail"),
+    "data/stack-map.json": ("summary", "detail"),
+}
+
+
+def scan_json(rel: str, fields: tuple[str, ...]) -> list[tuple[str, str, str]]:
+    """Return (field path, what was found, the value) for each hit in one file."""
+    path = REPO_ROOT / rel
+    if not path.exists():
+        return []
+
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    hits = []
+
+    def walk(node, where):
+        if isinstance(node, dict):
+            for key, value in node.items():
+                walk(value, f"{where}.{key}")
+        elif isinstance(node, list):
+            for i, value in enumerate(node):
+                walk(value, f"{where}[{i}]")
+        elif isinstance(node, str) and where.rsplit(".", 1)[-1] in fields:
+            for needle, label in FORBIDDEN.items():
+                if needle in node:
+                    hits.append((where, label, node))
+                    break
+
+    walk(doc, "")
+    return hits
+
+
 def main(argv: list[str]) -> int:
     targets = [pathlib.Path(a).resolve() for a in argv[1:]] or [REPO_ROOT]
 
@@ -117,6 +159,17 @@ def main(argv: list[str]) -> int:
             print(f"{rel}:{lineno}: {label}: {excerpt}")
             failures += 1
 
+    json_checked = 0
+    if targets == [REPO_ROOT]:
+        for rel, fields in JSON_PROSE.items():
+            if not (REPO_ROOT / rel).exists():
+                continue
+            json_checked += 1
+            for where, label, value in scan_json(rel, fields):
+                excerpt = value if len(value) <= 120 else value[:117] + "..."
+                print(f"{rel}:{where}: {label}: {excerpt}")
+                failures += 1
+
     if failures:
         print()
         glyph_word = "glyph" if failures == 1 else "glyphs"
@@ -127,7 +180,10 @@ def main(argv: list[str]) -> int:
         )
         return 1
 
-    print(f"check-dashes: {len(checked)} {pages_word} clean, no dash glyphs in prose.")
+    print(
+        f"check-dashes: {len(checked)} {pages_word} and {json_checked} data "
+        "file(s) clean, no dash glyphs in prose."
+    )
     return 0
 
 
