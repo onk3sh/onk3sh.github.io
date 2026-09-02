@@ -19,7 +19,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: 'search-campaign-builder',
-    title: 'Search Campaign Builder — Performance Engineering',
+    title: 'Search Campaign Builder: Performance Engineering',
     date: '2026-05-14',
     type: 'project',
     projectType: 'work',
@@ -30,7 +30,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'media-activation',
-    title: 'Media Activation — Delivery & Changelog',
+    title: 'Media Activation: Delivery & Changelog',
     date: '2026-05-13',
     type: 'project',
     projectType: 'work',
@@ -41,7 +41,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'adtech-platform',
-    title: 'Ad-Tech Platform — Production Engineering',
+    title: 'Ad-Tech Platform: Production Engineering',
     date: '2026-05-10',
     type: 'project',
     projectType: 'work',
@@ -64,7 +64,7 @@ export const projects: Project[] = [
       {
         heading: 'Overview',
         paragraphs: [
-          'Most AI coding workflows optimize the wrong variable. They tune prompts, swap models, and chase context windows. Then they ship the same defects the human-only workflow shipped, only faster. The harness takes the opposite bet. Hold the model constant, and engineer the process around it the way you would engineer a deploy pipeline.',
+          'Most AI coding workflows optimize the wrong variable. They tune prompts, swap models, and chase context windows. Then they ship the same defects the human-only workflow shipped, only faster. The harness holds the model constant and engineers the process around it, the way you would engineer a deploy pipeline.',
           'The harness runs a six-phase lifecycle: Requirements, Plan, Stress-Test, Implement, Self-Review, Completion. A gate sits between each phase, and none of them can be skipped. Every gate answers a failure I saw at least three times in my own pull-request review history. Reviewers kept catching scope creep, so the Plan phase exists. They kept catching design choices that collapsed under a follow-up question, so the Stress-Test phase exists. They flagged thirteen categories more often than any others, so Self-Review runs thirteen ordered checks across four parallel agents.',
           'A supporting stack sits underneath the lifecycle. ast-grep and LSP queries replace grep, which cuts tokens per task by about 70%. difft produces structural diffs that sub-agents can parse. A three-tier memory layer (LLM Wiki, Obsidian, and a JSONL session graph) is audited by three independent linters. A custom Bitbucket MCP server fills a gap where no official plugin existed, and shellcheck runs as a hard PostToolUse hook. All of it lives in ~/.claude/, with no company code and no proprietary infrastructure.',
         ],
@@ -73,7 +73,7 @@ export const projects: Project[] = [
         heading: 'Architecture',
         bullets: [
           'A six-phase lifecycle: Requirements → Plan → Stress-Test → Implement → Self-Review → Completion. No phase can be skipped, and each gate traces back to a failure that kept recurring in PR review.',
-          'Completion requires evidence. No success claim passes without raw command output, so the lint and test logs are the artifact rather than a summary of them.',
+          'Completion requires evidence. No success claim passes without raw command output, so the lint and test logs themselves are the artifact.',
           'Self-review runs thirteen checks across four parallel agents. Findings are classified AUTO, BATCH, or MANUAL, and written to Obsidian before completion is allowed.',
           'An autonomous reviewer, dd-reviewer, runs the full thirteen-check pass on any PR and returns a go or no-go report. It reads /project-commands.md at runtime, so the review logic stays current.',
           'Token-cost engineering: ast-grep and LSP replace grep across the search layer, cutting tokens per task by about 70%. difft replaces text diffs so sub-agents can parse them.',
@@ -162,7 +162,7 @@ export const projects: Project[] = [
           'Ranking stays in code rather than in a prompt, so the same inputs produce the same ordering and the step is testable.',
           'A dedicated challenge agent argues against the recommendation before the user sees it.',
           'Narrow routes skip the deliberation chain entirely: research only, astro only, sky only, and portfolio review. None of them pays for a fan-out that has nothing to merge.',
-          'Agents are reached only through an A2A seam — no graph node imports an agent directly.',
+          'Agents are reached only through an A2A seam. No graph node imports an agent directly.',
           'Every turn has a cost ceiling. A callback meters real token usage and prices it live. On a hard breach, nodes degrade to no-ops and record themselves, so the turn still reaches a reply built from whatever was gathered.',
         ],
       },
@@ -189,9 +189,9 @@ export const projects: Project[] = [
       {
         heading: 'Overview',
         paragraphs: [
-          'The CanvestAI orchestrator answers a question in stages. It fans out to four discipline agents in parallel — fundamental, technical, astro, and research — then joins their verdicts and deliberates over them. It ranks ETFs in code, makes a recommendation, challenges that recommendation, and composes a reply. The spine is a LangGraph supervisor, and on paper it is a normal multi-agent chatbot.',
-          'The decision that shaped it was not which model to route to. It was a rule: no graph node may import an agent. Every call goes through a single function — `dispatch(name, task)` — on an A2A client. Nodes know agent names, not agent modules.',
-          'That is a hub topology, and for the MVP it is only half true. The agents run in the same Python process as the graph, because the box has 16 GB of RAM and one server per agent would not fit. The seam is real even though the network is not. Moving to full A2A — the SDK, one server per agent, agent cards — means reimplementing one module. No node changes.',
+          'The CanvestAI orchestrator answers a question in stages. It fans out to four discipline agents in parallel: fundamental, technical, astro, and research. It then joins their verdicts and deliberates over them. It ranks ETFs in code, makes a recommendation, challenges that recommendation, and composes a reply. The spine is a LangGraph supervisor, and on paper it is a normal multi-agent chatbot.',
+          'The decision that shaped it had nothing to do with model routing. One rule did the work: no graph node may import an agent. Every call goes through `dispatch(name, task)`, a single function on an A2A client. Nodes know agent names. They never see agent modules.',
+          'That is a hub topology, and for the MVP it is only half true. The agents run in the same Python process as the graph, because the box has 16 GB of RAM and one server per agent would not fit. The seam is real even though the network is not. Full A2A means the SDK, one server per agent, and agent cards. Getting there is a rewrite of one module. No node changes.',
           'That shortcut is already half-retired. Planetary positions, aspects, and dasha periods used to be computed inside the repo. They now live in a separate service reached over real A2A: a JSON-RPC 2.0 `message/send` carrying a named op and its parameters, pointed at `ASTRO_AGENT_URL`. One module in CanvestAI speaks that protocol. Everything upstream of it changed a single import line. The client functions kept the same names, signatures, and return types as the local functions they replaced, so dates still come back as `datetime.date` instead of ISO strings.',
         ],
       },
@@ -214,7 +214,7 @@ export const projects: Project[] = [
         ],
       },
       {
-        heading: 'Efficiency is a budget, not a prompt',
+        heading: 'Efficiency is a budget',
         paragraphs: [
           'Multi-agent fan-out multiplies the cost of every turn, so the ceiling is enforced instead of hoped for. A LangChain callback meters real token usage across every LLM call in a turn, prices it from a models config, and exposes soft and hard breach checks. One meter runs per graph invocation.',
           'Enforcement is graceful by default. Nodes check the meter before they spawn optional work. On a hard breach, a node degrades to a no-op and records itself in a `degraded` list on the state. The turn still reaches compose, and the reply is assembled from whatever was gathered. Raising a budget error at the user is possible, but it is an opt-in path.',
@@ -331,7 +331,7 @@ export const productionWork: ProductionProject[] = [
         ],
       },
       {
-        heading: 'Media Activation — Delivery & Changelog',
+        heading: 'Media Activation: Delivery & Changelog',
         paragraphs: [
           'Media Activation publishes line item placements to external systems, starting with CM360. The internal media agency team had no way to see what changed in the delivery view without opening CM360 directly, so every discrepancy became a support request. More than 100 users were affected.',
           'The existing changelog was a plain append log. It had no query management, no categorization, and no structured output the UI could consume. Extending it was risky, because the old system had accumulated complexity, so I built a new one. It is 80% net-new and shares only the ActiveRecord integration layer and the table schema. Reusing the schema avoided a data migration, and owning the logic gave full control over query management and event structure. The tradeoff is some duplication with the old system that will need consolidating later.',
@@ -374,7 +374,7 @@ export function getProjectBySlug(slug: string): Project | undefined {
  * Build a Date from a `date` field without going through UTC.
  *
  * These are calendar dates ("2026-08-25"). `new Date()` reads that form as UTC
- * midnight, which lands on the previous day anywhere west of Greenwich — a post
+ * midnight, which lands on the previous day anywhere west of Greenwich. A post
  * dated the 25th rendered as the 24th, and one dated the 1st rendered in the
  * previous month. Build from the parts instead.
  */

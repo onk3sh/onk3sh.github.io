@@ -31,14 +31,14 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
       <p>Four repos, three query classes, two tools (rg and ast-grep with fixed rules), three rounds aggregated. The query classes are:</p>
 
       <ul>
-        <li><strong>Symbol definition</strong> — find where a class, method, or identifier is defined</li>
-        <li><strong>Exact string</strong> — find a literal string, log message, or config key</li>
-        <li><strong>Structural pattern</strong> — find all classes implementing an interface, all components with a given prop shape, all methods matching a call signature</li>
+        <li><strong>Symbol definition:</strong> find where a class, method, or identifier is defined</li>
+        <li><strong>Exact string:</strong> find a literal string, log message, or config key</li>
+        <li><strong>Structural pattern:</strong> find all classes implementing an interface, all components with a given prop shape, all methods matching a call signature</li>
       </ul>
 
       <p>Hit rate measures whether the tool returns any results at all on first call. Cost-per-found-block (Table 7) accounts for the load tax and reissue cost when zero results force a retry.</p>
 
-      <h2>Table 1 — Hit rate by repo × query class × tool</h2>
+      <h2>Table 1: Hit rate by repo × query class × tool</h2>
 
       <p class="table-note">% hit on first call, 3 rounds aggregated. Higher = better recall.</p>
 
@@ -64,7 +64,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p><strong>rg wins 9/12, ties 2, loses 1.</strong> The single ast-grep win is React/TSX structural patterns — the one query class where rg returns 0% and ast-grep returns 66.7%. Across every other query class and every other repo, rg wins outright. This is a decisive result, not a nuanced one.</p>
+      <p><strong>rg wins 9/12, ties 2, loses 1.</strong> The single ast-grep win is React/TSX structural patterns, the one query class where rg returns 0% and ast-grep returns 66.7%. Across every other query class and every other repo, rg wins outright. That is a decisive result.</p>
 
       <h2>The one case where ast-grep is mandatory</h2>
 
@@ -78,7 +78,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p><code>stopBy: end</code> is also mandatory at every <code>has</code> level above the target. Without it, ast-grep checks only direct children and misses deeply nested nodes without saying so.</p>
 
-      <h2>Table 2 — Latency (CLI vs MCP, wall-clock median ms)</h2>
+      <h2>Table 2: Latency (CLI vs MCP, wall-clock median ms)</h2>
 
       <div class="table-wrap">
         <table>
@@ -94,13 +94,13 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <p>MCP wins on every repo, running 2–5× faster on wall-clock and staying under a second throughout. <strong>Latency is the real MCP advantage</strong>, ahead of both token cost and error semantics. The Rails service CLI call takes 2.5 seconds, which is slow enough to feel during a session, and MCP brings it under one second. Use MCP when wall-clock speed matters. Use Grep or Bash when token cost matters.</p>
+      <p>MCP wins on every repo, running 2-5× faster on wall-clock and staying under a second throughout. <strong>Latency is the real MCP advantage</strong>, ahead of both token cost and error semantics. The Rails service CLI call takes 2.5 seconds, which is slow enough to feel during a session, and MCP brings it under one second. Use MCP when wall-clock speed matters. Use Grep or Bash when token cost matters.</p>
 
       <h2>Token cost: MCP is not cheaper</h2>
 
       <p>The hypothesis that MCP + ast-grep would be cheaper on tokens is refuted by the data.</p>
 
-      <h3>Table 3 — Per-call invocation prompt size (tokens)</h3>
+      <h3>Table 3: Per-call invocation prompt size (tokens)</h3>
 
       <div class="table-wrap">
         <table>
@@ -117,7 +117,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <h3>Table 4 — Per-call response size (tokens)</h3>
+      <h3>Table 4: Per-call response size (tokens)</h3>
 
       <div class="table-wrap">
         <table>
@@ -136,7 +136,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p class="table-note">Caveat: Bash+rg sample is Opus-only, mostly <code>rg -l</code> file-listing, not match-with-context. Honest comparison: rg and ast-grep are comparable when used the same way.</p>
 
-      <h3>Table 5 — Round-trip cost per call (invocation + response, tokens)</h3>
+      <h3>Table 5: Round-trip cost per call (invocation + response, tokens)</h3>
 
       <div class="table-wrap">
         <table>
@@ -153,7 +153,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         </table>
       </div>
 
-      <h3>Table 6 — Session-total cost (1,576 MCP load tax + N × round-trip)</h3>
+      <h3>Table 6: Session-total cost (1,576 MCP load tax + N × round-trip)</h3>
 
       <div class="table-wrap">
         <table>
@@ -173,7 +173,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p><strong>MCP never crosses over.</strong> At every session size measured, MCP costs more tokens than Grep or Bash: median at 5 calls, p75 at 11, p90 at 27, and p99 at 79. The 1,576-token load tax at session start never amortizes. The MCP round-trip does beat Grep per call, 284 tokens against 324, but not by enough to cover that fixed cost. Optimize for token cost and Grep or Bash with rg is the right tool. Optimize for latency or structured error semantics and MCP is. They are different targets.</p>
 
-      <h2>Table 7 — Cost-per-found-block</h2>
+      <h2>Table 7: Cost-per-found-block</h2>
 
       <p class="table-note">iter = (100 / hit%) × (1 + zero% × reissue%). Accounts for the full cost of finding one result, including retries on zero. Lower = better.</p>
 
@@ -201,7 +201,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>rg wins 9 of 12 cells. An ∞ value means a 0% hit rate, so the tool cannot find the answer at any cost. ast-grep shows ∞ on two Java cells where it returned zero hits across every round. rg shows ∞ on JSX structural, the one confirmed ast-grep use case.</p>
 
-      <h2>Table 8 — Zero-result and rabbit-hole behaviour</h2>
+      <h2>Table 8: Zero-result and rabbit-hole behaviour</h2>
 
       <div class="table-wrap">
         <table>
@@ -222,7 +222,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>All of the above is search-layer optimization. Table 12 puts it in context.</p>
 
-      <h3>Table 9 — Search volume by model family</h3>
+      <h3>Table 9: Search volume by model family</h3>
 
       <div class="table-wrap">
         <table>
@@ -232,14 +232,14 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
           <tbody>
             <tr><td>Sonnet</td><td>61</td><td>394</td><td>6.46</td><td>4</td><td>6</td><td>12</td><td>38</td></tr>
             <tr><td>Opus</td><td>38</td><td>467</td><td>12.29</td><td>6</td><td>18</td><td>33</td><td>79</td></tr>
-            <tr><td>Haiku</td><td>—</td><td>0</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+            <tr><td>Haiku</td><td>n/a</td><td>0</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td><td>n/a</td></tr>
           </tbody>
         </table>
       </div>
 
       <p>Opus searches roughly twice as often per session as Sonnet. Haiku searches not at all. It works only on paths the orchestrator supplies, through Read, Edit, Write, and known Bash commands. Haiku is a file-operation agent rather than a search agent, so routing file operations to it saves money without touching the search layer.</p>
 
-      <h3>Table 10 — Scope discipline by model</h3>
+      <h3>Table 10: Scope discipline by model</h3>
 
       <div class="table-wrap">
         <table>
@@ -255,7 +255,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>Scoping discipline is equal, with both models scoping about 90% of calls. The difference is result size. Opus pulls responses about 36% larger and reads about 50% more files per call. It is being more thorough on the same call, not less disciplined.</p>
 
-      <h3>Table 12 — Real per-session cost by model</h3>
+      <h3>Table 12: Real per-session cost by model</h3>
 
       <p class="table-note">From JSONL usage fields. Cache reads excluded (90% discount).</p>
 
@@ -290,15 +290,15 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
             <tr><th>Need</th><th>Default</th><th>Fallback / condition</th></tr>
           </thead>
           <tbody>
-            <tr><td>Free-text / exact string / log line</td><td>rg or Grep</td><td>—</td></tr>
+            <tr><td>Free-text / exact string / log line</td><td>rg or Grep</td><td>n/a</td></tr>
             <tr><td>Symbol definition (Java / Ruby / Rails)</td><td>rg</td><td>ast-grep if rg returns zero on a known-shape query</td></tr>
-            <tr><td>Symbol def / structural (JSX/TSX)</td><td>ast-grep</td><td>— (rg silently misses)</td></tr>
-            <tr><td>Annotation-agnostic Java method lookup</td><td>ast-grep <code>kind: method_declaration</code></td><td>—</td></tr>
+            <tr><td>Symbol def / structural (JSX/TSX)</td><td>ast-grep</td><td>none (rg silently misses)</td></tr>
+            <tr><td>Annotation-agnostic Java method lookup</td><td>ast-grep <code>kind: method_declaration</code></td><td>n/a</td></tr>
             <tr><td>goToDefinition / hover / type resolution</td><td>LSP</td><td>Warm index required; cold sessions: use ast-grep</td></tr>
-            <tr><td>File path discovery</td><td>Glob</td><td>—</td></tr>
-            <tr><td>Act on known path (read/edit/test)</td><td>Haiku</td><td>Haiku does zero searches — supply paths from orchestrator</td></tr>
+            <tr><td>File path discovery</td><td>Glob</td><td>n/a</td></tr>
+            <tr><td>Act on known path (read/edit/test)</td><td>Haiku</td><td>Haiku does zero searches, so supply the paths</td></tr>
             <tr><td>Search-heavy reasoning</td><td>Sonnet</td><td>Opus only for high-stakes decisions</td></tr>
-            <tr><td>Architecture / security review</td><td>Opus</td><td>—</td></tr>
+            <tr><td>Architecture / security review</td><td>Opus</td><td>n/a</td></tr>
           </tbody>
         </table>
       </div>
@@ -307,11 +307,11 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>The original hypothesis held that ast-grep with MCP and rules would be the high-accuracy, low-token path. It is wrong on tokens and only partly right on accuracy. rg wins hit rate and cost-per-found-block in 10 or 11 of 12 cells across four codebases. ast-grep wins one cell decisively: JSX/TSX structural patterns, where rg returns zero.</p>
 
-      <p>MCP is worth using for latency, at 2–5× faster wall-clock, and for structured error semantics on zero results, worth a 4 to 6 point cut in the rabbit-hole rate. It is not worth using to save tokens, because it costs more at every session size measured.</p>
+      <p>MCP is worth using for latency, at 2-5× faster wall-clock, and for structured error semantics on zero results, worth a 4 to 6 point cut in the rabbit-hole rate. It is not worth using to save tokens, because it costs more at every session size measured.</p>
 
       <p>The largest cost lever in this entire dataset is model selection. Opus costs 19× more per session than Haiku. Routing search-heavy work to Sonnet and file operations to Haiku has more token impact than any search tool choice.</p>
 
-      <p>The practical conclusion is neither "use rg" nor "use ast-grep." Route by query class. Verify language flags before writing ast-grep rules. Dump the CST before writing any structural rule. And read a zero result from either tool as a routing signal rather than a definitive answer.</p>
+      <p>There is no single right tool here. Route by query class. Verify language flags before writing ast-grep rules. Dump the CST before writing any structural rule. And read a zero result from either tool as a routing signal rather than a definitive answer.</p>
 
       <p class="post-cta">
         The search routing logic, CST dump workflow, and model dispatch rules are part of the

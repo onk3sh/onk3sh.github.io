@@ -4,7 +4,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="The three-tier memory layer I built for my coding agent"
-  description="Most agent memory designs collapse under real workloads. Here's the architecture that didn't: a Karpathy-pattern LLM wiki, an Obsidian second brain, and a JSONL session knowledge graph — each audited independently."
+  description="Most agent memory designs collapse under real workloads. Here's the architecture that didn't: a Karpathy-pattern LLM wiki, an Obsidian second brain, and a JSONL session knowledge graph, each audited independently."
 >
 
   <article class="post-article">
@@ -34,7 +34,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>Tier 1: LLM Wiki (session-to-session knowledge)</h2>
 
-      <p>The LLM Wiki is the Karpathy pattern implemented: a curated markdown knowledge base in <code>~/.claude/</code> that the agent reads at session start. Entries follow a strict format — observation, evidence, confidence, last-validated date. No entry survives without evidence. No entry survives indefinitely without revalidation.</p>
+      <p>The LLM Wiki is the Karpathy pattern implemented: a curated markdown knowledge base in <code>~/.claude/</code> that the agent reads at session start. Entries follow a strict format: observation, evidence, confidence, last-validated date. No entry survives without evidence. No entry survives indefinitely without revalidation.</p>
 
       <p>The weekly GC cycle is enforced by <code>lint-memory</code>, an auditor that runs independently of the agent. It flags entries older than the TTL that carry no revalidation date, and it flags contradictions between entries. It also removes any observation you could read straight from the codebase. The codebase is the source of truth, so the wiki should only store what the code cannot tell you.</p>
 
@@ -42,7 +42,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>Tier 2: Obsidian vault (long-horizon knowledge)</h2>
 
-      <p>The Obsidian vault is the second brain — architectural decisions, design rationale, meeting notes, things I want to remember across months, not sessions. The agent has read/write access to a dedicated <code>Claude/</code> folder via the Obsidian CLI.</p>
+      <p>The Obsidian vault is the second brain. It holds architectural decisions, design rationale, meeting notes, and anything I want to remember across months instead of sessions. The agent has read/write access to a dedicated <code>Claude/</code> folder via the Obsidian CLI.</p>
 
       <p>This tier exists because some context is genuinely long-lived and too detailed for the wiki. Take a decision to use eventual consistency instead of strong consistency. The reasoning, the alternatives weighed, and the tradeoffs accepted all matter six months later, when someone asks why the design looks the way it does. The wiki would prune it. A flat file would bury it. Obsidian keeps it searchable.</p>
 
@@ -56,7 +56,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p><code>system-gc</code> audits the session graph. It runs at session end and compacts any entry that has gone redundant, either superseded by a later observation or covered by an updated wiki entry. It also promotes durable observations up to the wiki with a confidence flag, so what the agent learns in a session reaches long-term memory.</p>
 
-      <h2>Three auditors, not one</h2>
+      <h2>Why there are three auditors</h2>
 
       <p>Each tier has its own auditor: <code>lint-memory</code> for the wiki, <code>lint-skills</code> for the skill library, <code>system-gc</code> for the session graph. Three independent auditors matter for one reason. A single auditor has no external reference, so it can only check internal consistency. Three can cross-check each other. <code>lint-memory</code> can flag a wiki entry that contradicts what <code>lint-skills</code> knows about how a tool actually behaves.</p>
 
