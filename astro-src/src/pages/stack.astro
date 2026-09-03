@@ -10,7 +10,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="hero stack-hero">
     <h1>Engineering Stack Map</h1>
     <p>
-      Technologies and systems across AI engineering, full-stack backend, data, and infrastructure.
+      The same skills the homepage lists, in three views: what each one is, how they connect
+      to the projects I built with them, and how long I have used each one.
     </p>
   </section>
 
@@ -155,8 +156,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       };
     }
 
+    /* Tech nodes are derived from the same skills array the capability matrix
+       and the homepage Skills section read, so the three cannot disagree about
+       what I work with. stack-map.json hand-keeps only the project nodes and
+       the links between them. */
+    const techNodes = data.skills.map(s => ({
+      id:     s.id,
+      label:  s.name,
+      type:   'tech',
+      group:  s.category,
+      detail: s.summary,
+    }));
+
     /* build node/link arrays */
-    const allNodes = data.graph.nodes.map(n => ({
+    const allNodes = [...data.graph.nodes, ...techNodes].map(n => ({
       id:         n.id,
       name:       n.label,
       detail:     n.detail,
@@ -276,10 +289,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   function renderTimeline(data) {
     const root = document.getElementById('timeline-wrap');
     if (!root) return;
-    const years = data.timeline.years;
+    /* Rows come from the skills array, one per skill, so the timeline lists
+       exactly what the matrix and the homepage list. A skill is active from the
+       year I started using it through the current year. */
+    const skills = [...data.skills].sort((a, b) => a.since - b.since || a.name.localeCompare(b.name));
+    const firstYear = Math.min(...skills.map(s => s.since));
+    const lastYear = new Date().getFullYear();
+    const years = [];
+    for (let y = firstYear; y <= lastYear; y++) years.push(y);
 
-    // Only show the most impactful rows
-    const tracks = data.timeline.tracks;
+    const tracks = skills.map(s => ({
+      label: s.name,
+      active: years.filter(y => y >= s.since),
+    }));
 
     const table = document.createElement('table');
     table.className = 'stack-timeline-table';

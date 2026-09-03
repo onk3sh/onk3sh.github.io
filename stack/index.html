@@ -4,7 +4,8 @@
         if (t !== 'dark') document.documentElement.setAttribute('data-theme', 'light');
       })();
     </script><link rel="stylesheet" href="/_astro/BaseLayout.CPwukmzw.css"></head> <body> <div class="page-shell"> <header class="top-nav-wrap"> <nav class="top-nav"> <a class="brand" href="/">Onkesh Bansal</a> <div class="nav-links"> <a class href="/about/">About</a> <a class href="/post/">Work</a> <a class href="/writing/">Writing</a> <a class href="/open-source/">Open Source</a> <a class="active" href="/stack/">Skills</a> <a class href="/lab/">Lab</a> <a class href="/contact/">Contact</a> <a href="https://www.linkedin.com/in/onkesh" target="_blank" rel="noopener noreferrer">Resume</a> </div> <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle light / dark">☀</button> </nav> </header> <main class="main-content">   <section class="hero stack-hero"> <h1>Engineering Stack Map</h1> <p>
-Technologies and systems across AI engineering, full-stack backend, data, and infrastructure.
+The same skills the homepage lists, in three views: what each one is, how they connect
+      to the projects I built with them, and how long I have used each one.
 </p> </section> <section class="section"> <h2>Capability Matrix</h2> <div class="panel"> <div class="stack-controls"> <div id="bubble-filters" class="chip-row"></div> <label class="search-wrap" for="skill-search"> <span>Search</span> <input id="skill-search" type="search" placeholder="python, kafka, fastapi..." autocomplete="off"> </label> </div> <div id="bubble-cloud" class="bubble-cloud"></div> </div> </section> <section class="section"> <h2>Knowledge Graph</h2> <div class="panel graph-panel"> <div class="graph-left"> <div id="graph-filters" class="chip-row" style="margin-bottom:0.7rem"></div> <div id="echarts-graph" style="width:100%;height:500px;border-radius:12px;overflow:hidden;"></div> </div> <div class="graph-right"> <div id="graph-legend" class="graph-legend"></div> <div class="graph-detail"> <h3 id="graph-title">Select a Node</h3> <p id="graph-detail-text">Hover or click any node to see what it is, where it is used, and how it ties to production outcomes.</p> </div> </div> </div> </section> <section class="section"> <h2>Timeline</h2> <div class="panel"> <div id="timeline-wrap" class="timeline-wrap"></div> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
       (function () {
         var btn = document.getElementById('theme-toggle');
@@ -127,8 +128,20 @@ Technologies and systems across AI engineering, full-stack backend, data, and in
       };
     }
 
+    /* Tech nodes are derived from the same skills array the capability matrix
+       and the homepage Skills section read, so the three cannot disagree about
+       what I work with. stack-map.json hand-keeps only the project nodes and
+       the links between them. */
+    const techNodes = data.skills.map(s => ({
+      id:     s.id,
+      label:  s.name,
+      type:   'tech',
+      group:  s.category,
+      detail: s.summary,
+    }));
+
     /* build node/link arrays */
-    const allNodes = data.graph.nodes.map(n => ({
+    const allNodes = [...data.graph.nodes, ...techNodes].map(n => ({
       id:         n.id,
       name:       n.label,
       detail:     n.detail,
@@ -248,10 +261,19 @@ Technologies and systems across AI engineering, full-stack backend, data, and in
   function renderTimeline(data) {
     const root = document.getElementById('timeline-wrap');
     if (!root) return;
-    const years = data.timeline.years;
+    /* Rows come from the skills array, one per skill, so the timeline lists
+       exactly what the matrix and the homepage list. A skill is active from the
+       year I started using it through the current year. */
+    const skills = [...data.skills].sort((a, b) => a.since - b.since || a.name.localeCompare(b.name));
+    const firstYear = Math.min(...skills.map(s => s.since));
+    const lastYear = new Date().getFullYear();
+    const years = [];
+    for (let y = firstYear; y <= lastYear; y++) years.push(y);
 
-    // Only show the most impactful rows
-    const tracks = data.timeline.tracks;
+    const tracks = skills.map(s => ({
+      label: s.name,
+      active: years.filter(y => y >= s.since),
+    }));
 
     const table = document.createElement('table');
     table.className = 'stack-timeline-table';
