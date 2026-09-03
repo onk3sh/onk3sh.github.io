@@ -2,18 +2,9 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { featuredWorkProjects, featuredPersonalProjects, featuredArticles, openSourceContributions } from '../data/projects';
 import { hero } from '../data/hero';
-import stackMap from '../../public/data/stack-map.json';
 
-/* The skills list and the /stack map read the same file, so the two can never
-   disagree. Production first, then longest-held within a tier. */
-const tierRank: Record<string, number> = { production: 0, working: 1, familiar: 2 };
-
-const skillGroups = stackMap.categories.map((category) => ({
-  ...category,
-  skills: stackMap.skills
-    .filter((skill) => skill.category === category.id)
-    .sort((a, b) => (tierRank[a.tier] - tierRank[b.tier]) || (a.since - b.since)),
-}));
+/* Skills are not listed here. They live on /stack/, which the Skills nav item
+   points at, in three views built from the same stack-map.json. */
 ---
 
 <BaseLayout
@@ -49,31 +40,6 @@ const skillGroups = stackMap.categories.map((category) => ({
         />
       </form>
     </aside>
-  </section>
-
-  <section class="section reveal-up">
-    <h2>Skills</h2>
-    <p class="skills-sub">
-      Grouped by where I use them. <strong>Production</strong> means I have shipped it and
-      supported it under real load. <strong>Working</strong> means I have built with it but
-      have not owned it in production.
-    </p>
-    <div class="grid-2">
-      {skillGroups.map((group) => (
-        <div class="card skill-card reveal-up">
-          <h3>{group.label}</h3>
-          <ul class="skill-list">
-            {group.skills.map((skill) => (
-              <li>
-                <span class="skill-name">{skill.name}</span>
-                <span class={`skill-tier tier-${skill.tier}`}>{skill.tier}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </div>
-    <a class="section-more" href="/stack/">how these fit together &rarr;</a>
   </section>
 
   <section class="section reveal-up">
@@ -597,49 +563,4 @@ const skillGroups = stackMap.categories.map((category) => ({
   }
   [data-theme="light"] .term-tag:hover { border-color: #2563eb; color: #1a3a7a; }
 
-  /* skills */
-  .skills-sub {
-    margin: 0 0 1rem;
-    max-width: 64ch;
-    color: var(--text-muted);
-    font-size: 0.92rem;
-    line-height: 1.6;
-  }
-
-  .skill-card h3 { margin: 0 0 0.62rem; }
-
-  /* A card that is not a link should not lift on hover. */
-  .skill-card:hover { transform: none; border-color: var(--line); }
-
-  .skill-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.36rem;
-  }
-
-  .skill-list li {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.6rem;
-    font-size: 0.9rem;
-    color: var(--text);
-  }
-
-  .skill-tier {
-    flex: none;
-    font-size: 0.66rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 0.08rem 0.44rem;
-  }
-
-  .skill-tier.tier-production { color: #7dd3fc; border-color: rgba(125, 211, 252, 0.35); }
-  .skill-tier.tier-working { color: #f59e0b; border-color: rgba(245, 158, 11, 0.34); }
 </style>
