@@ -303,8 +303,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const years = [];
     for (let y = firstYear; y <= lastYear; y++) years.push(y);
 
+    /* Every row runs unbroken from its start year to now, so an on/off grid
+       would say only "when I picked this up". The cells carry two more facts
+       the same file already holds: the category, as hue, and how deeply I use
+       the thing today, as opacity. */
+    const DEPTH = { production: 1, working: 0.62, familiar: 0.34 };
+
     const tracks = skills.map(s => ({
-      label: s.name,
+      label:  s.name,
+      tier:   s.tier,
+      color:  CAT_COLORS[s.category] || '#60a5fa',
+      depth:  DEPTH[s.tier] ?? 0.34,
       active: years.filter(y => y >= s.since),
     }));
 
@@ -315,13 +324,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const tbody = document.createElement('tbody');
     tracks.forEach(track => {
       const row = document.createElement('tr');
-      row.innerHTML = `<td>${track.label}</td>` +
-        years.map(y => `<td><span class="heat-cell ${track.active.includes(y) ? 'on' : 'off'}" title="${track.label} ${y}"></span></td>`).join('');
+      row.innerHTML = `<td>${escapeHtml(track.label)}</td>` +
+        years.map(y => {
+          const on = track.active.includes(y);
+          const style = on
+            ? ` style="background:${track.color};opacity:${track.depth}"`
+            : '';
+          const title = on
+            ? `${track.label} ${y} (${track.tier})`
+            : `${track.label} ${y} (not yet)`;
+          return `<td><span class="heat-cell ${on ? 'on' : 'off'}"${style} title="${escapeHtml(title)}"></span></td>`;
+        }).join('');
       tbody.appendChild(row);
     });
     table.appendChild(tbody);
     root.innerHTML = '';
     root.appendChild(table);
+
+    /* Hue and opacity mean nothing without this. */
+    const key = document.createElement('div');
+    key.className = 'timeline-key';
+    key.innerHTML =
+      '<span class="timeline-key-label">Colour: category. Depth of colour: how I use it today.</span>' +
+      Object.entries(DEPTH).map(([tier, depth]) =>
+        `<span class="timeline-key-item"><i class="heat-cell on" style="background:#8fb6e8;opacity:${depth}"></i>${tier}</span>`
+      ).join('');
+    root.appendChild(key);
   }
 
   loadStackMap().then(data => {
@@ -537,8 +565,28 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     border: 1px solid #2c405a;
   }
 
-  .heat-cell.on  { background: linear-gradient(180deg, #6db2ff, #33669f); box-shadow: 0 0 8px rgba(84,156,255,0.22); }
+  /* `on` cells get their colour and opacity inline, from the skill's category
+     and tier. This is only the fallback for a missing category colour. */
+  .heat-cell.on  { background: #6db2ff; }
   .heat-cell.off { background: #0f1929; opacity: 0.5; }
+
+  .timeline-key {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin-top: 0.9rem;
+    font-size: 0.78rem;
+    color: #9fb4cd;
+  }
+
+  .timeline-key-label { color: #b8c9dd; }
+
+  .timeline-key-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
 
   @media (max-width: 1100px) {
     .graph-panel { grid-template-columns: 1fr; }

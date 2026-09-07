@@ -427,3 +427,6 @@ a:hover {
   background: #e8eef8;
   opacity: 0.7;
 }
+
+[data-theme="light"] .timeline-key { color: #4b5b70; }
+[data-theme="light"] .timeline-key-label { color: #374151; }
