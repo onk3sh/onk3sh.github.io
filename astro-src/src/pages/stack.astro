@@ -2,16 +2,16 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Stack Map" description="Interactive engineering stack and experience map">
+<BaseLayout title="Skills" description="The tools I work with, how they connect to what I built, and how long I have used each">
   <Fragment slot="head">
     <script is:inline src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
   </Fragment>
 
   <section class="hero stack-hero">
-    <h1>Engineering Stack Map</h1>
+    <h1>Skills</h1>
     <p>
-      The same skills the homepage lists, in three views: what each one is, how they connect
-      to the projects I built with them, and how long I have used each one.
+      Every tool I work with, in three views: what each one is, how it connects
+      to the projects I built with it, and how long I have used it.
     </p>
   </section>
 
@@ -157,9 +157,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
 
     /* Tech nodes are derived from the same skills array the capability matrix
-       and the homepage Skills section read, so the three cannot disagree about
-       what I work with. stack-map.json hand-keeps only the project nodes and
-       the links between them. */
+       and the timeline read, so the three views cannot disagree about what I
+       work with. stack-map.json hand-keeps only the project nodes and the
+       links between them. */
     const techNodes = data.skills.map(s => ({
       id:     s.id,
       label:  s.name,
@@ -174,11 +174,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       name:       n.label,
       detail:     n.detail,
       _type:      n.type,
-      symbolSize: n.type === 'project' ? 42 : n.type === 'impact' ? 30 : 20,
-      symbol:     n.type === 'impact' ? 'diamond' : 'circle',
+      symbolSize: n.type === 'project' ? 42 : 20,
+      symbol:     'circle',
       itemStyle:  { color: CAT_COLORS[n.group] || '#60a5fa', borderWidth: 0 },
+      /* Every node is named. Unlabelled dots tell a reader nothing, and the
+         series sets labelLayout.hideOverlap, so a crowded patch drops the
+         labels it cannot fit instead of stacking them. */
       label: {
-        show:     n.type !== 'tech',
+        show:     true,
         fontSize: n.type === 'project' ? 12 : 10,
         fontWeight: n.type === 'project' ? 700 : 400,
         position: 'bottom',
@@ -265,7 +268,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     window.addEventListener('resize', () => chart.resize());
 
     /* type filter buttons */
-    const types = { all: 'All', project: 'Projects', tech: 'Tech', impact: 'Impact' };
+    /* No 'Impact' chip. stack-map.json holds project nodes only, so that filter
+       emptied the chart. */
+    const types = { all: 'All', project: 'Projects', tech: 'Tech' };
     let activeType = 'all';
     Object.entries(types).forEach(([type, label]) => {
       const btn = document.createElement('button');
@@ -290,7 +295,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     const root = document.getElementById('timeline-wrap');
     if (!root) return;
     /* Rows come from the skills array, one per skill, so the timeline lists
-       exactly what the matrix and the homepage list. A skill is active from the
+       exactly what the matrix and the graph list. A skill is active from the
        year I started using it through the current year. */
     const skills = [...data.skills].sort((a, b) => a.since - b.since || a.name.localeCompare(b.name));
     const firstYear = Math.min(...skills.map(s => s.since));
