@@ -16,7 +16,7 @@ A verifier cannot catch more wrong answers without also flagging more right ones
 Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
       Horizons differ by sector and are shown per row. A signal looking a year out
       is not the same call as a 30-day one.
-</p> <div class="panel canvest-panel"> <div id="canvest-risk-bar" class="risk-bar" style="display:none"> <span class="risk-bar-label">Systemic Risk</span> <span id="canvest-risk-level" class="risk-level-badge"></span> </div> <!-- Tabs, only worth showing when there is more than one -->  <!-- ETFs tab --> <div id="tab-etfs"> <div class="canvest-filter-row"> <div class="filter-chips" id="etf-bias-chips"> <button class="chip active" data-etf-bias="all">All</button> <button class="chip" data-etf-bias="bullish">Bullish</button> <button class="chip" data-etf-bias="neutral">Neutral</button> <button class="chip" data-etf-bias="bearish">Bearish</button> </div> <span class="etf-count" id="etf-list-count"></span> </div> <div class="mer-filter-row"> <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label> <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider"> </div> <div class="etf-table-wrap"> <table class="etf-table" id="canvest-etf-table"> <thead> <tr> <th>Ticker</th> <th>Name</th> <th>Bias</th> <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th> <th title="How far out this sector's signal looks. Rows with different horizons are not directly comparable.">Horizon</th> <th title="Management Expense Ratio">MER %</th> </tr> </thead> <tbody id="canvest-etf-tbody"></tbody> </table> </div> </div> <!-- Trades tab -->  <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+</p> <div class="panel canvest-panel"> <div id="canvest-risk-bar" class="risk-bar" style="display:none"> <span class="risk-bar-label">Systemic Risk</span> <span id="canvest-risk-level" class="risk-level-badge"></span> </div> <!-- Tabs, only worth showing when there is more than one -->  <!-- ETFs tab --> <div id="tab-etfs"> <div class="canvest-filter-row"> <div class="filter-chips" id="etf-bias-chips"> <button class="chip active" data-etf-bias="all">All</button> <button class="chip" data-etf-bias="bullish">Bullish</button> <button class="chip" data-etf-bias="neutral">Neutral</button> <button class="chip" data-etf-bias="bearish">Bearish</button> </div> <span class="etf-count" id="etf-list-count"></span> </div> <div class="mer-filter-row"> <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label> <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider"> <span class="mer-note" id="mer-unknown-note"></span> </div> <div class="etf-table-wrap"> <table class="etf-table" id="canvest-etf-table"> <thead> <tr> <th>Ticker</th> <th>Name</th> <th>Bias</th> <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th> <th title="How far out this sector's signal looks. Rows with different horizons are not directly comparable.">Horizon</th> <th title="Management Expense Ratio">MER %</th> </tr> </thead> <tbody id="canvest-etf-tbody"></tbody> </table> </div> </div> <!-- Trades tab -->  <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
       (function () {
         var btn = document.getElementById('theme-toggle');
         function sync() {
@@ -367,6 +367,16 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
     var count = document.getElementById('etf-list-count');
     count.textContent = rows.length + ' ETF' + (rows.length !== 1 ? 's' : '');
 
+    /* Six listed ETFs publish no MER. The filter cannot judge them, so it lets
+       them through rather than hiding a fund for want of one number. Say so:
+       without this the control reads as broken when the slider hits 0.00%. */
+    var unknownMer = 0;
+    rows.forEach(function(r) { if (r.mer === null) unknownMer++; });
+    var merNote = document.getElementById('mer-unknown-note');
+    merNote.textContent = unknownMer === 0 ? ''
+      : unknownMer + (unknownMer === 1 ? ' ETF publishes' : ' ETFs publish')
+        + ' no MER, always shown';
+
     var tbody = document.getElementById('canvest-etf-tbody');
     tbody.innerHTML = rows.map(function(r) {
       var bc = light ? BIAS_LIGHT_ETF[r.bias] : BIAS_COLOR_ETF[r.bias];
@@ -647,6 +657,11 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
     flex: 1;
     max-width: 220px;
     accent-color: var(--accent);
+  }
+  .mer-note {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    opacity: 0.8;
   }
 
   .etf-table-wrap {
