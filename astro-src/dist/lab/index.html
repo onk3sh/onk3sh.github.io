@@ -16,7 +16,7 @@ A verifier cannot catch more wrong answers without also flagging more right ones
 Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
       Horizons differ by sector and are shown per row. A signal looking a year out
       is not the same call as a 30-day one.
-</p> <div class="panel canvest-panel"> <div id="canvest-risk-bar" class="risk-bar" style="display:none"> <span class="risk-bar-label">Systemic Risk</span> <span id="canvest-risk-level" class="risk-level-badge"></span> </div> <!-- Tabs, only worth showing when there is more than one -->  <!-- ETFs tab --> <div id="tab-etfs"> <div class="canvest-filter-row"> <div class="filter-chips" id="etf-bias-chips"> <button class="chip active" data-etf-bias="all">All</button> <button class="chip" data-etf-bias="bullish">Bullish</button> <button class="chip" data-etf-bias="neutral">Neutral</button> <button class="chip" data-etf-bias="bearish">Bearish</button> </div> <span class="etf-count" id="etf-list-count"></span> </div> <div class="mer-filter-row"> <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label> <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider"> </div> <div class="etf-table-wrap"> <table class="etf-table" id="canvest-etf-table"> <thead> <tr> <th>Ticker</th> <th>Name</th> <th>Bias</th> <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th> <th title="How far out this sector's signal looks. Rows with different horizons are not directly comparable.">Horizon</th> <th title="Management Expense Ratio">MER %</th> </tr> </thead> <tbody id="canvest-etf-tbody"></tbody> </table> </div> </div> <!-- Trades tab -->  <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
+</p> <div class="panel canvest-panel"> <div id="canvest-risk-bar" class="risk-bar" style="display:none"> <span class="risk-bar-label">Systemic Risk</span> <span id="canvest-risk-level" class="risk-level-badge"></span> </div> <div class="canvest-etfs"> <div class="canvest-filter-row"> <div class="filter-chips" id="etf-bias-chips"> <button class="chip active" data-etf-bias="all">All</button> <button class="chip" data-etf-bias="bullish">Bullish</button> <button class="chip" data-etf-bias="neutral">Neutral</button> <button class="chip" data-etf-bias="bearish">Bearish</button> </div> <span class="etf-count" id="etf-list-count"></span> </div> <div class="mer-filter-row"> <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label> <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider"> </div> <div class="etf-table-wrap"> <table class="etf-table" id="canvest-etf-table"> <thead> <tr> <th>Ticker</th> <th>Name</th> <th>Bias</th> <th title="Directional signal 0-100: above 55 bullish, below 45 bearish">Signal</th> <th title="How far out this sector's signal looks. Rows with different horizons are not directly comparable.">Horizon</th> <th title="Management Expense Ratio">MER %</th> </tr> </thead> <tbody id="canvest-etf-tbody"></tbody> </table> </div> </div> <p class="etf-disclaimer" id="canvest-disclaimer">Not financial advice. Data sourced from CanvestAI.</p> </div> </section>  </main> <footer class="site-footer"> <p>© Onkesh Bansal 2026</p> </footer> </div> <script>
       (function () {
         var btn = document.getElementById('theme-toggle');
         function sync() {
@@ -277,42 +277,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
     return new Date(+p[0], +p[1] - 1, +p[2]);
   }
 
-  /* The Paper Trades panel is gated at build time (SHOW_PAPER_TRADES in the
-     frontmatter). This script is is:inline, so Astro emits it verbatim and it
-     cannot read that constant. The panel's presence in the DOM is the flag. */
-  var TRADES_ON = !!document.getElementById('tab-trades');
-
-  /* ── tabs ── */
-  if (TRADES_ON) {
-    document.querySelectorAll('.canvest-tab').forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        document.querySelectorAll('.canvest-tab').forEach(function(t) { t.classList.remove('active'); });
-        tab.classList.add('active');
-        var target = tab.dataset.tab;
-        document.getElementById('tab-etfs').style.display = target === 'etfs' ? '' : 'none';
-        document.getElementById('tab-trades').style.display = target === 'trades' ? '' : 'none';
-      });
-    });
-  }
-
-  var US_ETF_NAMES = {
-    SPY: 'SPDR S&P 500 ETF Trust',
-    XLK: 'Technology Select Sector SPDR',
-    XLE: 'Energy Select Sector SPDR',
-    XLY: 'Consumer Discretionary Select Sector SPDR',
-    XLF: 'Financial Select Sector SPDR',
-    XLI: 'Industrial Select Sector SPDR',
-    XLU: 'Utilities Select Sector SPDR',
-    XLB: 'Materials Select Sector SPDR',
-    XLV: 'Health Care Select Sector SPDR',
-    XBI: 'SPDR S&P Biotech ETF',
-    GDX: 'VanEck Gold Miners ETF',
-    IAU: 'iShares Gold Trust',
-    ICLN: 'iShares Global Clean Energy ETF',
-    SMH: 'VanEck Semiconductor ETF'
-  };
-
-  /* ── ETF tab filter ── */
+  /* ── ETF filter ── */
   var activeEtfBias = 'all';
   var maxMer = 1.0;
 
@@ -387,47 +352,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
     }).join('');
   }
 
-  /* ── Trades tab ── */
-  var paperTrades = { open_positions: [], closed_positions: [], summary: {} };
-  var activeTradeStatus = 'open';
-
-  if (TRADES_ON) {
-    document.getElementById('trades-status-chips').addEventListener('click', function(e) {
-      var btn = e.target.closest('[data-trade-status]');
-      if (!btn) return;
-      activeTradeStatus = btn.dataset.tradeStatus;
-      document.querySelectorAll('[data-trade-status]').forEach(function(b) { b.classList.toggle('active', b === btn); });
-      renderTrades();
-    });
-  }
-
-  function renderTrades() {
-    if (!TRADES_ON) return;
-    var light = isLight();
-    var PNL_POS = light ? '#0d6f3f' : '#34d399';
-    var PNL_NEG = light ? '#991b1b' : '#f87171';
-    var rows = activeTradeStatus === 'open' ? paperTrades.open_positions : paperTrades.closed_positions;
-    var count = document.getElementById('trades-count');
-    count.textContent = rows.length + ' trade' + (rows.length !== 1 ? 's' : '');
-    var tbody = document.getElementById('canvest-trades-tbody');
-    tbody.innerHTML = rows.map(function(t) {
-      var pnlColor = t.pnl_pct >= 0 ? PNL_POS : PNL_NEG;
-      var pnlStr = (t.pnl_pct >= 0 ? '+' : '') + fmt1(t.pnl_pct) + '%';
-      var excess = t.excess_return != null ? ((t.excess_return >= 0 ? '+' : '') + fmt1(t.excess_return) + '%') : 'n/a';
-      var excessColor = t.excess_return != null ? (t.excess_return >= 0 ? PNL_POS : PNL_NEG) : 'var(--text-muted)';
-      var entryDate = t.entry_date ? parseDay(t.entry_date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' }) : 'n/a';
-      return '<tr>' +
-        '<td class="etf-ticker">' + t.etf + '</td>' +
-        '<td style="font-size:0.82rem;color:var(--text-muted)">' + (US_ETF_NAMES[t.etf] || 'n/a') + '</td>' +
-        '<td style="font-size:0.82rem;color:var(--text-muted)">' + entryDate + '</td>' +
-        '<td style="font-weight:700;font-size:0.82rem;color:' + pnlColor + '">' + pnlStr + '</td>' +
-        '<td style="font-size:0.82rem;color:' + excessColor + '">' + excess + '</td>' +
-        '<td style="font-size:0.82rem;color:var(--text-muted);text-align:right">' + fmt1(t.confidence) + '%</td>' +
-      '</tr>';
-    }).join('');
-  }
-
-  new MutationObserver(function() { renderEtfs(); renderTrades(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  new MutationObserver(function() { renderEtfs(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   Promise.all([
     fetch('/data/canvest-recommendations.json').then(function(r) { if (!r.ok) throw new Error(); return r.json(); }),
@@ -456,37 +381,7 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
         if (disc) disc.textContent = 'Not financial advice. Generated by CanvestAI \u00b7 updated ' + d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' }) + ' \u00b7 runs on demand.';
       }
 
-      /* paper trades: the export nests results per risk tier */
-      var pt = data.paper_trading;
-      if (pt && TRADES_ON) {
-        var tier = pt.standard_tier || pt;
-        paperTrades.open_positions = tier.open_positions || [];
-        paperTrades.closed_positions = tier.closed_positions || [];
-
-        /* default to whichever bucket actually has trades */
-        if (paperTrades.open_positions.length === 0 && paperTrades.closed_positions.length > 0) {
-          activeTradeStatus = 'closed';
-          document.querySelectorAll('[data-trade-status]').forEach(function(b) {
-            b.classList.toggle('active', b.dataset.tradeStatus === 'closed');
-          });
-        }
-
-        var openCount = paperTrades.open_positions.length;
-        var closedCount = paperTrades.closed_positions.length;
-        var winRate = tier.win_rate != null ? tier.win_rate : 0;
-        var totalPnl = tier.total_pnl_usd || 0;
-        var avgExcess = tier.avg_excess_vs_spy || 0;
-        var pnlColor = totalPnl >= 0 ? '#34d399' : '#f87171';
-        document.getElementById('trades-summary').innerHTML =
-          '<div class="trades-stat"><span class="trades-stat-val">' + winRate.toFixed(1) + '%</span><span class="trades-stat-label">win rate</span></div>' +
-          '<div class="trades-stat"><span class="trades-stat-val" style="color:' + pnlColor + '">' + (totalPnl >= 0 ? '+' : '') + '$' + totalPnl.toFixed(0) + '</span><span class="trades-stat-label">total P&L</span></div>' +
-          '<div class="trades-stat"><span class="trades-stat-val">' + openCount + '</span><span class="trades-stat-label">open</span></div>' +
-          '<div class="trades-stat"><span class="trades-stat-val">' + closedCount + '</span><span class="trades-stat-label">closed</span></div>' +
-          '<div class="trades-stat"><span class="trades-stat-val" style="color:' + (avgExcess >= 0 ? '#34d399' : '#f87171') + '">' + (avgExcess >= 0 ? '+' : '') + fmt1(avgExcess) + '%</span><span class="trades-stat-label">avg vs SPY</span></div>';
-      }
-
       renderEtfs();
-      renderTrades();
     })
     .catch(function() {
       document.getElementById('canvest-etf-tbody').innerHTML =
@@ -610,27 +505,6 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
 
   /* ── CanvestAI Dashboard ── */
   .canvest-panel { display: grid; gap: 1.2rem; }
-
-  .canvest-tabs {
-    display: flex;
-    gap: 0.4rem;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 0.75rem;
-  }
-
-  .canvest-tab {
-    border: 1px solid var(--line);
-    background: transparent;
-    color: var(--text-muted);
-    border-radius: 8px;
-    padding: 0.3rem 0.85rem;
-    font-size: 0.85rem;
-    font-family: inherit;
-    cursor: pointer;
-    transition: border-color 120ms ease, color 120ms ease, background 120ms ease;
-  }
-  .canvest-tab:hover { border-color: var(--accent); color: var(--text); }
-  .canvest-tab.active { border-color: var(--accent); background: var(--accent-soft); color: var(--text); font-weight: 600; }
 
   .mer-filter-row {
     display: flex;
@@ -759,19 +633,6 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
     margin: 0;
   }
 
-  /* trades summary */
-  .trades-summary {
-    display: flex;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--line);
-    margin-bottom: 0.25rem;
-  }
-  .trades-stat { display: flex; flex-direction: column; gap: 0.1rem; }
-  .trades-stat-val { font-size: 1rem; font-weight: 700; }
-  .trades-stat-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
-
   .etf-disclaimer {
     font-size: 0.76rem;
     color: var(--text-muted);
@@ -791,24 +652,11 @@ Bias signals from CanvestAI · Canadian ETF universe. Ranked most bullish first.
     #canvest-etf-table th:nth-child(6),
     #canvest-etf-table td:nth-child(6) { display: none; }
 
-    /* Trades table: hide Name and Conf on small screens */
-    #canvest-trades-table th:nth-child(2),
-    #canvest-trades-table td:nth-child(2),
-    #canvest-trades-table th:nth-child(6),
-    #canvest-trades-table td:nth-child(6) { display: none; }
-
     /* Shrink confidence bar on mobile */
     .etf-table td div[style*="width:80px"] { width: 48px !important; }
-
-    /* Trades summary wrap tighter */
-    .trades-summary { gap: 1rem; }
-    .trades-stat-val { font-size: 0.9rem; }
 
     /* MER slider row stack */
     .mer-filter-row { flex-direction: column; align-items: flex-start; gap: 0.4rem; }
     .mer-slider { max-width: 100%; width: 100%; }
-
-    /* Tabs scroll if needed */
-    .canvest-tabs { flex-wrap: nowrap; overflow-x: auto; }
   }
 </style>
