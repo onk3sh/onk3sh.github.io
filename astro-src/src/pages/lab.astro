@@ -102,6 +102,7 @@ const SHOW_PAPER_TRADES = false;
         <div class="mer-filter-row">
           <label class="mer-label" for="mer-slider">Max MER: <span id="mer-value">1.00</span>%</label>
           <input type="range" id="mer-slider" min="0" max="1" step="0.01" value="1" class="mer-slider">
+          <span class="mer-note" id="mer-unknown-note"></span>
         </div>
         <div class="etf-table-wrap">
           <table class="etf-table" id="canvest-etf-table">
@@ -490,6 +491,16 @@ const SHOW_PAPER_TRADES = false;
     var count = document.getElementById('etf-list-count');
     count.textContent = rows.length + ' ETF' + (rows.length !== 1 ? 's' : '');
 
+    /* Six listed ETFs publish no MER. The filter cannot judge them, so it lets
+       them through rather than hiding a fund for want of one number. Say so:
+       without this the control reads as broken when the slider hits 0.00%. */
+    var unknownMer = 0;
+    rows.forEach(function(r) { if (r.mer === null) unknownMer++; });
+    var merNote = document.getElementById('mer-unknown-note');
+    merNote.textContent = unknownMer === 0 ? ''
+      : unknownMer + (unknownMer === 1 ? ' ETF publishes' : ' ETFs publish')
+        + ' no MER, always shown';
+
     var tbody = document.getElementById('canvest-etf-tbody');
     tbody.innerHTML = rows.map(function(r) {
       var bc = light ? BIAS_LIGHT_ETF[r.bias] : BIAS_COLOR_ETF[r.bias];
@@ -772,6 +783,11 @@ const SHOW_PAPER_TRADES = false;
     flex: 1;
     max-width: 220px;
     accent-color: var(--accent);
+  }
+  .mer-note {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+    opacity: 0.8;
   }
 
   .etf-table-wrap {
