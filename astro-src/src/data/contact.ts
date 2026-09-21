@@ -19,7 +19,7 @@ export type ContactContent = {
 };
 
 export const contact: ContactContent = {
-  metaDescription: 'Reach Onkesh Bansal, a staff-level engineer building production AI systems. Based in Toronto, open to remote roles across the US and Canada.',
+  metaDescription: 'Reach Onkesh Bansal, a senior engineer building production AI systems. Based in Toronto, open to remote roles across the US and Canada.',
   hero: {
     headline: 'Reach out.',
     subline: 'Staff and senior IC roles, AI platform work, and conversations with people building serious production systems.',
