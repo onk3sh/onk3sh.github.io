@@ -162,6 +162,39 @@ import { hero } from '../data/hero';
     }
   }
 
+  /* ── the stack list ── */
+  /* Rows are built from data/stack-map.json, the same file /stack/ reads, so
+     the terminal cannot drift from the canonical skills list. This script is
+     is:inline, so Astro emits it verbatim with no expression substitution;
+     the data is fetched at runtime, the way the stack page already does it. */
+  var stackFetch = null;
+
+  function esc(s) {
+    return String(s)
+      .split('&').join('&amp;')
+      .split('<').join('&lt;')
+      .split('>').join('&gt;');
+  }
+
+  function loadStack() {
+    if (stackFetch) return stackFetch;
+    stackFetch = fetch('/data/stack-map.json')
+      .then(function(r) { if (!r.ok) throw new Error('stack-map'); return r.json(); })
+      .then(function(d) {
+        var byCat = {};
+        (d.skills || []).forEach(function(s) {
+          (byCat[s.category] = byCat[s.category] || []).push(s.name);
+        });
+        return (d.categories || [])
+          .map(function(c) { return { id: c.id, names: byCat[c.id] || [] }; })
+          .filter(function(row) { return row.names.length > 0; });
+      })
+      .catch(function() { return null; });
+    return stackFetch;
+  }
+
+  loadStack();
+
   /* ── commands ── */
   const VISIBLE = ['help','whoami','about','now','projects','ls','stack','contact','resume','lab','clear'];
 
@@ -207,13 +240,12 @@ import { hero } from '../data/hero';
     },
 
     stack: function() {
-      [
-        ['languages', 'Java &middot; Python &middot; JavaScript &middot; TypeScript'],
-        ['backend',   'Spring Boot &middot; REST APIs &middot; PostgreSQL &middot; Redis'],
-        ['ai',        'Claude API &middot; context &amp; prompt engineering &middot; Claude Code skills &middot; JS/TS &middot; Python'],
-        ['infra',     'Kubernetes &middot; Docker &middot; AWS &middot; Git'],
-      ].forEach(function(row) {
-        rich('<span class="term-key">' + row[0].padEnd(10) + '</span>' + row[1]);
+      loadStack().then(function(rows) {
+        if (!rows) { line('stack unavailable.', 'term-err'); return; }
+        rows.forEach(function(row) {
+          rich('<span class="term-key">' + esc(row.id).padEnd(10) + '</span>'
+            + row.names.map(esc).join(' &middot; '));
+        });
       });
     },
 

@@ -4,7 +4,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="Code search tool benchmark: rg, ast-grep, MCP, and what the data actually says"
-  description="331 sessions, 4 production codebases, 15 tables. rg wins 9/12 query-class cells. ast-grep wins one. MCP is faster but costs more tokens. Model routing is the biggest cost driver by far."
+  description="331 sessions, 4 production codebases, 12 tables. rg wins 9/12 query-class cells. ast-grep wins one. MCP is faster but costs more tokens. Model routing is the biggest cost driver by far."
 >
 
   <article class="post-article">
@@ -15,7 +15,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
         <span class="badge">AI Tooling</span>
       </div>
       <h1>Code search tool benchmark: rg, ast-grep, MCP, and what the data actually says</h1>
-      <p class="post-lede">I went in expecting to confirm that ast-grep + MCP + rules was the high-accuracy, low-token path. The benchmark refuted that. Here are 15 tables and what they mean.</p>
+      <p class="post-lede">I went in expecting to confirm that ast-grep + MCP + rules was the high-accuracy, low-token path. The benchmark refuted that. Here are 12 tables and what they mean.</p>
     </section>
 
     <div class="post-body panel">
@@ -24,7 +24,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>I ran a controlled benchmark across 331 Claude Code sessions and four production codebases: two Java services on Spring Boot and Quarkus, a Rails service, and a React/TSX frontend. Of those, 97 sessions had active search activity, which is where the hit-rate and cost-per-found-block figures come from. Another 325 had usage data behind the token cost and model routing figures. Here is what I found.</p>
 
-      <p>The most actionable finding has nothing to do with rg or ast-grep. <strong>Opus costs 19× more per session than Haiku.</strong> Model routing is the dominant cost lever, and every search-tool optimization in this article sits inside a rounding error next to it. That number is in Table 12. Read it first if you only have time for one table.</p>
+      <p>The most actionable finding has nothing to do with rg or ast-grep. <strong>Opus costs 19× more per session than Haiku.</strong> Model routing is the dominant cost lever, and every search-tool optimization in this article sits inside a rounding error next to it. That number is in Table 11. Read it first if you only have time for one table.</p>
 
       <h2>Setup</h2>
 
@@ -220,7 +220,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <h2>Model routing: the number that dwarfs all of this</h2>
 
-      <p>All of the above is search-layer optimization. Table 12 puts it in context.</p>
+      <p>All of the above is search-layer optimization. Table 11 puts it in context.</p>
 
       <h3>Table 9: Search volume by model family</h3>
 
@@ -255,7 +255,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>Scoping discipline is equal, with both models scoping about 90% of calls. The difference is result size. Opus pulls responses about 36% larger and reads about 50% more files per call. It is being more thorough on the same call, not less disciplined.</p>
 
-      <h3>Table 12: Real per-session cost by model</h3>
+      <h3>Table 11: Real per-session cost by model</h3>
 
       <p class="table-note">From JSONL usage fields. Cache reads excluded (90% discount).</p>
 
@@ -282,7 +282,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
       <p>The routing rule is to use LSP for <code>goToImplementation</code>, <code>hover</code>, and type resolution. One caveat applies. LSP works in agent flow once its index is warm and persistent, as jdtls is for Java. Without a persistent cache, which is the common case for TypeScript, LSP starts cold every session and runs too slowly to use inline. For TypeScript semantic resolution, a structural ast-grep rule is the practical alternative.</p>
 
-      <h2>Decision matrix</h2>
+      <h2>Table 12: Decision matrix</h2>
 
       <div class="table-wrap">
         <table>
