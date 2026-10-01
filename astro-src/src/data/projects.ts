@@ -341,6 +341,111 @@ export const projects: Project[] = [
       },
     ],
   },
+  {
+    slug: 'more-itertools-bucket-key',
+    title: 'more-itertools: bucket and phantom keys',
+    date: '2026-09-17',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'Python'],
+    summary:
+      'Merged into more-itertools. Testing a key against a bucket permanently added that key to the ones iteration returns, so a membership test and a list of the keys disagreed for the same object at the same moment. I reported the issue and sent the fix.',
+    link: { label: 'more-itertools/more-itertools #1285, merged', href: 'https://github.com/more-itertools/more-itertools/pull/1285' },
+    sections: [
+      {
+        heading: 'What was wrong',
+        paragraphs: [
+          'The cache behind a bucket was a defaultdict, and the lookup path opened by reading it. Reading a missing key inserts an empty entry, and iteration reports every cache key, so a plain membership test created a key that then showed up forever. Misses were sticky and accumulated.',
+          'The effect reached the documented behavior. The docstring own keys example returned four keys after a single membership test that should have found nothing, because that test had quietly registered the key it was asking about.',
+        ],
+      },
+      {
+        heading: 'The change',
+        paragraphs: [
+          'The cache becomes a plain dict, so a lookup can no longer insert. A key is registered only where an item with that key is actually seen, through setdefault on the two paths that store an item and one more on the path that hands an item straight to the caller.',
+          'That last path is the one worth flagging. It yields a match without ever caching it, so without an explicit registration the key would go unreported and break an existing test that drains every bucket first. Registering at the point the first matching item is produced records the key because an item had it, not because someone asked about it.',
+        ],
+      },
+      {
+        heading: 'Tests',
+        bullets: [
+          'Four tests added, covering membership, indexing, a validator, and the rule that the keys are only those actually seen.',
+          'All four are confirmed to fail without the change and pass with it.',
+          'The full suite is 924 tests and all pass, with the more.py and recipes.py doctests clean.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'more-itertools-value-chain',
+    title: 'more-itertools: value_chain and swallowed errors',
+    date: '2026-09-03',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'Python'],
+    summary:
+      'Merged into more-itertools. value_chain wrapped a try and except TypeError around a lazy yield from, so the guard stayed active for the whole consumption instead of only classifying the argument. A TypeError raised from inside an argument was swallowed, and a half-consumed object was emitted in its place. I reported the issue and sent the fix.',
+    link: { label: 'more-itertools/more-itertools #1251, merged', href: 'https://github.com/more-itertools/more-itertools/pull/1251' },
+    sections: [
+      {
+        heading: 'What was wrong',
+        paragraphs: [
+          'value_chain classified each argument by wrapping yield from value in a try and except TypeError. Because yield from consumes lazily, the guard covered the whole consumption rather than only the classification.',
+          'So an error raised while iterating an argument, such as calling len on an int inside a map, never reached the caller. The partly drained object was yielded in its place, after the items it had already produced, carrying no more data. Both itertools.chain and always_iterable propagate on the same input.',
+        ],
+      },
+      {
+        heading: 'The change',
+        paragraphs: [
+          'Classify with iter and consume outside the guard, the same approach always_iterable already uses. The call to iter decides whether the argument is iterable, and the actual iteration happens in the else branch where no guard hides its errors.',
+          'Arguments that cannot be iterated at all, including ones whose iterator raises TypeError, are still emitted as-is, so the documented fallback is unchanged.',
+        ],
+      },
+      {
+        heading: 'Tests',
+        bullets: [
+          'One test pins that the TypeError now propagates after the already produced items.',
+          'A second pins that the non-iterable fallback still holds.',
+          'Checks run locally: the full unittest suite of 907 tests, ruff format and ruff check, stubtest, and coverage at 100%.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'cattrs-naive-datetime-utc',
+    title: 'cattrs: naive datetimes on the wire',
+    date: '2026-09-03',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'Python'],
+    summary:
+      'Merged into cattrs. The msgpack and cbor2 converters unstructured a datetime with datetime.timestamp, which reads a naive value as local time. The number written to the wire then depended on the timezone of the machine doing the unstructuring, so the same datetime round-tripped to a different instant on a different host. I reported the issue and sent the fix.',
+    link: { label: 'python-attrs/cattrs #775, merged', href: 'https://github.com/python-attrs/cattrs/pull/775' },
+    sections: [
+      {
+        heading: 'What was wrong',
+        paragraphs: [
+          'Both converters serialize a datetime through datetime.timestamp. On a naive datetime that method interprets the value as local time, so the float written to the wire moved with the host timezone.',
+          'The same 12:30 datetime dumped to one number under UTC, another under Asia/Tokyo, and a third under America/Toronto, and each loaded back to a different instant. An aware datetime was the control and produced the same bytes in all three.',
+        ],
+      },
+      {
+        heading: 'The change',
+        paragraphs: [
+          'The structure hooks already declare the wire contract, datetime.fromtimestamp with timezone.utc, so the unstructure hooks now pin a naive datetime to UTC before converting, and the two ends agree. The date hook sitting right below the datetime hook in msgpack.py already did exactly this, so the change brings the datetime hook in line with it.',
+          'The shared helper lives next to validate_datetime in preconf, since both converters need it and both already import from there. A naive input still comes back aware, because a bare float has nowhere to record awareness. What changes is that the value survives and the payload no longer depends on the host.',
+        ],
+      },
+      {
+        heading: 'Tests',
+        bullets: [
+          'The preconf strategy never generated naive datetimes, so the gap was untested until now.',
+          'The regression test sets TZ explicitly rather than trusting the host, because on a UTC machine, including the CI runners, a naive datetime assertion passes whether or not the bug is present. It restores the previous TZ on the way out and skips where tzset is unavailable.',
+          'The two new tests fail on unpatched source, off by the nine hour JST offset, and pass with the change. The full suite is 992 passed and 15 xfailed, with ruff clean.',
+        ],
+      },
+    ],
+  },
 ];
 
 export type ProductionProject = {
