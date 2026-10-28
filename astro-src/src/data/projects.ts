@@ -446,6 +446,81 @@ export const projects: Project[] = [
       },
     ],
   },
+  {
+    slug: 'buffa-any-memory-limit',
+    title: 'buffa: charging buffered Any payloads against the memory limit',
+    date: '2026-10-03',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'Rust'],
+    summary:
+      'Merged into buffa, a Rust protobuf implementation with JSON serialization and zero-copy views. Reflective JSON deserialization charged a google.protobuf.Any payload against the element memory limit only at replay, so an arbitrarily large Any could be buffered first and slip past the budget. I added charging variants that meter the budget as the JSON tree is built, so the limit holds while the payload is still buffered. I reported the issue and sent the fix.',
+    link: { label: 'anthropics/buffa #507, merged', href: 'https://github.com/anthropics/buffa/pull/507' },
+    sections: [
+      {
+        heading: 'What was wrong',
+        paragraphs: [
+          'A reflective JSON Any is buffered as it deserializes and replayed later, once its type is known. Memory charging happened at replay, so the bytes held while the payload was buffered were never counted against the element memory limit. A large enough Any could sit in the buffer under the limit the limit existed to enforce.',
+        ],
+      },
+      {
+        heading: 'The change',
+        paragraphs: [
+          'New ChargingObject and ChargingValue variants account for memory as the JSON tree is built, rather than waiting for replay. The budget is consumed while the payload buffers, so an oversized Any is rejected at the point it would otherwise be accepted. It closes issue #493.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'claude-hud-git-path-escapes',
+    title: 'claude-hud: decoding every escape git puts in a quoted path',
+    date: '2026-10-01',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'JavaScript'],
+    summary:
+      'Merged into claude-hud, a Claude Code status plugin. Git C-escapes a path when it holds unusual characters, but the plugin decoded those paths with JSON.parse, which understands only JSON escapes. Control-character and octal escapes came back garbled, so affected filenames rendered wrong in the HUD. I replaced the JSON parse with a C-style decoder that handles every escape git emits, including multi-byte UTF-8 written as consecutive octal sequences.',
+    link: { label: 'jarrodwatts/claude-hud #765, merged', href: 'https://github.com/jarrodwatts/claude-hud/pull/765' },
+    sections: [
+      {
+        heading: 'What was wrong',
+        paragraphs: [
+          'Git quotes a path that contains unusual bytes and escapes it in C style. The plugin ran those quoted paths through JSON.parse, which decodes JSON escapes such as \\n and \\t but not C escapes such as \\a and \\v, and not octal. A path carrying one of those came back garbled, and a UTF-8 character written as consecutive octal bytes was never reassembled.',
+        ],
+      },
+      {
+        heading: 'The change',
+        paragraphs: [
+          'The JSON parse is replaced with a decoder that walks the quoted path and resolves each escape the way git wrote it: the named control escapes, octal sequences, and runs of octal bytes reassembled into their multi-byte UTF-8 character. Paths with those characters now show correctly.',
+        ],
+      },
+    ],
+  },
+  {
+    slug: 'claude-hud-unmerged-path-stats',
+    title: 'claude-hud: counting unmerged paths in the file stats',
+    date: '2026-10-01',
+    type: 'project',
+    projectType: 'open-source',
+    tags: ['open source', 'JavaScript'],
+    summary:
+      'Merged into claude-hud, a Claude Code status plugin. The file-change stats counted each path by its git status letters, but the unmerged conflict states were not among the states it classified. UU (both modified) and UA (added by them) were dropped from the count entirely, so a repo mid-merge or mid-rebase reported incomplete numbers. I classified the unmerged entries so every conflicted path is tallied.',
+    link: { label: 'jarrodwatts/claude-hud #763, merged', href: 'https://github.com/jarrodwatts/claude-hud/pull/763' },
+    sections: [
+      {
+        heading: 'What was wrong',
+        paragraphs: [
+          'The stats classified each path by its git status letters, but the unmerged conflict states were not among the ones it handled. UU (both modified) and UA (added by them) were dropped from the count entirely, so while a repo was mid-merge or mid-rebase the file stats undercounted the files actually in play.',
+        ],
+      },
+      {
+        heading: 'The change',
+        paragraphs: [
+          'The unmerged entries are classified alongside the rest, so a conflicted path counts like any other changed path. A repo in the middle of a merge or rebase reports the full count.',
+        ],
+      },
+    ],
+  },
 ];
 
 export type ProductionProject = {
